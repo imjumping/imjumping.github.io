@@ -3,7 +3,11 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>炫酷粒子动画</title>
+  <title>Material 粒子 | 织网者</title>
+
+  <!-- Google Fonts: M3 推荐的 Roboto / Inter 类似字体 -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+
   <style>
     * {
       margin: 0;
@@ -12,57 +16,127 @@
     }
 
     body {
-      background-color: #111;
+      background-color: #000;
+      color: #e0e0e0;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
       overflow: hidden;
-      font-family: 'Arial', sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      position: relative;
     }
 
     canvas {
       display: block;
+      z-index: 1;
     }
 
     .info {
       position: absolute;
-      top: 20px;
-      left: 20px;
-      color: white;
-      font-size: 18px;
+      top: 24px;
+      left: 24px;
+      font-size: 16px;
+      color: #bb86fc; /* M3 主题色：次级紫色 */
       pointer-events: none;
-      text-shadow: 0 0 5px #00ffff;
+      opacity: 0.9;
+      text-shadow: 0 0 8px rgba(187, 134, 252, 0.4);
+      transition: opacity 0.3s ease;
+    }
+
+    .info:hover {
+      opacity: 1;
+    }
+
+    .title {
+      position: absolute;
+      bottom: 32px;
+      left: 32px;
+      font-size: 20px;
+      font-weight: 600;
+      color: #03dac6; /* M3 辅助色：青绿色 */
+      text-shadow: 0 0 10px rgba(3, 218, 198, 0.5);
+    }
+
+    .quote {
+      position: absolute;
+      bottom: 12px;
+      right: 24px;
+      font-size: 12px;
+      color: #9e9e9e;
+      font-style: italic;
     }
   </style>
 </head>
 <body>
 
-  <div class="info">移动鼠标，感受粒子的魅力！</div>
+  <div class="info">移动鼠标 → 吸引粒子</div>
+  <div class="title">Material Particles</div>
+  <div class="quote">“Design for connection.” – Inspired by M3</div>
   <canvas id="particleCanvas"></canvas>
 
   <script>
     const canvas = document.getElementById('particleCanvas');
     const ctx = canvas.getContext('2d');
 
-    // 设置画布全屏
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
 
-    // 鼠标位置
-    let mouse = {
-      x: undefined,
-      y: undefined
-    };
+    let mouse = { x: undefined, y: undefined };
+    let particles = [];
 
-    // 监听鼠标移动
+    // 鼠标事件
     window.addEventListener('mousemove', (e) => {
       mouse.x = e.x;
       mouse.y = e.y;
     });
 
-    // 窗口大小改变时重置画布
+    // 🔥 新增：鼠标点击时扩散粒子
+    canvas.addEventListener('mousedown', (e) => {
+      const count = 8; // 每次点击产生 8 个新粒子
+      for (let i = 0; i < count; i++) {
+        const size = Math.random() * 4 + 1;
+        const color = getRandomMaterialColor(); // 使用 M3 色彩
+        const speedX = (Math.random() - 0.5) * 10; // 更快的初始速度
+        const speedY = (Math.random() - 0.5) * 10;
+
+        particles.push(new Particle(e.x, e.y, size, color, speedX, speedY));
+      }
+    });
+
+    // 触摸支持（移动端）
+    canvas.addEventListener('touchstart', (e) => {
+      e.preventDefault();
+      const touch = e.touches[0];
+      const count = 6;
+      for (let i = 0; i < count; i++) {
+        const size = Math.random() * 4 + 1;
+        const color = getRandomMaterialColor();
+        const speedX = (Math.random() - 0.5) * 8;
+        const speedY = (Math.random() - 0.5) * 8;
+        particles.push(new Particle(touch.clientX, touch.clientY, size, color, speedX, speedY));
+      }
+    });
+
     window.addEventListener('resize', () => {
       canvas.width = window.innerWidth;
       canvas.height = window.innerHeight;
-      init(); // 重新初始化粒子
+      init(); // 自适应重新初始化
     });
+
+    // Material Design 3 推荐配色（Tonal Palettes）
+    const m3Colors = [
+      '#bb86fc', // Primary: Purple
+      '#03dac6', // Secondary: Teal
+      '#cf6679', // Error: Pink
+      '#ff9800', // Orange accent
+      '#448aff', // Blue
+      '#a1887f'  // Brown (neutral)
+    ];
+
+    function getRandomMaterialColor() {
+      return m3Colors[Math.floor(Math.random() * m3Colors.length)];
+    }
 
     // 粒子类
     class Particle {
@@ -75,22 +149,22 @@
         this.speedY = speedY;
       }
 
-      // 更新粒子位置
       update() {
         // 鼠标吸引力
-        const dx = mouse.x - this.x;
-        const dy = mouse.y - this.y;
-        const distance = Math.sqrt(dx * dx + dy * dy);
-        const force = 50;
+        if (mouse.x && mouse.y) {
+          const dx = mouse.x - this.x;
+          const dy = mouse.y - this.y;
+          const distance = Math.sqrt(dx*dx + dy*dy);
 
-        if (distance < 150) {
-          const angle = Math.atan2(dy, dx);
-          const magnitude = (150 - distance) / 3000; // 吸引强度
-          this.speedX -= Math.cos(angle) * magnitude * force;
-          this.speedY -= Math.sin(angle) * magnitude * force;
+          if (distance < 150) {
+            const angle = Math.atan2(dy, dx);
+            const magnitude = (150 - distance) / 3000;
+            this.speedX -= Math.cos(angle) * magnitude * 50;
+            this.speedY -= Math.sin(angle) * magnitude * 50;
+          }
         }
 
-        // 惯性减速
+        // 惯性阻尼
         this.speedX *= 0.95;
         this.speedY *= 0.95;
 
@@ -102,29 +176,32 @@
         if (this.y <= 0 || this.y >= canvas.height) this.speedY *= -1;
       }
 
-      // 绘制粒子
       draw() {
         ctx.beginPath();
         ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
         ctx.fillStyle = this.color;
         ctx.fill();
+
+        // 添加光晕效果（Material 风格）
+        ctx.shadowBlur = 10;
+        ctx.shadowColor = this.color;
+        ctx.globalCompositeOperation = 'lighter'; // 发光混合
+        ctx.fill();
+        ctx.globalCompositeOperation = 'source-over'; // 恢复默认
         ctx.closePath();
       }
     }
 
-    // 存储所有粒子
-    let particles = [];
-
-    // 初始化粒子
+    // 初始化基础粒子
     function init() {
       particles = [];
-      const particleCount = Math.min(100, Math.floor(canvas.width * canvas.height / 10000)); // 自适应数量
+      const particleCount = Math.min(80, Math.floor(canvas.width * canvas.height / 12000));
 
       for (let i = 0; i < particleCount; i++) {
-        const size = Math.random() * 5 + 1;
+        const size = Math.random() * 4 + 1;
         const x = Math.random() * canvas.width;
         const y = Math.random() * canvas.height;
-        const color = `hsl(${Math.random() * 360}, 70%, 60%)`; // 彩色粒子
+        const color = getRandomMaterialColor();
         const speedX = (Math.random() - 0.5) * 2;
         const speedY = (Math.random() - 0.5) * 2;
 
@@ -132,17 +209,17 @@
       }
     }
 
-    // 连接靠近的粒子
+    // 连接靠近的粒子（保持蛛网感但更轻盈）
     function connectParticles() {
       for (let a = 0; a < particles.length; a++) {
         for (let b = a + 1; b < particles.length; b++) {
           const dx = particles[a].x - particles[b].x;
           const dy = particles[a].y - particles[b].y;
-          const distance = Math.sqrt(dx * dx + dy * dy);
+          const distance = Math.sqrt(dx*dx + dy*dy);
 
           if (distance < 100) {
             ctx.beginPath();
-            ctx.strokeStyle = `rgba(255, 255, 255, ${1 - distance / 100})`;
+            ctx.strokeStyle = `rgba(255, 255, 255, ${0.1 + 0.2 * (1 - distance/100)})`;
             ctx.lineWidth = 0.5;
             ctx.moveTo(particles[a].x, particles[a].y);
             ctx.lineTo(particles[b].x, particles[b].y);
@@ -153,26 +230,23 @@
       }
     }
 
-    // 动画循环
+    // 动画主循环
     function animate() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-      // 更新并绘制每个粒子
       particles.forEach(particle => {
         particle.update();
         particle.draw();
       });
 
-      // 连接粒子
       connectParticles();
 
       requestAnimationFrame(animate);
     }
 
-    // 初始化并开始动画
+    // 启动
     init();
     animate();
   </script>
-
 </body>
 </html>
