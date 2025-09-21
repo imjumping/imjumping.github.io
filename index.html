@@ -1,1 +1,178 @@
-1
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>炫酷粒子动画</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background-color: #111;
+      overflow: hidden;
+      font-family: 'Arial', sans-serif;
+    }
+
+    canvas {
+      display: block;
+    }
+
+    .info {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      color: white;
+      font-size: 18px;
+      pointer-events: none;
+      text-shadow: 0 0 5px #00ffff;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="info">移动鼠标，感受粒子的魅力！</div>
+  <canvas id="particleCanvas"></canvas>
+
+  <script>
+    const canvas = document.getElementById('particleCanvas');
+    const ctx = canvas.getContext('2d');
+
+    // 设置画布全屏
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    // 鼠标位置
+    let mouse = {
+      x: undefined,
+      y: undefined
+    };
+
+    // 监听鼠标移动
+    window.addEventListener('mousemove', (e) => {
+      mouse.x = e.x;
+      mouse.y = e.y;
+    });
+
+    // 窗口大小改变时重置画布
+    window.addEventListener('resize', () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+      init(); // 重新初始化粒子
+    });
+
+    // 粒子类
+    class Particle {
+      constructor(x, y, size, color, speedX, speedY) {
+        this.x = x;
+        this.y = y;
+        this.size = size;
+        this.color = color;
+        this.speedX = speedX;
+        this.speedY = speedY;
+      }
+
+      // 更新粒子位置
+      update() {
+        // 鼠标吸引力
+        const dx = mouse.x - this.x;
+        const dy = mouse.y - this.y;
+        const distance = Math.sqrt(dx * dx + dy * dy);
+        const force = 50;
+
+        if (distance < 150) {
+          const angle = Math.atan2(dy, dx);
+          const magnitude = (150 - distance) / 3000; // 吸引强度
+          this.speedX -= Math.cos(angle) * magnitude * force;
+          this.speedY -= Math.sin(angle) * magnitude * force;
+        }
+
+        // 惯性减速
+        this.speedX *= 0.95;
+        this.speedY *= 0.95;
+
+        this.x += this.speedX;
+        this.y += this.speedY;
+
+        // 边界反弹
+        if (this.x <= 0 || this.x >= canvas.width) this.speedX *= -1;
+        if (this.y <= 0 || this.y >= canvas.height) this.speedY *= -1;
+      }
+
+      // 绘制粒子
+      draw() {
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+        ctx.fillStyle = this.color;
+        ctx.fill();
+        ctx.closePath();
+      }
+    }
+
+    // 存储所有粒子
+    let particles = [];
+
+    // 初始化粒子
+    function init() {
+      particles = [];
+      const particleCount = Math.min(100, Math.floor(canvas.width * canvas.height / 10000)); // 自适应数量
+
+      for (let i = 0; i < particleCount; i++) {
+        const size = Math.random() * 5 + 1;
+        const x = Math.random() * canvas.width;
+        const y = Math.random() * canvas.height;
+        const color = `hsl(${Math.random() * 360}, 70%, 60%)`; // 彩色粒子
+        const speedX = (Math.random() - 0.5) * 2;
+        const speedY = (Math.random() - 0.5) * 2;
+
+        particles.push(new Particle(x, y, size, color, speedX, speedY));
+      }
+    }
+
+    // 连接靠近的粒子
+    function connectParticles() {
+      for (let a = 0; a < particles.length; a++) {
+        for (let b = a + 1; b < particles.length; b++) {
+          const dx = particles[a].x - particles[b].x;
+          const dy = particles[a].y - particles[b].y;
+          const distance = Math.sqrt(dx * dx + dy * dy);
+
+          if (distance < 100) {
+            ctx.beginPath();
+            ctx.strokeStyle = `rgba(255, 255, 255, ${1 - distance / 100})`;
+            ctx.lineWidth = 0.5;
+            ctx.moveTo(particles[a].x, particles[a].y);
+            ctx.lineTo(particles[b].x, particles[b].y);
+            ctx.stroke();
+            ctx.closePath();
+          }
+        }
+      }
+    }
+
+    // 动画循环
+    function animate() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      // 更新并绘制每个粒子
+      particles.forEach(particle => {
+        particle.update();
+        particle.draw();
+      });
+
+      // 连接粒子
+      connectParticles();
+
+      requestAnimationFrame(animate);
+    }
+
+    // 初始化并开始动画
+    init();
+    animate();
+  </script>
+
+</body>
+</html>
