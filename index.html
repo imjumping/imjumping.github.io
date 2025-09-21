@@ -3,10 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Material 粒子 | 织网者</title>
-
-  <!-- Google Fonts: M3 推荐的 Roboto / Inter 类似字体 -->
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <title>沉浸式的粒子</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&display=swap" rel="stylesheet">
 
   <style>
     * {
@@ -20,9 +18,6 @@
       color: #e0e0e0;
       font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
       overflow: hidden;
-      display: flex;
-      justify-content: center;
-      align-items: center;
       height: 100vh;
       position: relative;
     }
@@ -32,47 +27,30 @@
       z-index: 1;
     }
 
-    .info {
+    .ripple {
       position: absolute;
-      top: 24px;
-      left: 24px;
-      font-size: 16px;
-      color: #bb86fc; /* M3 主题色：次级紫色 */
+      width: 0;
+      height: 0;
+      border-radius: 50%;
+      background-color: rgba(187, 134, 252, 0.4);
       pointer-events: none;
-      opacity: 0.9;
-      text-shadow: 0 0 8px rgba(187, 134, 252, 0.4);
-      transition: opacity 0.3s ease;
+      transform: translate(-50%, -50%) scale(0);
+      animation: ripple-animation 0.8s ease-out forwards;
+      z-index: 2;
     }
 
-    .info:hover {
-      opacity: 1;
-    }
-
-    .title {
-      position: absolute;
-      bottom: 32px;
-      left: 32px;
-      font-size: 20px;
-      font-weight: 600;
-      color: #03dac6; /* M3 辅助色：青绿色 */
-      text-shadow: 0 0 10px rgba(3, 218, 198, 0.5);
-    }
-
-    .quote {
-      position: absolute;
-      bottom: 12px;
-      right: 24px;
-      font-size: 12px;
-      color: #9e9e9e;
-      font-style: italic;
+    @keyframes ripple-animation {
+      to {
+        width: 400px;
+        height: 400px;
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(1);
+      }
     }
   </style>
 </head>
 <body>
 
-  <div class="info">移动鼠标 → 吸引粒子</div>
-  <div class="title">Material Particles</div>
-  <div class="quote">“Design for connection.” – Inspired by M3</div>
   <canvas id="particleCanvas"></canvas>
 
   <script>
@@ -85,60 +63,64 @@
     let mouse = { x: undefined, y: undefined };
     let particles = [];
 
-    // 鼠标事件
-    window.addEventListener('mousemove', (e) => {
-      mouse.x = e.x;
-      mouse.y = e.y;
-    });
-
-    // 🔥 新增：鼠标点击时扩散粒子
-    canvas.addEventListener('mousedown', (e) => {
-      const count = 8; // 每次点击产生 8 个新粒子
-      for (let i = 0; i < count; i++) {
-        const size = Math.random() * 4 + 1;
-        const color = getRandomMaterialColor(); // 使用 M3 色彩
-        const speedX = (Math.random() - 0.5) * 10; // 更快的初始速度
-        const speedY = (Math.random() - 0.5) * 10;
-
-        particles.push(new Particle(e.x, e.y, size, color, speedX, speedY));
-      }
-    });
-
-    // 触摸支持（移动端）
-    canvas.addEventListener('touchstart', (e) => {
-      e.preventDefault();
-      const touch = e.touches[0];
-      const count = 6;
-      for (let i = 0; i < count; i++) {
-        const size = Math.random() * 4 + 1;
-        const color = getRandomMaterialColor();
-        const speedX = (Math.random() - 0.5) * 8;
-        const speedY = (Math.random() - 0.5) * 8;
-        particles.push(new Particle(touch.clientX, touch.clientY, size, color, speedX, speedY));
-      }
-    });
-
-    window.addEventListener('resize', () => {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-      init(); // 自适应重新初始化
-    });
-
-    // Material Design 3 推荐配色（Tonal Palettes）
     const m3Colors = [
-      '#bb86fc', // Primary: Purple
-      '#03dac6', // Secondary: Teal
-      '#cf6679', // Error: Pink
-      '#ff9800', // Orange accent
-      '#448aff', // Blue
-      '#a1887f'  // Brown (neutral)
+      '#bb86fc',
+      '#03dac6',
+      '#ff9800',
+      '#448aff',
+      '#cf6679'
     ];
 
     function getRandomMaterialColor() {
       return m3Colors[Math.floor(Math.random() * m3Colors.length)];
     }
 
-    // 粒子类
+    window.addEventListener('mousemove', (e) => {
+      mouse.x = e.clientX;
+      mouse.y = e.clientY;
+    });
+
+    canvas.addEventListener('mousedown', createRippleAndParticles);
+
+    canvas.addEventListener('touchstart', (e) => {
+      e.preventDefault();
+      const touch = e.touches[0];
+      mouse.x = touch.clientX;
+      mouse.y = touch.clientY;
+      createRippleAndParticles(e);
+    });
+
+    function createRippleAndParticles(e) {
+      const clientX = e.clientX || mouse.x;
+      const clientY = e.clientY || mouse.y;
+
+      const ripple = document.createElement('div');
+      ripple.classList.add('ripple');
+      ripple.style.left = `${clientX}px`;
+      ripple.style.top = `${clientY}px`;
+      document.body.appendChild(ripple);
+
+      setTimeout(() => {
+        ripple.remove();
+      }, 800);
+
+      const count = 8;
+      for (let i = 0; i < count; i++) {
+        const size = Math.random() * 4 + 1;
+        const color = getRandomMaterialColor();
+        const speedX = (Math.random() - 0.5) * 10;
+        const speedY = (Math.random() - 0.5) * 10;
+
+        particles.push(new Particle(clientX, clientY, size, color, speedX, speedY));
+      }
+    }
+
+    window.addEventListener('resize', () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+      init();
+    });
+
     class Particle {
       constructor(x, y, size, color, speedX, speedY) {
         this.x = x;
@@ -150,7 +132,6 @@
       }
 
       update() {
-        // 鼠标吸引力
         if (mouse.x && mouse.y) {
           const dx = mouse.x - this.x;
           const dy = mouse.y - this.y;
@@ -164,14 +145,12 @@
           }
         }
 
-        // 惯性阻尼
         this.speedX *= 0.95;
         this.speedY *= 0.95;
 
         this.x += this.speedX;
         this.y += this.speedY;
 
-        // 边界反弹
         if (this.x <= 0 || this.x >= canvas.width) this.speedX *= -1;
         if (this.y <= 0 || this.y >= canvas.height) this.speedY *= -1;
       }
@@ -180,36 +159,16 @@
         ctx.beginPath();
         ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
         ctx.fillStyle = this.color;
-        ctx.fill();
 
-        // 添加光晕效果（Material 风格）
         ctx.shadowBlur = 10;
         ctx.shadowColor = this.color;
-        ctx.globalCompositeOperation = 'lighter'; // 发光混合
+        ctx.globalCompositeOperation = 'lighter';
         ctx.fill();
-        ctx.globalCompositeOperation = 'source-over'; // 恢复默认
+        ctx.globalCompositeOperation = 'source-over';
         ctx.closePath();
       }
     }
 
-    // 初始化基础粒子
-    function init() {
-      particles = [];
-      const particleCount = Math.min(80, Math.floor(canvas.width * canvas.height / 12000));
-
-      for (let i = 0; i < particleCount; i++) {
-        const size = Math.random() * 4 + 1;
-        const x = Math.random() * canvas.width;
-        const y = Math.random() * canvas.height;
-        const color = getRandomMaterialColor();
-        const speedX = (Math.random() - 0.5) * 2;
-        const speedY = (Math.random() - 0.5) * 2;
-
-        particles.push(new Particle(x, y, size, color, speedX, speedY));
-      }
-    }
-
-    // 连接靠近的粒子（保持蛛网感但更轻盈）
     function connectParticles() {
       for (let a = 0; a < particles.length; a++) {
         for (let b = a + 1; b < particles.length; b++) {
@@ -230,7 +189,22 @@
       }
     }
 
-    // 动画主循环
+    function init() {
+      particles = [];
+      const particleCount = Math.min(80, Math.floor(canvas.width * canvas.height / 12000));
+
+      for (let i = 0; i < particleCount; i++) {
+        const size = Math.random() * 4 + 1;
+        const x = Math.random() * canvas.width;
+        const y = Math.random() * canvas.height;
+        const color = getRandomMaterialColor();
+        const speedX = (Math.random() - 0.5) * 2;
+        const speedY = (Math.random() - 0.5) * 2;
+
+        particles.push(new Particle(x, y, size, color, speedX, speedY));
+      }
+    }
+
     function animate() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
@@ -244,7 +218,6 @@
       requestAnimationFrame(animate);
     }
 
-    // 启动
     init();
     animate();
   </script>
