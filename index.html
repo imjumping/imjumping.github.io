@@ -1,186 +1,304 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML+RDFa 1.0//EN" "http://www.w3.org/MarkUp/DTD/xhtml-rdfa-1.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" version="XHTML+RDFa 1.0" xml:lang="zh-CN">
+<!doctype html>
+<html lang="zh-CN">
 <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-    <meta name="apple-mobile-web-app-capable" content="yes" />
-    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
-
-    <meta name="Keywords" content="" />
-    <meta name="Description" content="" />
-    <meta name="Generator" content="仿人教电子课本系统 - 纯CSS 3D翻书" />
-
-    <link rel="image_src" href="" />
-    <link rel="apple-touch-icon" href="" />
-    <meta property="og:image" content="" />
-    <meta property="og:title" content="翻书" />
-    <meta property="og:description" content="" />
-
-    <title>翻书</title>
-
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>123</title>
+    <!-- 引入 Roboto 字体 -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;800&display=swap" rel="stylesheet">
     <style>
-        /* === 核心容器 === */
-        body {
+        * {
             margin: 0;
             padding: 0;
-            background-color: #f5f5f5; /* 人教风格背景灰 */
-            overflow: hidden;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%);
             height: 100vh;
             display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
-            perspective: 1000px; /* 关键：创建3D景深，模仿人教书本的立体感 */
+            color: #333;
+            text-align: center;
+            transition: background 1.5s ease;
+            min-height: 200vh; /* 确保有足够高度可滚动 */
+            overflow-x: hidden;
         }
 
-        #book {
-            width: 800px;
-            height: 600px;
-            position: relative;
-            transform-style: preserve-3d; /* 关键：让子元素保持3D空间 */
+        strong {
+            font-size: 4rem;
+            font-weight: 800;
+            margin-bottom: 2rem;
+            color: #333;
+            text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+            font-family: 'Roboto', sans-serif;
+            letter-spacing: -2px;
+            transition: color 0.5s ease;
         }
 
-        /* === 书页结构 === */
-        .paper {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            transform-style: preserve-3d;
-            transition: transform 1.2s ease-in-out;
+        button {
+            font-family: 'Roboto', sans-serif;
+            font-size: 2rem;
+            padding: 1.3rem 3rem;
+            margin: 1rem;
+            border: none;
+            border-radius: 60px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 700;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+            min-width: 120px;
         }
 
-        /* 每一页的正反面 */
-        .page {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            backface-visibility: hidden; /* 关键：背面不可见，避免翻转时看到背面 */
-            background-color: white !important; /* 纯白页面 */
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            /* 用伪元素模拟人教风格的“书脊阴影” */
+        button:nth-child(2) {
+            background-color: #FA2336;
+            color: white;
         }
 
-        .page::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            bottom: 0;
-            width: 1px; /* 书缝宽度 */
-            background: linear-gradient(to bottom, rgba(0,0,0,0.05), rgba(0,0,0,0.1)); /* 极淡的阴影，模拟书缝 */
-            left: 50%;
-            transform: translateX(-50%);
-            z-index: 2;
+        button:nth-child(3) {
+            background-color: #4CAF50;
+            color: white;
         }
 
-        /* 正面页面（显示在前） */
-        .page-front {
-            z-index: 2;
-            transform: translateZ(1px); /* 关键：确保正面在背面之上，避免层叠闪烁 */
+        button:nth-child(4) {
+            background-color: #2196F3;
+            color: white;
         }
 
-        /* 背面页面（翻转后显示） */
-        .page-back {
-            z-index: 1;
-            transform: rotateY(180deg) translateZ(1px); /* 翻转180度，并确保在正面下方 */
+        button:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.25);
         }
 
-        /* === 翻页逻辑 === */
-        /* 默认：第一页在左边，第二页在右边 */
-        .paper:nth-child(1) {
-            left: 0;
-            transform: rotateY(0deg);
-        }
-        .paper:nth-child(2) {
-            left: 0;
-            transform: rotateY(0deg);
+        button:active {
+            transform: translateY(2px);
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
         }
 
-        /* 翻页状态：当 .paper 被添加了 'flipped' 类时，执行翻转 */
-        .paper.flipped {
-            transform: rotateY(-180deg);
+        .result {
+            margin-top: 2.5rem;
+            font-size: 2.5rem;
+            font-weight: bold;
+            min-height: 3.5rem;
+            color: #333;
+            font-family: 'Roboto', sans-serif;
+            animation: fadeIn 0.5s ease-out;
+            transition: color 0.5s ease;
         }
 
-        /* 翻页完成后，下一页变为当前页 */
-        .paper:nth-child(2).flipped ~ .paper {
-            left: 0;
-        }
-
-        /* 防止选中 */
-        #book, .page {
-            -webkit-user-select: none;
-            user-select: none;
-            -webkit-touch-callout: none;
-            -khtml-user-select: none;
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
     </style>
 </head>
 <body>
-    <!-- 书本容器，每张纸包含正反两页 -->
-    <div id="book">
-        <!-- 第一页 -->
-        <div class="paper" data-page="1">
-            <div class="page page-front"></div>
-            <div class="page page-back"></div>
-        </div>
-        <!-- 第二页 -->
-        <div class="paper" data-page="2">
-            <div class="page page-front"></div>
-            <div class="page page-back"></div>
-        </div>
-        <!-- 第三页 -->
-        <div class="paper" data-page="3">
-            <div class="page page-front"></div>
-            <div class="page page-back"></div>
-        </div>
-        <!-- 第四页 -->
-        <div class="paper" data-page="4">
-            <div class="page page-front"></div>
-            <div class="page page-back"></div>
-        </div>
-    </div>
+    <strong>请计算1+1</strong>
+    <button>2</button>
+    <button>3</button>
+    <button>4</button>
+    <div class="result"></div>
 
-    <!-- 无需引入任何外部JS库，仅用原生JS -->
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const book = document.getElementById('book');
-            const papers = Array.from(book.querySelectorAll('.paper'));
-            let currentPage = 0;
-            let isAnimating = false;
+        const buttons = document.querySelectorAll('button');
+        const resultDisplay = document.querySelector('.result');
+        const body = document.body;
+        const strongElement = document.querySelector('strong');
+        let buttonCount = 4; // 初始按钮数量
 
-            // 点击任意位置翻页
-            book.addEventListener('click', function() {
-                if (isAnimating || currentPage >= papers.length - 1) return;
+        // 颜色数组 - 更丰富的色彩选择
+        const colorPalettes = [
+            ['#ff9a9e', '#fecfef'],
+            ['#a8e6cf', '#dcedc1'],
+            ['#ffd3a5', '#ff9e9d'],
+            ['#b19cd9', '#9c88ff'],
+            ['#ffecd2', '#fcb69f'],
+            ['#a0c4ff', '#92bce8'],
+            ['#f8c9e5', '#f3b6e0'],
+            ['#e0e7ff', '#d3e8ff'],
+            ['#ffdfb3', '#ffc6c6'],
+            ['#a6e3e9', '#f0f0f0']
+        ];
 
-                isAnimating = true;
-                papers[currentPage].classList.add('flipped');
+        let currentPaletteIndex = 0;
+        let isScrolling = false;
+        let lastScrollTop = 0;
 
-                // 延迟执行，模拟动画结束
-                setTimeout(() => {
-                    // 更新当前页
-                    currentPage++;
-                    isAnimating = false;
-                }, 1200); // 与CSS动画时间一致
+        // 初始化背景
+        updateBackground();
+
+        // 为现有按钮添加点击事件
+        buttons.forEach(button => {
+            button.addEventListener('click', () => {
+                resultDisplay.textContent = '';
+                resultDisplay.style.color = '';
+
+                if (button.textContent === '3') {
+                    resultDisplay.textContent = '你答对了！';
+                    resultDisplay.style.color = '#4CAF50';
+                    button.style.transform = 'scale(1.15)';
+                    setTimeout(() => button.style.transform = '', 300);
+                } else {
+                    resultDisplay.textContent = '你打错了';
+                    resultDisplay.style.color = '#f44336';
+                    button.style.transform = 'scale(1.15)';
+                    setTimeout(() => button.style.transform = '', 300);
+                }
+
+                // 点击按钮时改变背景颜色
+                changeBackground();
             });
-
-            // 确保第一页初始状态正确
-            papers[0].querySelector('.page-front').classList.add('page-front');
-            papers[0].querySelector('.page-back').classList.add('page-back');
         });
-    </script>
 
-    <!-- 保留人教埋点结构 -->
-    <script>
-        var sendvisitinfo = function(type, page) {};
-        window.onload = function() {
-            if (typeof pepPoints !== 'undefined' && pepPoints.loader && pepPoints.loader.dataReport) {
-                pepPoints.loader.dataReport({
-                    product_id: '',
-                    company: ''
+        // 监听空格键点击事件
+        document.addEventListener('keydown', (event) => {
+            if (event.code === 'Space' || event.key === ' ') {
+                event.preventDefault(); // 防止页面滚动
+
+                // 创建新按钮
+                const newButton = document.createElement('button');
+                newButton.textContent = buttonCount + 1;
+                newButton.style.backgroundColor = '#2196F3';
+                newButton.style.color = 'white';
+                newButton.style.fontSize = '2rem';
+                newButton.style.padding = '1.3rem 3rem';
+                newButton.style.margin = '1rem';
+                newButton.style.border = 'none';
+                newButton.style.borderRadius = '60px';
+                newButton.style.cursor = 'pointer';
+                newButton.style.fontWeight = '700';
+                newButton.style.boxShadow = '0 6px 20px rgba(0, 0, 0, 0.15)';
+                newButton.style.minWidth = '120px';
+                newButton.style.fontFamily = '\'Roboto\', sans-serif';
+
+                newButton.addEventListener('click', () => {
+                    resultDisplay.textContent = '';
+                    resultDisplay.style.color = '';
+                    resultDisplay.textContent = '你打错了';
+                    resultDisplay.style.color = '#f44336';
+                    newButton.style.transform = 'scale(1.15)';
+                    setTimeout(() => newButton.style.transform = '', 300);
+                    changeBackground();
                 });
+
+                const lastButton = document.querySelector('button:last-child');
+                document.body.insertBefore(newButton, resultDisplay);
+                buttonCount++;
+
+                changeBackground(); // 空格键也切换背景
+            }
+        });
+
+        // 自动改变背景颜色（每5秒一次）
+        setInterval(changeBackground, 5000);
+
+        // 更新背景函数（使用当前调色板）
+        function updateBackground() {
+            const currentPalette = colorPalettes[currentPaletteIndex];
+            body.style.background = `linear-gradient(135deg, ${currentPalette[0]} 0%, ${currentPalette[1]} 100%)`;
+
+            // 根据背景调整文字颜色
+            const bgColor1 = hexToRgb(currentPalette[0]);
+            const bgColor2 = hexToRgb(currentPalette[1]);
+            const avgBrightness = (getBrightness(bgColor1) + getBrightness(bgColor2)) / 2;
+
+            if (avgBrightness > 180) {
+                strongElement.style.color = '#333';
+                resultDisplay.style.color = '#333';
+            } else {
+                strongElement.style.color = '#fff';
+                resultDisplay.style.color = '#fff';
             }
         }
+
+        // 改变背景颜色（跳转到下一个调色板）
+        function changeBackground() {
+            currentPaletteIndex = (currentPaletteIndex + 1) % colorPalettes.length;
+            updateBackground();
+        }
+
+        // 将十六进制颜色转换为RGB
+        function hexToRgb(hex) {
+            hex = hex.replace('#', '');
+            if (hex.length === 3) {
+                hex = hex.split('').map(char => char + char).join('');
+            }
+            const bigint = parseInt(hex, 16);
+            return {
+                r: (bigint >> 16) & 255,
+                g: (bigint >> 8) & 255,
+                b: bigint & 255
+            };
+        }
+
+        // 计算颜色的亮度
+        function getBrightness(color) {
+            return (color.r * 299 + color.g * 587 + color.b * 114) / 1000;
+        }
+
+        // ================== 新增：滚动时动态改变背景颜色 ==================
+        // 线性插值颜色
+        function interpolateColor(color1, color2, factor) {
+            const r = Math.round(color1.r + (color2.r - color1.r) * factor);
+            const g = Math.round(color1.g + (color2.g - color1.g) * factor);
+            const b = Math.round(color1.b + (color2.b - color1.b) * factor);
+            return `rgb(${r}, ${g}, ${b})`;
+        }
+
+        // 滚动时动态更新背景
+        function updateBackgroundOnScroll() {
+            const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+            const scrollHeight = document.documentElement.scrollHeight - window.innerHeight;
+            const scrollProgress = Math.min(Math.max(scrollTop / scrollHeight, 0), 1); // 0~1
+
+            // 获取当前和下一个调色板
+            const currentPalette = colorPalettes[currentPaletteIndex];
+            const nextPaletteIndex = (currentPaletteIndex + 1) % colorPalettes.length;
+            const nextPalette = colorPalettes[nextPaletteIndex];
+
+            // 对每个颜色通道进行插值
+            const startTop = hexToRgb(currentPalette[0]);
+            const startBottom = hexToRgb(currentPalette[1]);
+            const endTop = hexToRgb(nextPalette[0]);
+            const endBottom = hexToRgb(nextPalette[1]);
+
+            const topColor = interpolateColor(startTop, endTop, scrollProgress);
+            const bottomColor = interpolateColor(startBottom, endBottom, scrollProgress);
+
+            // 设置渐变背景
+            body.style.background = `linear-gradient(135deg, ${topColor} 0%, ${bottomColor} 100%)`;
+
+            // 根据插值后的平均亮度调整文字颜色
+            const avgTop = getBrightness(hexToRgb(topColor));
+            const avgBottom = getBrightness(hexToRgb(bottomColor));
+            const avgBrightness = (avgTop + avgBottom) / 2;
+
+            if (avgBrightness > 180) {
+                strongElement.style.color = '#333';
+                resultDisplay.style.color = '#333';
+            } else {
+                strongElement.style.color = '#fff';
+                resultDisplay.style.color = '#fff';
+            }
+        }
+
+        // 滚动节流函数（优化性能）
+        function throttle(func, limit) {
+            let inThrottle;
+            return function (...args) {
+                if (!inThrottle) {
+                    func.apply(this, args);
+                    inThrottle = true;
+                    setTimeout(() => inThrottle = false, limit);
+                }
+            };
+        }
+
+        // 监听滚动事件（节流优化，约60fps）
+        window.addEventListener('scroll', throttle(updateBackgroundOnScroll, 16));
     </script>
 </body>
 </html>
