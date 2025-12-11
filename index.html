@@ -93,9 +93,33 @@
             from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
         }
+
+        /* 新增顶部链接样式 */
+        .top-link {
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 1.2rem;
+            font-weight: 500;
+            color: #333;
+            background: rgba(255, 255, 255, 0.8);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            text-decoration: none;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            z-index: 10;
+        }
+
+        .top-link:hover {
+            background: rgba(255, 255, 255, 1);
+        }
     </style>
 </head>
 <body>
+    <!-- 顶部链接 -->
+    <a href="https://wwbwx.lanzout.com/b0139d031c" class="top-link" target="_blank">下载链接（密码:1145）</a>
+
     <strong>请计算1+1</strong>
     <button>2</button>
     <button>3</button>
