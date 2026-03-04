@@ -1192,7 +1192,7 @@
             { id: 'forest_keeper', icon: '🏆', title: '森林守护者', description: '种下10棵大植物', condition: (game) => game.trees >= 10 },
             { id: 'perfect_silence', icon: '🔇', title: '完美安静', description: '连续保持安静1分钟', condition: (game) => game.longestQuietTime >= 60 },
             { id: 'daily_goal', icon: '✅', title: '每日目标', description: '一天内种下5棵大植物', condition: (game) => game.todayTrees >= 5 },
-            { id: 'reading_master', icon: '📚', title: '早读大师', description: '在早读模式下种下3棵大植物', condition: (game) => game.readingTrees >= 3 },
+            { id: 'reading_master', icon: '📚', title: '声音还彳亍', description: '在早读模式下种下3棵大植物', condition: (game) => game.readingTrees >= 3 },
             { id: 'mode_changer', icon: '🔄', title: '模式切换者', description: '在两种模式下都种下植物', condition: (game) => game.bothModesUsed }
         ];
 
@@ -1326,8 +1326,8 @@
         function requestMicrophone() {
             navigator.mediaDevices.getUserMedia({ audio: true, video: false })
                 .then(function() {
-                    showNotification('🎤 麦克风权限已获取');
-                    micBtn.textContent = '🎤 麦克风已授权';
+                    showNotification('拴Q');
+                    micBtn.textContent = '开始吧！→';
                     micBtn.disabled = true;
                     startBtn.disabled = false;
                     stopBtn.disabled = false;
