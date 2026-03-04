@@ -9,7 +9,6 @@
     <meta name="author" content="imjumping">
 
     <style>
-        /* 基础样式 ———— 完全保留原样，未改动任何视觉 */
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             text-align: center;
@@ -17,7 +16,8 @@
             transition: all 0.5s ease;
             margin: 0;
             min-height: 100vh;
-            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            background-color: #000000;
+            
         }
 
         .forest-bg {
@@ -962,9 +962,9 @@
         <p class="subtitle">当教室安静时，植物会自动生长。</p>
 
         <div class="scene-selector">
-            <button class="scene-btn active" data-scene="forest">🌲 森林场景</button>
-            <button class="scene-btn" data-scene="space">🚀 太空场景</button>
-            <button class="scene-btn" data-scene="ocean">🌊 海洋场景</button>
+            <button class="scene-btn active" data-scene="forest">🌲 传统</button>
+            <button class="scene-btn" data-scene="space">🚀 宇宙</button>
+            <button class="scene-btn" data-scene="ocean">🌊 海</button>
         </div>
 
         <div class="mode-buttons">
@@ -973,11 +973,11 @@
         </div>
 
         <div class="controls">
-            <button id="micBtn">🎤 请求麦克风权限</button>
+            <button id="micBtn">获取麦克风！</button>
             <button id="startBtn" disabled>启动！</button>
-            <button id="stopBtn" disabled>不启动！</button>
-            <button id="resetBtn">清除成绩</button>
-            <button class="panel-toggle" id="settingsToggle">⚙️ 设置</button>
+            <button id="stopBtn" disabled>停下！</button>
+            <button id="resetBtn">清除战绩</button>
+            <button class="panel-toggle" id="settingsToggle">⚙️ 设置(看下面)</button>
             <button class="panel-toggle" id="achievementsToggle">🏆 成就</button>
         </div>
 
