@@ -3,8 +3,8 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>都给我安静！</title>
-    <meta name="description" content="持续安静一段时间种一棵植物 多棵植物会长成更大的植物">
+    <title>安静种树，但早读也种树！</title>
+    <meta name="description" content="持续安静一段时间种一棵植物 多棵植物会替换成更大的植物">
     <meta name="keywords" content="课堂安静种树游戏, 种树游戏, 课堂游戏">
     <meta name="author" content="imjumping">
 
@@ -17,11 +17,13 @@
             margin: 0;
             min-height: 100vh;
             background-color: #000000;
-            
         }
 
         .forest-bg {
-            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+            background-image: url("https://uapis.cn/api/v1/random/image?category=furry");
+            background-position: center;
+            background-size: cover; 
+            transition: all 0.5 ease;
         }
         .space-bg {
             background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
@@ -35,7 +37,7 @@
         .container {
             max-width: 900px;
             margin: 0 auto;
-            background: rgba(255, 255, 255, 0.95);
+            background: rgba(255, 255, 255, 0.0);
             padding: 30px;
             border-radius: 20px;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
@@ -44,7 +46,7 @@
         }
 
         .space-bg .container, .ocean-bg .container {
-            background: rgba(0, 0, 0, 0.85);
+            background: rgba(0, 0, 0, 0);
             border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
@@ -864,7 +866,7 @@
             width: 100%;
             height: 200px;
             margin: 30px 0;
-            padding: 20px;
+            padding: 20px 0 30px 0;
             background: rgba(255, 255, 255, 0.0);
             border-radius: 15px;
             position: relative;
@@ -974,11 +976,11 @@
 
         <div class="controls">
             <button id="micBtn">获取麦克风！</button>
-            <button id="startBtn" disabled>启动！</button>
-            <button id="stopBtn" disabled>停下！</button>
+            <button id="startBtn" disabled>启动游戏</button>
+            <button id="stopBtn" disabled>停止游戏</button>
             <button id="resetBtn">清除战绩</button>
-            <button class="panel-toggle" id="settingsToggle">⚙️ 设置(看下面)</button>
-            <button class="panel-toggle" id="achievementsToggle">🏆 成就</button>
+            <button class="panel-toggle" id="settingsToggle">⚙️ 设置(滑到最下面)</button>
+            <button class="panel-toggle" id="achievementsToggle">成就</button>
         </div>
 
         <div class="noise-level-container">
@@ -1030,7 +1032,7 @@
                         <span class="setting-value" id="thresholdValue">30</span>
                     </div>
                     <input type="range" id="threshold" min="0" max="100" value="30">
-                    <div style="font-size: 12px; color: #666; margin-top: 8px;">低于此值视为安静（安静模式）</div>
+                    <div style="font-size: 12px; color: #666; margin-top: 8px;">低于此值视为安静</div>
                 </div>
 
                 <div class="setting-item">
@@ -1039,7 +1041,7 @@
                         <span class="setting-value" id="readingThresholdValue">50</span>
                     </div>
                     <input type="range" id="readingThreshold" min="0" max="100" value="50">
-                    <div style="font-size: 12px; color: #666; margin-top: 8px;">高于此值开始加分（低于阈值直接归零）</div>
+                    <div style="font-size: 12px; color: #666; margin-top: 8px;">高于此值开始加分</div>
                 </div>
 
                 <div class="setting-item">
@@ -1643,11 +1645,11 @@
         // 更新模式UI
         function updateModeUI() {
             if (currentMode === 'quiet') {
-                modeText.textContent = '(安静模式：低于阈值加分)';
+                modeText.textContent = '(低于阈值加分，但是不要大喊！！！)';
                 modeText.style.color = '#4CAF50';
                 noiseThreshold.style.left = settings.threshold + '%';
             } else {
-                modeText.textContent = '(早读模式：高于阈值加分，低于阈值直接归零)';
+                modeText.textContent = '(高于阈值加分，但是不要停下！！！)';
                 modeText.style.color = '#FF9800';
                 noiseThreshold.style.left = settings.readingThreshold + '%';
             }
