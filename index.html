@@ -352,9 +352,10 @@
         .noise-level-container {
             margin: 25px 0;
             padding: 20px;
-            background: rgba(255, 255, 255, 0.8);
+            background: rgba(255, 255, 255, 0);
             border-radius: 15px;
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            backdrop-filter: blur(20px);
         }
 
         .space-bg .noise-level-container,
@@ -1087,6 +1088,14 @@
         <div class="history-chart" id="historyChart">
             <h3 style="margin-top: 0;">历史记录 (最近7天)</h3>
         </div>
+        <div class="setting-item">
+            <div class="setting-label">
+                <span>背景模糊度</span>
+                <span class="setting-value" id="blurValue">10</span>
+            </div>
+            <input type="range" id="blurSlider" min="0" max="20" value="10" step="0.5">
+            <div style="font-size: 12px; color: #666; margin-top: 8px;">数值越大背景越模糊</div>
+        </div>
     </div>
 
     <script>
@@ -1117,8 +1126,8 @@
             readingThreshold: 50,
             saplingTime: 5,
             saplingsPerTree: 10,
-            enableSounds: true
-            // decayRate 已移除
+            enableSounds: true,
+            blur: 10
         };
 
         // 场景配置
@@ -1199,6 +1208,8 @@
         ];
 
         // DOM元素
+        const blurSlider = document.getElementById('blurSlider');
+        const blurValue = document.getElementById('blurValue');
         const micBtn = document.getElementById('micBtn');
         const startBtn = document.getElementById('startBtn');
         const stopBtn = document.getElementById('stopBtn');
@@ -1247,6 +1258,7 @@
         loadGameData();
         loadSettings();
         renderScene();
+        applyBlur();
         renderHistoryChart();
         setupAchievements();
         createBackgroundStars();
@@ -1297,7 +1309,12 @@
             updateThresholdIndicator();
             saveSettings();
         });
-
+        blurSlider.addEventListener('input', function() {
+            settings.blur = parseFloat(this.value);
+            blurValue.textContent = settings.blur.toFixed(1);
+            applyBlur();
+            saveSettings();
+        });
         readingThresholdSlider.addEventListener('input', function() {
             settings.readingThreshold = parseInt(this.value);
             readingThresholdValue.textContent = settings.readingThreshold;
@@ -2087,7 +2104,7 @@
                 settings.saplingTime = loadedSettings.saplingTime || 5;
                 settings.saplingsPerTree = loadedSettings.saplingsPerTree || 10;
                 settings.enableSounds = loadedSettings.enableSounds !== false;
-                // decayRate 已忽略
+                settings.blur = loadedSettings.blur !== undefined ? loadedSettings.blur : 10;
             }
 
             // 更新UI
@@ -2100,6 +2117,8 @@
             saplingsPerTreeInput.value = settings.saplingsPerTree;
             saplingsPerTreeValue.textContent = settings.saplingsPerTree;
             enableSoundsInput.checked = settings.enableSounds;
+            blurSlider.value = settings.blur;
+            blurValue.textContent = settings.blur.toFixed(1);
             // 缓降相关DOM已不存在
         }
 
@@ -2107,7 +2126,17 @@
         function saveSettings() {
             localStorage.setItem('forestGameSettings', JSON.stringify(settings));
         }
+        // 应用模糊效果
+        function applyBlur() {
+            const container = document.querySelector('.container');
+            if (container) {
+                container.style.backdropFilter = `blur(${settings.blur}px)`;
+            }
+        }
 
+        // 在 loadSettings 函数末尾调用 applyBlur()
+        // 找到 loadSettings 函数的最后，添加：
+        applyBlur();
         // 渲染历史图表
         function renderHistoryChart() {
             historyChart.innerHTML = '<h3 style="margin-top: 0;">历史记录 (最近7天)</h3>';
