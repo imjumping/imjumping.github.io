@@ -1,1846 +1,1735 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="zh-CN">
-<head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>安静种树，但早读也种树！</title>
-    <meta name="description" content="持续安静一段时间种一棵植物 多棵植物会替换成更大的植物">
-    <meta name="keywords" content="课堂安静种树游戏, 种树游戏, 课堂游戏">
-    <meta name="author" content="imjumping">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>安静种树，但早读也种树</title>
+    <meta
+      name="description"
+      content="持续安静/早读一段时间种一棵植物 多棵植物会长成更大的植物"
+    />
+    <meta name="keywords" content="课堂安静种树游戏, 种树游戏, 课堂游戏" />
+    <meta name="author" content="imjumping" />
 
     <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            -webkit-tap-highlight-color: transparent;
-        }
+      * {
+        -webkit-tap-highlight-color: transparent;
+        box-sizing: border-box;
+        user-select: none;
+      }
 
-        :root {
-            /* 默认主题色 (森林) */
-            --primary: #4CAF50;
-            --primary-dark: #2e8b57;
-            --primary-gradient: linear-gradient(145deg, #4CAF50, #45a049);
-            --primary-soft: rgba(76, 175, 80, 0.2);
-            --progress-start: #4CAF50;
-            --progress-end: #8BC34A;
-            --text-light: #ffffff;
-            --text-dark: #333333;
-            --text-muted: #666666;
-            --bg-overlay: rgba(255, 255, 255, 0.5);
-            --bg-panel: rgba(255, 255, 255, 0.9);
-            --border-light: rgba(255, 255, 255, 0.2);
-            --shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            --blur-amount: 10px;
-        }
+      :root {
+        --transition: all 0.2s ease;
+        --shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+        --shadow-hover: 0 4px 12px rgba(0, 0, 0, 0.25);
+        --radius-sm: 12px;
+        --radius-md: 16px;
+        --radius-lg: 24px;
+        --blur-amount: 10px;
+      }
 
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            text-align: center;
-            padding: 20px;
-            transition: var(--transition);
-            margin: 0;
-            min-height: 100vh;
-            background-color: #000000;
-            background-image: url("https://uapis.cn/api/v1/random/image?category=furry");
-            background-position: center;
-            background-size: cover;
-            background-attachment: fixed;
-        }
+      body {
+        font-family:
+          system-ui,
+          -apple-system,
+          "Segoe UI",
+          Roboto,
+          sans-serif;
+        text-align: center;
+        padding: 16px;
+        margin: 0;
+        min-height: 100vh;
+        transition: background-color 0.3s;
+      }
 
-        body.space {
-            background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
-            --primary: #4fc3f7;
-            --primary-dark: #2979ff;
-            --primary-gradient: linear-gradient(145deg, #4fc3f7, #2979ff);
-            --primary-soft: rgba(79, 195, 247, 0.2);
-            --progress-start: #4fc3f7;
-            --progress-end: #2979ff;
-            --text-muted: #ccc;
-            --bg-overlay: rgba(0, 0, 0, 0.3);
-            --bg-panel: rgba(0, 0, 0, 0.4);
-            --border-light: rgba(255, 255, 255, 0.1);
-        }
+      /* 场景背景 - 保持URL背景 */
+      .forest-bg {
+        background: url(https://t.alcy.cc/fj/);
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+      }
 
-        body.ocean {
-            background: linear-gradient(135deg, #1a6f8b 0%, #1e3c72 50%, #2255af 100%);
-            --primary: #4dd0e1;
-            --primary-dark: #00acc1;
-            --primary-gradient: linear-gradient(145deg, #4dd0e1, #00acc1);
-            --primary-soft: rgba(77, 208, 225, 0.2);
-            --progress-start: #4dd0e1;
-            --progress-end: #00acc1;
-            --text-muted: #ccc;
-            --bg-overlay: rgba(0, 0, 0, 0.3);
-            --bg-panel: rgba(0, 0, 0, 0.4);
-            --border-light: rgba(255, 255, 255, 0.1);
-        }
+      /* 滑块 */
+      input[type="range"] {
+        appearance: none;
+        width: 180px;
+        height: 20px;
+        background: linear-gradient(90deg, #4caf50, #8bc34a);
+        border-radius: 20px;
+        outline: none;
+      }
 
+      input[type="range"]::-webkit-slider-thumb {
+        width: 24px;
+        height: 24px;
+        background: white;
+        border-radius: 50%;
+        cursor: pointer;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+        transition: all 0.2s ease;
+        margin-top: -2px;
+        border: 2px solid #4caf50;
+      }
+
+      input[type="range"]::-webkit-slider-thumb:active {
+        transform: scale(1.2);
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+      }
+
+      /* 输入框 */
+      input[type="number"] {
+        width: 80px;
+        padding: 8px 12px;
+        font-size: 14px;
+        border: 2px solid #e0e0e0;
+        border-radius: 30px;
+        outline: none;
+        transition: all 0.2s ease;
+        text-align: center;
+      }
+
+      input[type="number"]:focus {
+        border-color: #4caf50;
+        box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.15);
+      }
+
+      /* 主容器 */
+      .container {
+        max-width: 800px;
+        margin: 0 auto;
+        background-color: rgba(255, 255, 255, 0.2);
+        padding: 20px;
+        border-radius: var(--radius-lg);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+        backdrop-filter: blur(var(--blur-amount));
+        border: 1px solid rgba(255, 255, 255, 0.3);
+      }
+
+      h1 {
+        color: #2e8b57;
+        margin: 0 0 8px 0;
+        font-size: 28px;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+
+      /* 场景容器 */
+      .scene-container {
+        min-height: 300px;
+        border-radius: var(--radius-lg);
+        margin: 24px 0;
+        padding: 24px;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        align-items: flex-end;
+        gap: 12px;
+        position: relative;
+        overflow: hidden;
+        box-shadow:
+          inset 0 2px 8px rgba(0, 0, 0, 0.1),
+          0 4px 12px rgba(0, 0, 0, 0.15);
+        border: 2px solid rgba(255, 255, 255, 0.7);
+      }
+
+      .forest-scene {
+        background-color: rgba(245, 245, 220, 0.9);
+      }
+
+      /* 植物 */
+      .tree {
+        font-size: 32px;
+        margin: 6px;
+        transition: all 0.2s ease;
+        position: relative;
+        z-index: 2;
+        filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.2));
+      }
+
+
+      .sapling {
+        font-size: 24px;
+      }
+
+      /* 模式选择器 */
+      .mode-selector {
+        margin: 16px 0;
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+      }
+
+      .mode-btn {
+        padding: 8px 16px;
+        border: 2px solid transparent;
+        background: rgba(255, 255, 255, 0.2);
+        min-width: auto;
+        color: white;
+        font-weight: 500;
+      }
+
+      .mode-btn.active {
+        border-color: #4caf50;
+        background: rgba(76, 175, 80, 0.3);
+      }
+
+      .mode-btn[data-mode="quiet"].active {
+        border-color: #4caf50;
+        background: rgba(76, 175, 80, 0.3);
+      }
+
+      .mode-btn[data-mode="reading"].active {
+        border-color: #ff9800;
+        background: rgba(255, 152, 0, 0.3);
+      }
+
+      .mode-indicator {
+        display: inline-block;
+        padding: 2px 8px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: bold;
+        margin-left: 8px;
+      }
+
+      .mode-indicator.quiet {
+        background: #4caf50;
+        color: white;
+      }
+
+      .mode-indicator.reading {
+        background: #ff9800;
+        color: white;
+      }
+
+      /* 按钮组 */
+      .controls {
+        margin: 16px 0;
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+
+      /* 按钮 - 统一使用绿色系，去掉渐变动画 */
+      button {
+        background: #4caf50;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        font-size: 15px;
+        font-weight: 500;
+        border-radius: 40px;
+        cursor: pointer;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+        transition: all 0.15s ease;
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        min-width: 100px;
+      }
+
+
+      button:active {
+        transform: translateY(1px) scale(0.98);
+        box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+      }
+
+      button:disabled {
+        background: #9e9e9e;
+        cursor: not-allowed;
+        transform: none;
+        box-shadow: none;
+        filter: none;
+      }
+
+      /* 进度条 */
+      .progress-container {
+        width: 100%;
+        background-color: rgba(0, 0, 0, 0.15);
+        border-radius: 30px;
+        margin: 20px 0;
+        height: 24px;
+        box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+        position: relative;
+      }
+
+      .progress-bar {
+        height: 100%;
+        background-color: #4caf50;
+        border-radius: 30px;
+        width: 0%;
+        transition: width 0.2s linear;
+        box-shadow: 0 2px 8px rgba(76, 175, 80, 0.4);
+      }
+
+      .progress-text {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        font-weight: bold;
+        color: white;
+        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+        font-size: 14px;
+      }
+
+      /* 统计卡片 */
+      .stats {
+        display: flex;
+        justify-content: space-around;
+        margin: 20px 0;
+        flex-wrap: wrap;
+        gap: 12px;
+      }
+
+      .stat-box {
+        background: rgba(255, 255, 255, 0.9);
+        padding: 14px 18px;
+        border-radius: 30px;
+        min-width: 160px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        border: 1px solid rgba(255, 255, 255, 0.8);
+        transition: all 0.5s cubic-bezier(0.25, 1.5, 0.45, 1.1);
+      }
+
+      .stat-box:active {
+        transform: scale(0.9);
+        box-shadow: 0 6px 16px rgba(0, 0, 0, 0.25);
+      }
+
+      .stat-box div:first-child {
+        font-size: 14px;
+        font-weight: 500;
+        opacity: 0.9;
+        margin-bottom: 6px;
+      }
+
+      .stat-box div:last-child {
+        font-size: 28px;
+        font-weight: 700;
+        line-height: 1.2;
+      }
+
+      /* 特效元素 */
+      .leaf {
+        position: absolute;
+        font-size: 14px;
+        animation: floatLeaf 2.5s ease-out forwards;
+        pointer-events: none;
+        z-index: 1;
+      }
+
+      @keyframes floatLeaf {
+        0% {
+          transform: translateY(0) rotate(0deg);
+          opacity: 1;
+        }
+        100% {
+          transform: translateY(-40px) rotate(180deg);
+          opacity: 0;
+        }
+      }
+
+      /* 历史图表 */
+      .history-chart {
+        width: 100%;
+        height: 460px;
+        margin: 20px 0;
+        background: rgba(0, 0, 0, 0.1);
+        border-radius: var(--radius-md);
+        position: relative;
+        box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.1);
+        padding: 10px;
+      }
+
+      .chart-bar {
+        position: absolute;
+        bottom: 25px;
+        width: 30px;
+        background: #4caf50;
+        border-radius: 8px 8px 4px 4px;
+        transition: height 0.2s ease;
+        box-shadow: 0 -2px 8px rgba(76, 175, 80, 0.3);
+      }
+
+      .chart-bar::after {
+        content: attr(data-value);
+        position: absolute;
+        top: -20px;
+        left: 50%;
+        transform: translateX(-50%);
+        font-size: 11px;
+        color: white;
+        background: rgba(0, 0, 0, 0.5);
+        padding: 2px 6px;
+        border-radius: 12px;
+        white-space: nowrap;
+      }
+
+      /* 噪音水平 */
+      .noise-level-container {
+        margin: 16px 0;
+        padding: 16px;
+        background: rgba(0, 0, 0, 0.1);
+        border-radius: 40px;
+      }
+
+      .noise-level {
+        font-size: 18px;
+        font-weight: 500;
+        display: inline-block;
+        padding: 8px 32px;
+        border-radius: 40px;
+      }
+
+      .mode-text {
+        font-weight: bold;
+        margin-left: 10px;
+      }
+
+      .mode-text.quiet {
+        color: #4caf50;
+      }
+
+      .mode-text.reading {
+        color: #ff9800;
+      }
+
+      /* 噪音可视化 */
+      .noise-visualizer {
+        width: 100%;
+        height: 40px;
+        background: rgba(0, 0, 0, 0.2);
+        border-radius: 20px;
+        margin: 15px 0;
+        overflow: hidden;
+        position: relative;
+      }
+
+      .noise-indicator {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        width: 4px;
+        background: white;
+        box-shadow: 0 0 10px white;
+        transform: translateX(-50%);
+        transition: left 0.1s ease;
+      }
+
+      .noise-threshold {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        width: 2px;
+        background: rgba(255, 255, 255, 0.8);
+        box-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
+      }
+
+      .settings-panel {
+        margin: 20px 0;
+        padding: 20px;
+        background: rgba(255, 255, 255, 0.80);
+        border: 1px solid rgba(255, 255, 255, 0.4);
+        border-radius: var(--radius-lg);
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+        display: none;
+      }
+
+      .settings-panel h3 {
+        margin: 0 0 16px 0;
+        color: #2e8b57;
+        font-size: 20px;
+        border-bottom: 2px solid rgba(76, 175, 80, 0.3);
+        padding-bottom: 8px;
+      }
+
+      .settings-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 15px;
+      }
+
+      .setting-item {
+        background: rgba(255, 255, 255, 0.1);
+        padding: 15px;
+        border-radius: 20px;
+      }
+
+      .setting-label {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 10px;
+        font-weight: 500;
+        color: #2e8b57;
+      }
+
+      .setting-value {
+        font-weight: 600;
+        color: #4caf50;
+        background: rgba(255, 255, 255, 0.2);
+        padding: 4px 10px;
+        border-radius: 30px;
+      }
+
+      .settings-row {
+        margin: 12px 0;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 6px 10px;
+        border-radius: 40px;
+        background: rgba(255, 255, 255, 0.1);
+      }
+
+      .settings-row label {
+        font-weight: 500;
+        color: #2e8b57;
+        font-size: 15px;
+      }
+
+      .settings-row span {
+        min-width: 40px;
+        text-align: right;
+        font-weight: 600;
+        color: #4caf50;
+        background: rgba(255, 255, 255, 0.2);
+        padding: 4px 10px;
+        border-radius: 30px;
+      }
+
+      /* 复选框美化 */
+      input[type="checkbox"] {
+        width: 18px;
+        height: 18px;
+        accent-color: #4caf50;
+        cursor: pointer;
+      }
+
+      /* 开关 */
+      .switch {
+        position: relative;
+        display: inline-block;
+        width: 50px;
+        height: 24px;
+      }
+
+      .switch input {
+        opacity: 0;
+        width: 0;
+        height: 0;
+      }
+
+      .slider {
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: #ccc;
+        transition: 0.2s;
+        border-radius: 24px;
+      }
+
+      .slider:before {
+        position: absolute;
+        content: "";
+        height: 20px;
+        width: 20px;
+        left: 2px;
+        bottom: 2px;
+        background-color: white;
+        transition: 0.2s;
+        border-radius: 50%;
+      }
+
+      input:checked + .slider {
+        background-color: #4caf50;
+      }
+
+      input:checked + .slider:before {
+        transform: translateX(26px);
+      }
+
+      /* 成就面板 */
+      .achievements-panel {
+        margin: 20px 0;
+        padding: 20px;
+        background: rgba(255, 255, 255, 0.25);
+        border-radius: var(--radius-lg);
+        border: 1px solid rgba(255, 255, 255, 0.4);
+        display: none;
+      }
+
+      .achievement {
+        display: flex;
+        align-items: center;
+        margin: 10px 0;
+        padding: 12px;
+        background: rgba(255, 255, 255, 0.2);
+        border-radius: 40px;
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        transition: all 0.15s ease;
+      }
+
+      .achievement:hover {
+        background: rgba(255, 255, 255, 0.3);
+        transform: translateX(5px);
+      }
+
+      .achievement.unlocked {
+        background: rgba(76, 175, 80, 0.2);
+        border-color: #4caf50;
+      }
+
+      .achievement.locked {
+        opacity: 0.6;
+      }
+
+      .achievement-icon {
+        font-size: 28px;
+        margin-right: 15px;
+        min-width: 40px;
+        text-align: center;
+      }
+
+      .achievement-info {
+        flex-grow: 1;
+        text-align: left;
+      }
+
+      .achievement-title {
+        font-weight: 600;
+        margin-bottom: 4px;
+        font-size: 16px;
+      }
+
+      /* 场景选择器 - 隐藏，只保留一个按钮 */
+      .scene-selector {
+        margin: 16px 0;
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+      }
+
+      .scene-btn {
+        padding: 8px 16px;
+        border: 2px solid transparent;
+        background: rgba(255, 255, 255, 0.2);
+        min-width: auto;
+      }
+
+      .scene-btn.active {
+        border-color: #4caf50;
+        background: rgba(76, 175, 80, 0.3);
+      }
+
+      /* 面板切换按钮 */
+      .panel-toggle {
+        margin: 5px;
+      }
+
+      /* 面板内容动画 - 简化版 */
+      .panel-content {
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.2s ease-out;
+      }
+
+      .panel-content.open {
+        max-height: 500px;
+      }
+
+      /* 通知 */
+      .notification {
+        position: fixed;
+        top: 20px;
+        left: 50%;
+        transform: translateX(-50%) scale(0.5);
+        background: #4caf50;
+        color: white;
+        padding: 12px 28px;
+        border-radius: 50px;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+        z-index: 1000;
+        transition: all 0.2s ease;
+        opacity: 0;
+        font-weight: 500;
+        border: 1px solid rgba(255, 255, 255, 0.3);
+      }
+
+      .notification.show {
+        transform: translateX(-50%) scale(1);
+        opacity: 1;
+      }
+
+      /* 背景元素容器 - 保留但隐藏 */
+      .star-bg,
+      .bubble-bg {
+        display: none;
+      }
+
+      /* 响应式 */
+      @media (max-width: 600px) {
         .container {
-            max-width: 900px;
-            margin: 0 auto;
-            background: rgba(255, 255, 255, 0.0);
-            padding: 30px;
-            border-radius: 20px;
-            box-shadow: var(--shadow);
-            backdrop-filter: blur(var(--blur-amount));
-            border: 1px solid var(--border-light);
+          padding: 15px;
         }
-
-        h1 {
-            margin-top: 0;
-            font-size: 2.5em;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
-            background: linear-gradient(45deg, var(--primary-dark), var(--primary));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+        .controls {
+          flex-direction: column;
         }
-
-        .subtitle {
-            color: var(--text-muted);
-            font-size: 1.1em;
-            margin-bottom: 30px;
-        }
-
-        .scene-container {
-            min-height: 350px;
-            border: 2px dashed rgba(0, 0, 0, 0.1);
-            border-radius: 15px;
-            margin: 25px 0;
-            padding: 25px;
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            align-items: flex-end;
-            position: relative;
-            overflow: hidden;
-            background: linear-gradient(to bottom, #e6f3ff, #cce7ff);
-            transition: var(--transition);
-        }
-
-        body.space .scene-container {
-            background: linear-gradient(to bottom, #000033, #1a0033);
-            border-color: var(--primary);
-        }
-
-        body.ocean .scene-container {
-            background: linear-gradient(to bottom, #0077be, #005689);
-            border-color: var(--primary);
-        }
-
-        .tree {
-            font-size: 40px;
-            margin: 15px;
-            transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
-            position: relative;
-            z-index: 2;
-            filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.1));
-        }
-
-        .sapling {
-            font-size: 25px;
-            opacity: 0.8;
-        }
-
-        .controls, .mode-buttons, .scene-selector {
-            display: flex;
-            justify-content: center;
-            flex-wrap: wrap;
-            gap: 12px;
-            margin: 15px 0;
-        }
-
-        button {
-            background: var(--primary-gradient);
-            color: white;
-            border: none;
-            padding: 12px 24px;
-            text-align: center;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            border-radius: 50px;
-            transition: var(--transition);
-            box-shadow: 0 4px 15px var(--primary-soft);
-            position: relative;
-            overflow: hidden;
-            flex: 1;
-            min-width: 120px;
-            max-width: 200px;
-        }
-
-        button::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-            transition: 0.5s;
-        }
-
-        button:hover::before {
-            left: 100%;
-        }
-
-        button:hover {
-            box-shadow: 0 8px 25px var(--primary-soft);
-        }
-
-        button:active {
-            transform: scale(0.95);
-        }
-
-        button:disabled {
-            background: linear-gradient(145deg, #cccccc, #b3b3b3);
-            cursor: not-allowed;
-            transform: none;
-            box-shadow: none;
-        }
-
-        button:disabled:hover::before {
-            left: -100%;
-        }
-
-        button.active {
-            box-shadow: 0 0 0 2px white, 0 0 0 4px var(--primary);
-        }
-
-        .mode-btn, .scene-btn {
-            background: rgba(255, 255, 255, 0.9);
-            color: var(--text-dark);
-        }
-
-        body.space .mode-btn, body.ocean .mode-btn,
-        body.space .scene-btn, body.ocean .scene-btn {
-            background: rgba(0, 0, 0, 0.5);
-            color: white;
-        }
-
-        .mode-btn.active, .scene-btn.active {
-            background: var(--primary-gradient);
-            color: white;
-        }
-
-        .mode-indicator {
-            display: inline-block;
-            padding: 5px 15px;
-            border-radius: 20px;
-            font-size: 14px;
-            font-weight: bold;
-            margin-left: 10px;
-            background: var(--primary);
-            color: white;
-        }
-
-        .mode-indicator.reading {
-            background: #FF9800;
-        }
-
-        .noise-level-container {
-            margin: 25px 0;
-            padding: 20px;
-            background: var(--bg-overlay);
-            border-radius: 15px;
-            backdrop-filter: blur(20px);
-        }
-
-        .noise-level {
-            font-size: 18px;
-            margin-bottom: 10px;
-            color: var(--text-dark);
-        }
-
-        body.space .noise-level, body.ocean .noise-level {
-            color: white;
-        }
-
-        .noise-visualizer {
-            width: 100%;
-            height: 50px;
-            background: linear-gradient(90deg, #4CAF50, #FFC107, #F44336);
-            border-radius: 10px;
-            margin: 15px 0;
-            overflow: hidden;
-            position: relative;
-        }
-
-        .noise-indicator {
-            position: absolute;
-            top: 0;
-            bottom: 0;
-            width: 3px;
-            background: white;
-            box-shadow: 0 0 10px white;
-            transform: translateX(-50%);
-            transition: left 0.1s ease;
-        }
-
-        .noise-threshold {
-            position: absolute;
-            top: 0;
-            bottom: 0;
-            width: 2px;
-            background: rgba(0, 0, 0, 0.5);
-            box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
-        }
-
-        .progress-container {
-            width: 100%;
-            background: rgba(0, 0, 0, 0.1);
-            border-radius: 10px;
-            margin: 25px 0;
-            overflow: hidden;
-            height: 25px;
-            position: relative;
-        }
-
-        .progress-bar {
-            height: 100%;
-            background: linear-gradient(90deg, var(--progress-start), var(--progress-end));
-            border-radius: 10px;
-            width: 0;
-            transition: width 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .progress-bar::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            bottom: 0;
-            right: 0;
-            background: linear-gradient(90deg,
-            transparent 0%,
-            rgba(255, 255, 255, 0.3) 50%,
-            transparent 100%);
-            animation: shimmer 2s infinite;
-        }
-
-        @keyframes shimmer {
-            0% { transform: translateX(-100%); }
-            100% { transform: translateX(100%); }
-        }
-
-        .progress-text {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            font-weight: bold;
-            color: var(--text-dark);
-            text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.5);
-        }
-
-        body.space .progress-text, body.ocean .progress-text {
-            color: white;
-            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
-        }
-
         .stats {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 15px;
-            margin: 25px 0;
+          flex-direction: column;
         }
-
         .stat-box {
-            background: linear-gradient(145deg, #ffffff, #f0f0f0);
-            padding: 20px;
-            border-radius: 15px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
-            transition: var(--transition);
-            border: 1px solid rgba(255, 255, 255, 0.5);
+          width: 100%;
         }
-
-        .stat-box:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
-        }
-
-        body.space .stat-box, body.ocean .stat-box {
-            background: linear-gradient(145deg, rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.4));
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .stat-box > div:first-child {
-            font-size: 14px;
-            color: var(--text-muted);
-            margin-bottom: 8px;
-            font-weight: 500;
-        }
-
-        .stat-box > div:last-child {
-            font-size: 28px;
-            font-weight: bold;
-            color: var(--primary-dark);
-        }
-
-        .settings-panel, .achievements-panel {
-            display: none;
-            margin: 25px 0;
-            padding: 25px;
-            background: var(--bg-panel);
-            border-radius: 20px;
-            box-shadow: var(--shadow);
-            border: 1px solid var(--border-light);
-            backdrop-filter: blur(10px);
-        }
-
-        .panel-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-            padding-bottom: 15px;
-            border-bottom: 2px solid rgba(0, 0, 0, 0.05);
-        }
-
-        body.space .panel-header, body.ocean .panel-header {
-            border-bottom: 2px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .panel-header h3 {
-            margin: 0;
-            font-size: 1.5em;
-            color: var(--text-dark);
-        }
-
-        body.space .panel-header h3, body.ocean .panel-header h3 {
-            color: white;
-        }
-
         .settings-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 20px;
+          grid-template-columns: 1fr;
         }
-
-        .setting-item {
-            background: rgba(255, 255, 255, 0.5);
-            padding: 20px;
-            border-radius: 15px;
-            transition: var(--transition);
+        button {
+          width: 100%;
         }
-
-        .setting-item:hover {
-            background: rgba(255, 255, 255, 0.7);
-            transform: translateY(-2px);
-        }
-
-        body.space .setting-item, body.ocean .setting-item {
-            background: rgba(255, 255, 255, 0.05);
-        }
-
-        body.space .setting-item:hover, body.ocean .setting-item:hover {
-            background: rgba(255, 255, 255, 0.1);
-        }
-
-        .setting-label {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 10px;
-            font-weight: 600;
-            color: var(--text-dark);
-        }
-
-        body.space .setting-label, body.ocean .setting-label {
-            color: white;
-        }
-
-        .setting-value {
-            font-weight: bold;
-            color: var(--primary);
-            font-size: 1.2em;
-        }
-
-        input[type="range"] {
-            width: 100%;
-            height: 10px;
-            -webkit-appearance: none;
-            background: rgba(0, 0, 0, 0.1);
-            touch-action: none;
-            border-radius: 5px;
-            outline: none;
-        }
-
-        input[type="range"]::-webkit-slider-thumb {
-            -webkit-appearance: none;
-            width: 24px;
-            height: 24px;
-            border-radius: 50%;
-            background: var(--primary-gradient);
-            cursor: pointer;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-            border: 3px solid white;
-        }
-
-        input[type="number"] {
-            width: 100%;
-            padding: 10px;
-            border: 2px solid #e0e0e0;
-            border-radius: 10px;
-            font-size: 16px;
-            text-align: center;
-            transition: var(--transition);
-            background: white;
-        }
-
-        input[type="number"]:focus {
-            outline: none;
-            border-color: var(--primary);
-            box-shadow: 0 0 0 3px var(--primary-soft);
-        }
-
-        .switch {
-            position: relative;
-            display: inline-block;
-            width: 60px;
-            height: 34px;
-        }
-
-        .switch input {
-            opacity: 0;
-            width: 0;
-            height: 0;
-        }
-
-        .slider {
-            position: absolute;
-            cursor: pointer;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-color: #ccc;
-            transition: .4s;
-            border-radius: 34px;
-        }
-
-        .slider:before {
-            position: absolute;
-            content: "";
-            height: 26px;
-            width: 26px;
-            left: 4px;
-            bottom: 4px;
-            background-color: white;
-            transition: .4s;
-            border-radius: 50%;
-        }
-
-        input:checked + .slider {
-            background: var(--primary-gradient);
-        }
-
-        input:checked + .slider:before {
-            transform: translateX(26px);
-        }
-
-        .achievements-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 15px;
-        }
-
-        .achievement {
-            background: linear-gradient(145deg, #ffffff, #f0f0f0);
-            padding: 20px;
-            border-radius: 15px;
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            transition: var(--transition);
-            border: 2px solid transparent;
-        }
-
-        .achievement.unlocked {
-            border-color: var(--primary);
-            background: linear-gradient(145deg, #e8f5e9, #c8e6c9);
-        }
-
-        .achievement.locked {
-            opacity: 0.7;
-            filter: grayscale(0.5);
-        }
-
-        body.space .achievement, body.ocean .achievement {
-            background: linear-gradient(145deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.1));
-        }
-
-        body.space .achievement.unlocked, body.ocean .achievement.unlocked {
-            border-color: var(--primary);
-            background: linear-gradient(145deg, var(--primary-soft), rgba(255, 255, 255, 0.1));
-        }
-
-        .achievement-icon {
-            font-size: 40px;
-            width: 60px;
-            height: 60px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 50%;
-            background: var(--primary-soft);
-            flex-shrink: 0;
-        }
-
-        .achievement.unlocked .achievement-icon {
-            animation: pulse 2s infinite;
-        }
-
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.1); }
-            100% { transform: scale(1); }
-        }
-
-        .achievement-info {
-            flex: 1;
-            text-align: left;
-        }
-
-        .achievement-title {
-            font-weight: bold;
-            font-size: 16px;
-            margin-bottom: 5px;
-            color: var(--text-dark);
-        }
-
-        body.space .achievement-title, body.ocean .achievement-title {
-            color: white;
-        }
-
-        .achievement-description {
-            font-size: 14px;
-            color: var(--text-muted);
-            margin-bottom: 5px;
-        }
-
-        .achievement-date {
-            font-size: 12px;
-            color: #999;
-        }
-
-        .history-chart {
-            width: 100%;
-            height: 200px;
-            margin: 30px 0;
-            padding: 20px 0 30px 0;
-            background: var(--bg-overlay);
-            border-radius: 15px;
-            position: relative;
-        }
-
-        .chart-bar {
-            position: absolute;
-            bottom: 40px;
-            width: 40px;
-            background: linear-gradient(to top, var(--progress-start), var(--progress-end));
-            border-radius: 10px 10px 0 0;
-            transition: height 0.5s ease;
-            box-shadow: 0 -5px 15px var(--primary-soft);
-        }
-
-        .chart-label {
-            position: absolute;
-            bottom: -25px;
-            left: 0;
-            width: 100%;
-            text-align: center;
-            font-size: 12px;
-            font-weight: bold;
-            color: var(--text-dark);
-            white-space: pre-line;
-        }
-
-        body.space .chart-label, body.ocean .chart-label {
-            color: white;
-        }
-
-        .notification {
-            position: fixed;
-            top: 30px;
-            left: 50%;
-            transform: translateX(-50%) translateY(-100px);
-            background: var(--primary-gradient);
-            color: white;
-            padding: 20px 30px;
-            border-radius: 50px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-            z-index: 1000;
-            opacity: 0;
-            transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
-            max-width: 80%;
-            text-align: center;
-            font-weight: 600;
-        }
-
-        .notification.show {
-            transform: translateX(-50%) translateY(0);
-            opacity: 1;
-        }
-
-        /* 特效元素 */
-        .star-bg, .bubble-bg {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: -1;
-        }
-
-        .star {
-            position: absolute;
-            width: 3px;
-            height: 3px;
-            background-color: white;
-            border-radius: 50%;
-            animation: twinkle 2s infinite alternate;
-            filter: drop-shadow(0 0 5px white);
-        }
-
-        @keyframes twinkle {
-            from { opacity: 0.2; transform: scale(0.8); }
-            to { opacity: 1; transform: scale(1.2); }
-        }
-
-        .bubble {
-            position: absolute;
-            border-radius: 50%;
-            background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.8), rgba(255,255,255,0.1));
-            animation: float-up 5s infinite;
-            filter: drop-shadow(0 0 10px rgba(255,255,255,0.5));
-        }
-
-        @keyframes float-up {
-            0% { transform: translateY(0) scale(0); opacity: 0; }
-            10% { opacity: 1; transform: translateY(0) scale(1); }
-            90% { opacity: 1; }
-            100% { transform: translateY(-100px) scale(0); opacity: 0; }
-        }
-
-        .rocket {
-            animation: launch 3s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
-            filter: drop-shadow(0 0 20px orange);
-        }
-
-        @keyframes launch {
-            0% { transform: translate(0, 0) scale(1); opacity: 1; }
-            100% { transform: translate(-100px, -500px) scale(0); opacity: 0; }
-        }
-
-        .leaf {
-            position: absolute;
-            font-size: 20px;
-            animation: float 3s ease-in-out infinite;
-            opacity: 0;
-            z-index: 1;
-            filter: drop-shadow(0 2px 5px rgba(0,0,0,0.2));
-        }
-
-        @keyframes float {
-            0%, 100% { transform: translateY(0) rotate(0deg); opacity: 0; }
-            50% { opacity: 1; }
-            100% { transform: translateY(-100px) rotate(720deg); }
-        }
-
-        .sparkle {
-            position: absolute;
-            width: 8px;
-            height: 8px;
-            background: radial-gradient(circle, gold, transparent);
-            border-radius: 50%;
-            animation: sparkle 1s ease-out forwards;
-            z-index: 3;
-            filter: drop-shadow(0 0 10px gold);
-        }
-
-        @keyframes sparkle {
-            0% { transform: scale(0) rotate(0deg); opacity: 0; }
-            50% { transform: scale(1.5) rotate(180deg); opacity: 1; }
-            100% { transform: scale(0) rotate(360deg); opacity: 0; }
-        }
-
-        .confetti {
-            position: absolute;
-            width: 15px;
-            height: 15px;
-            border-radius: 50%;
-            animation: fall 3s linear forwards;
-            z-index: 1;
-            filter: drop-shadow(0 0 10px currentColor);
-        }
-
-        @keyframes fall {
-            0% { transform: translateY(-100px) rotate(0deg); opacity: 1; }
-            100% { transform: translateY(100vh) rotate(360deg); opacity: 0; }
-        }
-
-        @media (max-width: 768px) {
-            .container { padding: 15px; }
-            .controls, .mode-buttons, .scene-selector { flex-direction: column; }
-            button { max-width: 100%; }
-            .settings-grid { grid-template-columns: 1fr; }
-            .achievements-grid { grid-template-columns: 1fr; }
-            .stats { grid-template-columns: repeat(2, 1fr); }
-        }
-
-        @media (max-width: 480px) {
-            .stats { grid-template-columns: 1fr; }
-            h1 { font-size: 2em; }
-            .container { padding: 10px; }
-        }
+      }
     </style>
-</head>
-<body>
-<!-- 星空背景 -->
-<div class="star-bg" id="starBg" style="display: none;"></div>
+  </head>
+  <body class="forest-bg">
+    <!-- 通知 -->
+    <div class="notification" id="notification"></div>
 
-<!-- 泡泡背景 -->
-<div class="bubble-bg" id="bubbleBg" style="display: none;"></div>
+    <div class="container">
+      
+      <h1 id="TitleCt">读书种树，但安静也同理</h1>
+      <p>
+        当教室安静/大声读书时，植物会自动生长喵！持续安静一段时间种一棵植物，多棵植物会长成更大的植物喵～
+      </p>
 
-<!-- 通知 -->
-<div class="notification" id="notification"></div>
+      <!-- 隐藏的场景选择器，只保留一个按钮 -->
+      <div class="scene-selector" style="display: none;">
+        <button class="scene-btn active" data-scene="forest">114514</button>
+      </div>
 
-<div class="container">
-    <h1>课堂安静种树游戏</h1>
-    <p class="subtitle">当教室安静时，植物会自动生长。</p>
+      <!-- 模式选择器 - 新增 -->
+      <div class="mode-selector">
+        <button class="mode-btn active" data-mode="quiet">
+          安静模式 <span class="mode-indicator quiet">安静加分</span>
+        </button>
+        <button class="mode-btn" data-mode="reading">
+          早读模式 <span class="mode-indicator reading">大声朗读</span>
+        </button>
+      </div>
 
-    <div class="scene-selector">
-        <button class="scene-btn active" data-scene="forest">传统</button>
-        <button class="scene-btn" data-scene="space">宇宙</button>
-        <button class="scene-btn" data-scene="ocean">海洋</button>
-    </div>
-
-    <div class="mode-buttons">
-        <button class="mode-btn active" data-mode="quiet">安静模式 <span class="mode-indicator">安静加分</span></button>
-        <button class="mode-btn" data-mode="reading">早读模式 <span class="mode-indicator reading">大声叫唤吧！</span></button>
-    </div>
-
-    <div class="controls">
-        <button id="micBtn">获取麦克风！</button>
-        <button id="startBtn" disabled>启动游戏</button>
+      <div class="controls">
+        <button id="micBtn">请求麦克风权限</button>
+        <button id="startBtn" disabled>开始游戏</button>
         <button id="stopBtn" disabled>停止游戏</button>
-        <button id="resetBtn">清除战绩</button>
-        <button class="panel-toggle" id="settingsToggle">⚙️ 设置</button>
-        <button class="panel-toggle" id="achievementsToggle">🏆 成就</button>
-    </div>
+        <button id="resetBtn">重置场景</button>
+        <button class="panel-toggle" id="settingsToggle">设置 ⚙️</button>
+        <button class="panel-toggle" id="achievementsToggle">成就 🏆</button>
+      </div>
 
-    <div class="noise-level-container">
+      <!-- 噪音水平和可视化 - 增强版 -->
+      <div class="noise-level-container">
         <div class="noise-level">
-            当前噪音水平: <span id="noiseLevel">0</span>
-            <span id="modeText" style="margin-left: 10px; font-weight: bold;">(安静模式)</span>
+          当前噪音水平: <span id="noiseLevel">0</span>
+          <span class="mode-text quiet" id="modeText">(低于阈值加分)</span>
         </div>
         <div class="noise-visualizer">
-            <div class="noise-indicator" id="noiseIndicator" style="left: 0;"></div>
-            <div class="noise-threshold" id="noiseThreshold" style="left: 30%;"></div>
+          <div class="noise-indicator" id="noiseIndicator" style="left: 0;"></div>
+          <div class="noise-threshold" id="noiseThreshold" style="left: 30%;"></div>
         </div>
         <div class="progress-container">
-            <div class="progress-bar" id="progressBar" style="width: 0;">
-                <div class="progress-text" id="progressText">0%</div>
-            </div>
+          <div class="progress-bar" id="progressBar" style="width: 0;"></div>
+          <div class="progress-text" id="progressText">0%</div>
         </div>
-    </div>
+      </div>
 
-    <div class="stats">
+      <div class="stats">
         <div class="stat-box">
-            <div>小植物数量</div>
-            <div id="saplingCount">0</div>
-        </div>
-        <div class="stat-box">
-            <div>大植物数量</div>
-            <div id="treeCount">0</div>
+          <div>小植物数量</div>
+          <div id="saplingCount">0</div>
         </div>
         <div class="stat-box">
-            <div>最长安静时间</div>
-            <div id="quietTime">0.0秒</div>
+          <div>大植物数量</div>
+          <div id="treeCount">0</div>
         </div>
         <div class="stat-box">
-            <div>今日种植总数</div>
-            <div id="todayCount">0</div>
+          <div>最长安静时间</div>
+          <div id="quietTime">0.0秒</div>
         </div>
-    </div>
-
-    <div class="scene-container" id="sceneContainer"></div>
-
-    <div class="settings-panel" id="settingsPanel">
-        <div class="panel-header">
-            <h3>设置</h3>
-            <button class="panel-close-btn" onclick="togglePanel('settings')">✕</button>
+        <div class="stat-box">
+          <div>今日种植</div>
+          <div id="todayCount">0</div>
         </div>
-        <div class="settings-grid">
+      </div>
+
+      <div class="scene-container forest-scene" id="sceneContainer"></div>
+
+      <!-- 设置面板 - 增强版 -->
+      <div class="settings-panel" id="settingsPanel">
+        <div class="panel-content">
+          <h3>游戏设置</h3>
+          <div class="settings-grid">
             <div class="setting-item">
-                <div class="setting-label">
-                    <span>安静阈值</span>
-                    <span class="setting-value" id="thresholdValue">30</span>
-                </div>
-                <input type="range" id="threshold" min="0" max="100" value="30">
-                <div style="font-size: 12px; color: var(--text-muted); margin-top: 8px;">低于此值视为安静</div>
+              <div class="setting-label">
+                <span>安静阈值</span>
+                <span class="setting-value" id="thresholdValue">30</span>
+              </div>
+              <input type="range" id="threshold" min="0" max="100" value="30" />
+              <div style="font-size: 12px; color: #666; margin-top: 8px;">低于此值视为安静</div>
             </div>
 
             <div class="setting-item">
-                <div class="setting-label">
-                    <span>早读阈值</span>
-                    <span class="setting-value" id="readingThresholdValue">50</span>
-                </div>
-                <input type="range" id="readingThreshold" min="0" max="100" value="50">
-                <div style="font-size: 12px; color: var(--text-muted); margin-top: 8px;">高于此值开始加分</div>
+              <div class="setting-label">
+                <span>早读阈值</span>
+                <span class="setting-value" id="readingThresholdValue">50</span>
+              </div>
+              <input type="range" id="readingThreshold" min="0" max="100" value="50" />
+              <div style="font-size: 12px; color: #666; margin-top: 8px;">高于此值开始加分</div>
             </div>
 
             <div class="setting-item">
-                <div class="setting-label">
-                    <span>植物生长时间</span>
-                    <span class="setting-value" id="saplingTimeValue">5</span>
-                </div>
-                <input type="number" id="saplingTime" min="1" max="60" value="5">秒
+              <div class="setting-label">
+                <span>植物生长时间</span>
+                <span class="setting-value" id="saplingTimeValue">5</span>
+              </div>
+              <input type="number" id="saplingTime" min="1" max="60" value="5" /> 秒
             </div>
 
             <div class="setting-item">
-                <div class="setting-label">
-                    <span>小植物合并数量</span>
-                    <span class="setting-value" id="saplingsPerTreeValue">10</span>
-                </div>
-                <input type="number" id="saplingsPerTree" min="2" max="20" value="10">
+              <div class="setting-label">
+                <span>小植物合并数量</span>
+                <span class="setting-value" id="saplingsPerTreeValue">10</span>
+              </div>
+              <input type="number" id="saplingsPerTree" min="2" max="20" value="10" />
             </div>
 
             <div class="setting-item">
-                <div class="setting-label">
-                    <span>背景模糊度</span>
-                    <span class="setting-value" id="blurValue">10</span>
-                </div>
-                <input type="range" id="blurSlider" min="0" max="20" value="10" step="0.5">
-                <div style="font-size: 12px; color: var(--text-muted); margin-top: 8px;">数值越大背景越模糊</div>
+              <div class="setting-label">
+                <span>背景模糊度</span>
+                <span class="setting-value" id="blurValue">10</span>
+              </div>
+              <input type="range" id="blurSlider" min="0" max="20" value="10" step="0.5" />
+              <div style="font-size: 12px; color: #666; margin-top: 8px;">数值越大背景越模糊</div>
             </div>
 
             <div class="setting-item">
-                <div class="setting-label">
-                    <span>启用音效</span>
-                    <label class="switch">
-                        <input type="checkbox" id="enableSounds" checked>
-                        <span class="slider"></span>
-                    </label>
-                </div>
+              <div class="setting-label">
+                <span>启用音效</span>
+                <label class="switch">
+                  <input type="checkbox" id="enableSounds" checked />
+                  <span class="slider"></span>
+                </label>
+              </div>
             </div>
+          </div>
         </div>
-    </div>
+      </div>
 
-    <div class="achievements-panel" id="achievementsPanel">
-        <div class="panel-header">
-            <h3>成就</h3>
-            <button onclick="togglePanel('achievements')">✕</button>
-        </div>
-        <div class="achievements-grid" id="achievementsList">
+      <div class="achievements-panel" id="achievementsPanel">
+        <div class="panel-content">
+          <h3>成就系统</h3>
+          <div id="achievementsList">
             <!-- 成就列表将由JavaScript动态生成 -->
+          </div>
         </div>
+      </div>
+
+      <div class="history-chart" id="historyChart">
+        <p>战绩</p>
+      </div>
     </div>
 
-    <div class="history-chart" id="historyChart">
-        <h3 style="margin-top: 0;">历史记录 (最近7天)</h3>
-    </div>
-</div>
+    <script>
+      // 游戏状态
+      let isRunning = false;
+      let audioContext;
+      let analyser;
+      let microphone;
+      let mediaStream = null;
+      let rafId = null;
+      let quietStartTime = null;
+      let readingStartTime = null;
+      let saplings = 0;
+      let trees = 0;
+      let totalQuietTime = 0;
+      let todayCount = 0;
+      let historyData = [];
+      let currentScene = "forest";
+      let achievements = {};
+      let longestQuietTime = 0;
+      let todayTrees = 0;
+      let currentMode = "quiet"; // quiet 或 reading
+      let readingTrees = 0; // 早读模式下种的大树
+      let quietTrees = 0; // 安静模式下种的大树
+      let bothModesUsed = false; // 是否两种模式都用过
+      let lastModeUsed = null; // 上次使用的模式
 
-<script>
-    (function() {
-        // ==================== 游戏配置 ====================
-        const SCENES = {
-            forest: {
-                name: '森林',
-                smallItem: '🌱',
-                bigItem: '🌳',
-                effects: {
-                    createParticles: (parent) => { for (let i = 0; i < 3; i++) createSparkle(parent); },
-                    createBigEffect: (parent) => { for (let i = 0; i < 10; i++) createLeaf(parent); }
-                }
+      // 游戏设置
+      let settings = {
+        threshold: 30,
+        readingThreshold: 50,
+        saplingTime: 5,
+        saplingsPerTree: 10,
+        enableSounds: true,
+        blur: 10,
+      };
+
+      // 场景配置 - 只保留森林
+      const scenes = {
+        forest: {
+          name: "森林",
+          smallItem: "🌱",
+          bigItem: "🌳",
+          bgClass: "forest-bg",
+          sceneClass: "forest-scene",
+          progressColor: "#4CAF50",
+          buttonColor: "#4CAF50",
+          effects: {
+            createBigEffect: (parent) => {
+              for (let i = 0; i < 10; i++) {
+                createLeaf(parent);
+              }
             },
-            space: {
-                name: '太空',
-                smallItem: '🛰️',
-                bigItem: '🪐',
-                effects: {
-                    createParticles: (parent) => { for (let i = 0; i < 5; i++) createStar(parent); },
-                    createBigEffect: (parent) => createRocket(parent)
-                }
-            },
-            ocean: {
-                name: '海洋',
-                smallItem: '🐠',
-                bigItem: '🐋',
-                effects: {
-                    createParticles: (parent) => { for (let i = 0; i < 3; i++) createBubble(parent); },
-                    createBigEffect: (parent) => { for (let i = 0; i < 15; i++) createBubble(parent); }
-                }
+          },
+        },
+      };
+
+      // 成就配置 - 新增早读相关成就
+      const achievementConfig = [
+        {
+          id: "first_sapling",
+          icon: "🌱",
+          title: "第一棵植物",
+          description: "种下第一棵小植物",
+          condition: (game) =>
+            game.saplings + game.trees * settings.saplingsPerTree >= 1,
+        },
+        {
+          id: "first_tree",
+          icon: "🌳",
+          title: "第一棵大树",
+          description: "种下第一棵大植物",
+          condition: (game) => game.trees >= 1,
+        },
+        {
+          id: "quiet_5_min",
+          icon: "⏱️",
+          title: "安静5分钟",
+          description: "累计安静时间达到5分钟",
+          condition: (game) => game.totalQuietTime >= 300,
+        },
+        {
+          id: "forest_keeper",
+          icon: "🏆",
+          title: "森林守护者",
+          description: "种下10棵大植物",
+          condition: (game) => game.trees >= 10,
+        },
+        {
+          id: "perfect_silence",
+          icon: "🔇",
+          title: "完美安静",
+          description: "连续保持安静1分钟",
+          condition: (game) => game.longestQuietTime >= 60,
+        },
+        {
+          id: "daily_goal",
+          icon: "✅",
+          title: "每日目标",
+          description: "一天内种下5棵大植物",
+          condition: (game) => game.todayTrees >= 5,
+        },
+        {
+          id: "reading_master",
+          icon: "📚",
+          title: "声音还彳亍",
+          description: "在早读模式下种下3棵大植物",
+          condition: (game) => game.readingTrees >= 3,
+        },
+        {
+          id: "mode_changer",
+          icon: "🔄",
+          title: "模式切换者",
+          description: "在两种模式下都种下植物",
+          condition: (game) => game.bothModesUsed,
+        },
+      ];
+
+      // DOM元素
+      const micBtn = document.getElementById("micBtn");
+      const startBtn = document.getElementById("startBtn");
+      const stopBtn = document.getElementById("stopBtn");
+      const resetBtn = document.getElementById("resetBtn");
+      const sceneContainer = document.getElementById("sceneContainer");
+      const progressBar = document.getElementById("progressBar");
+      const progressText = document.getElementById("progressText");
+      const saplingCount = document.getElementById("saplingCount");
+      const treeCount = document.getElementById("treeCount");
+      const quietTimeEl = document.getElementById("quietTime");
+      const todayCountEl = document.getElementById("todayCount");
+      const noiseLevel = document.getElementById("noiseLevel");
+      const noiseIndicator = document.getElementById("noiseIndicator");
+      const noiseThreshold = document.getElementById("noiseThreshold");
+      const modeText = document.getElementById("modeText");
+      const thresholdSlider = document.getElementById("threshold");
+      const thresholdValue = document.getElementById("thresholdValue");
+      const readingThreshold = document.getElementById("readingThreshold");
+      const readingThresholdValue = document.getElementById("readingThresholdValue");
+      const historyChart = document.getElementById("historyChart");
+      const notification = document.getElementById("notification");
+      const settingsPanel = document.getElementById("settingsPanel");
+      const achievementsPanel = document.getElementById("achievementsPanel");
+      const achievementsList = document.getElementById("achievementsList");
+      const settingsToggle = document.getElementById("settingsToggle");
+      const achievementsToggle = document.getElementById("achievementsToggle");
+      const saplingTimeInput = document.getElementById("saplingTime");
+      const saplingTimeValue = document.getElementById("saplingTimeValue");
+      const saplingsPerTreeInput = document.getElementById("saplingsPerTree");
+      const saplingsPerTreeValue = document.getElementById("saplingsPerTreeValue");
+      const enableSoundsInput = document.getElementById("enableSounds");
+      const blurSlider = document.getElementById("blurSlider");
+      const blurValue = document.getElementById("blurValue");
+      const modeBtns = document.querySelectorAll(".mode-btn");
+
+      // 初始化
+      loadGameData();
+      loadSettings();
+      renderScene();
+      renderHistoryChart();
+      setupAchievements();
+      applyBlur();
+      updateModeUI();
+
+      // 事件监听
+      micBtn.addEventListener("click", requestMicrophone);
+      startBtn.addEventListener("click", startGame);
+      stopBtn.addEventListener("click", stopGame);
+      resetBtn.addEventListener("click", resetGame);
+
+      // 模式切换
+      modeBtns.forEach((btn) => {
+        btn.addEventListener("click", function () {
+          currentMode = this.dataset.mode;
+          modeBtns.forEach(b => b.classList.remove("active"));
+          this.classList.add("active");
+          resetProgress();
+          updateModeUI();
+          updateThresholdIndicator();
+          saveGameData();
+        });
+      });
+
+      // 设置面板切换
+      settingsToggle.addEventListener("click", function () {
+        togglePanel(settingsPanel);
+        showNotification("设置面板在下面，往下滑", false);
+        if (achievementsPanel.querySelector(".panel-content").classList.contains("open")) {
+          togglePanel(achievementsPanel);
+        }
+      });
+
+      // 成就面板切换
+      achievementsToggle.addEventListener("click", function () {
+        togglePanel(achievementsPanel);
+        showNotification("成就面板在下面，往下滑", false);
+        if (settingsPanel.querySelector(".panel-content").classList.contains("open")) {
+          togglePanel(settingsPanel);
+        }
+      });
+
+      // 设置更改
+      thresholdSlider.addEventListener("input", function () {
+        settings.threshold = parseInt(this.value);
+        thresholdValue.textContent = settings.threshold;
+        updateThresholdIndicator();
+        saveSettings();
+      });
+
+      readingThreshold.addEventListener("input", function () {
+        settings.readingThreshold = parseInt(this.value);
+        readingThresholdValue.textContent = settings.readingThreshold;
+        updateThresholdIndicator();
+        saveSettings();
+      });
+
+      saplingTimeInput.addEventListener("change", function () {
+        settings.saplingTime = parseInt(this.value);
+        saplingTimeValue.textContent = settings.saplingTime;
+        saveSettings();
+      });
+
+      saplingsPerTreeInput.addEventListener("change", function () {
+        settings.saplingsPerTree = parseInt(this.value);
+        saplingsPerTreeValue.textContent = settings.saplingsPerTree;
+        saveSettings();
+      });
+
+      enableSoundsInput.addEventListener("change", function () {
+        settings.enableSounds = this.checked;
+        saveSettings();
+      });
+
+      blurSlider.addEventListener("input", function () {
+        settings.blur = parseFloat(this.value);
+        blurValue.textContent = settings.blur.toFixed(1);
+        applyBlur();
+        saveSettings();
+      });
+
+      // 请求麦克风权限
+      function requestMicrophone() {
+        navigator.mediaDevices
+          .getUserMedia({ audio: true, video: false })
+          .then(function (stream) {
+            if (mediaStream) {
+              mediaStream.getTracks().forEach((track) => track.stop());
             }
+            mediaStream = stream;
+            showNotification("麦克风到了喵，点开始就行 .OvO`");
+            micBtn.textContent = "麦克风已授权";
+            micBtn.disabled = true;
+            startBtn.disabled = false;
+            stopBtn.disabled = false;
+          })
+          .catch(function (err) {
+            console.error("无法访问麦克风:", err);
+            showNotification("无法访问麦克风，请确保已授予麦克风权限", true);
+          });
+      }
+
+      // 开始游戏
+      function startGame() {
+        if (isRunning) return;
+        if (!mediaStream) {
+          showNotification("请先授权麦克风", true);
+          return;
+        }
+
+        isRunning = true;
+        startBtn.disabled = true;
+        stopBtn.disabled = false;
+
+        audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        analyser = audioContext.createAnalyser();
+        analyser.fftSize = 256;
+        const bufferLength = analyser.frequencyBinCount;
+
+        microphone = audioContext.createMediaStreamSource(mediaStream);
+        microphone.connect(analyser);
+
+        if (audioContext.state === "suspended") {
+          audioContext.resume();
+        }
+
+        const dataArray = new Uint8Array(bufferLength);
+
+        function updateLoop() {
+          if (!isRunning) return;
+
+          analyser.getByteFrequencyData(dataArray);
+          let sum = 0;
+          for (let i = 0; i < dataArray.length; i++) {
+            sum += dataArray[i];
+          }
+          const average = sum / dataArray.length;
+          const rounded = Math.round(average);
+          
+          noiseLevel.textContent = rounded;
+          updateNoiseIndicator(rounded);
+
+          // 根据模式处理
+          if (currentMode === "quiet") {
+            handleQuietMode(rounded);
+          } else {
+            handleReadingMode(rounded);
+          }
+
+          rafId = requestAnimationFrame(updateLoop);
+        }
+
+        rafId = requestAnimationFrame(updateLoop);
+      }
+
+      // 安静模式处理
+      function handleQuietMode(average) {
+        if (average < settings.threshold) {
+          if (quietStartTime === null) {
+            quietStartTime = Date.now();
+          }
+
+          const quietDuration = (Date.now() - quietStartTime) / 1000;
+          totalQuietTime += 1 / 60;
+
+          if (quietDuration > longestQuietTime) {
+            longestQuietTime = quietDuration;
+          }
+
+          quietTimeEl.textContent = longestQuietTime.toFixed(1) + "秒";
+
+          const progress = Math.min((quietDuration / settings.saplingTime) * 100, 100);
+          progressBar.style.width = progress + "%";
+          progressText.textContent = Math.round(progress) + "%";
+
+          if (quietDuration >= settings.saplingTime) {
+            addSapling();
+            quietStartTime = Date.now();
+          }
+        } else {
+          quietStartTime = null;
+          progressBar.style.width = "0%";
+          progressText.textContent = "0%";
+        }
+      }
+
+      // 早读模式处理
+      function handleReadingMode(average) {
+        if (average >= settings.readingThreshold) {
+          if (readingStartTime === null) {
+            readingStartTime = Date.now();
+          }
+
+          const readingDuration = (Date.now() - readingStartTime) / 1000;
+            const progress = Math.min((readingDuration / settings.saplingTime) * 100, 100);
+          progressBar.style.width = progress + "%";
+          progressText.textContent = Math.round(progress) + "%";
+
+          if (readingDuration >= settings.saplingTime) {
+            addSapling();
+            readingStartTime = Date.now();
+          }
+        } else {
+          readingStartTime = null;
+          progressBar.style.width = "0%";
+          progressText.textContent = "0%";
+        }
+      }
+
+      // 停止游戏
+      function stopGame() {
+        isRunning = false;
+        if (rafId) {
+          cancelAnimationFrame(rafId);
+          rafId = null;
+        }
+
+        if (microphone) {
+          try { microphone.disconnect(); } catch (e) {}
+          microphone = null;
+        }
+        if (analyser) {
+          try { analyser.disconnect(); } catch (e) {}
+          analyser = null;
+        }
+        if (audioContext) {
+          audioContext.close().catch(console.warn);
+          audioContext = null;
+        }
+
+        startBtn.disabled = false;
+        stopBtn.disabled = true;
+        quietStartTime = null;
+        readingStartTime = null;
+
+        saveGameData();
+      }
+
+      // 重置游戏
+      function resetGame() {
+        if (confirm("点击确认后，一切会都没有发生过")) {
+          stopGame();
+          saplings = 0;
+          trees = 0;
+          totalQuietTime = 0;
+          todayCount = 0;
+          todayTrees = 0;
+          longestQuietTime = 0;
+          readingTrees = 0;
+          quietTrees = 0;
+          bothModesUsed = false;
+          lastModeUsed = null;
+          updateStats();
+          sceneContainer.innerHTML = "";
+          progressBar.style.width = "0%";
+          progressText.textContent = "0%";
+          showNotification("一切都没有发生过，如同幻觉……");
+          localStorage.removeItem(`forestGameData_${currentScene}`);
+          saveGameData();
+        }
+      }
+
+      // 添加小植物
+      function addSapling() {
+        saplings++;
+        todayCount++;
+
+        // 记录模式使用情况
+        if (currentMode === "reading") {
+          // 早读模式不增加安静时间统计
+        } else {
+          // 安静模式
+        }
+
+        if (lastModeUsed && lastModeUsed !== currentMode) {
+          bothModesUsed = true;
+        }
+        lastModeUsed = currentMode;
+
+        checkAchievements();
+
+        if (saplings >= settings.saplingsPerTree) {
+          saplings = saplings - settings.saplingsPerTree;
+          trees++;
+          todayTrees++;
+          
+          // 记录不同模式下的大树
+          if (currentMode === "reading") {
+            readingTrees++;
+          } else {
+            quietTrees++;
+          }
+          
+          addTree();
+        } else {
+          updateStats();
+          const sapling = document.createElement("div");
+          sapling.className = "tree sapling";
+          sapling.textContent = scenes[currentScene].smallItem;
+          sceneContainer.appendChild(sapling);
+
+          sapling.style.transform = "scale(0)";
+          setTimeout(() => {
+            sapling.style.transform = "scale(1)";
+          }, 10);
+
+          if (settings.enableSounds) {
+            playSound("sapling");
+          }
+        }
+        saveGameData();
+      }
+
+      // 添加大植物
+      function addTree() {
+        updateStats();
+
+        const saplingElements = document.querySelectorAll(".sapling");
+        let removeCount = Math.min(saplingElements.length, settings.saplingsPerTree);
+        for (let i = 0; i < removeCount; i++) {
+          if (saplingElements[i]) {
+            saplingElements[i].style.transform = "scale(0)";
+            setTimeout((el) => {
+              if (el && el.parentNode) el.remove();
+            }, 300, saplingElements[i]);
+          }
+        }
+
+        const tree = document.createElement("div");
+        tree.className = "tree";
+        tree.textContent = scenes[currentScene].bigItem;
+        sceneContainer.appendChild(tree);
+
+        tree.style.transform = "scale(0)";
+        setTimeout(() => {
+          tree.style.transform = "scale(1.5)";
+          setTimeout(() => {
+            tree.style.transform = "scale(1)";
+          }, 300);
+        }, 10);
+
+        scenes[currentScene].effects.createBigEffect(tree);
+
+        if (settings.enableSounds) {
+          playSound("tree");
+        }
+
+        checkAchievements();
+        saveGameData();
+      }
+
+      // 创建树叶特效
+      function createLeaf(parent) {
+        const leaf = document.createElement("div");
+        leaf.className = "leaf";
+        leaf.textContent = "🍃";
+        leaf.style.left = Math.random() * 30 - 15 + "px";
+        leaf.style.animationDelay = Math.random() * 2 + "s";
+        parent.appendChild(leaf);
+        setTimeout(() => leaf.remove(), 3000);
+      }
+
+      // 更新统计信息
+      function updateStats() {
+        saplingCount.textContent = saplings;
+        treeCount.textContent = trees;
+        quietTimeEl.textContent = longestQuietTime.toFixed(1) + "秒";
+        todayCountEl.textContent = todayCount;
+      }
+
+      // 更新噪音指示器
+      function updateNoiseIndicator(level) {
+        noiseIndicator.style.left = Math.min(level, 100) + "%";
+      }
+
+      // 更新阈值指示器
+      function updateThresholdIndicator() {
+        const threshold = currentMode === "quiet" ? settings.threshold : settings.readingThreshold;
+        noiseThreshold.style.left = threshold + "%";
+      }
+
+      // 更新模式UI
+      function updateModeUI() {
+        const titleElement = document.getElementById('TitleCt');
+        if (currentMode === "quiet") {
+          modeText.textContent = "(低于阈值加分)";
+          modeText.className = "mode-text quiet";
+          titleElement.textContent = "安静种树，别说话～～～🤫";
+        } else {
+          modeText.textContent = "(高于阈值加分)";
+          modeText.className = "mode-text reading";
+          titleElement.textContent = "大声朗读，加分！！！！📢";
+        }
+      }
+
+      // 重置进度
+      function resetProgress() {
+        progressBar.style.width = "0%";
+        progressText.textContent = "0%";
+        quietStartTime = null;
+        readingStartTime = null;
+      }
+
+      // 应用模糊度
+      function applyBlur() {
+        document.documentElement.style.setProperty('--blur-amount', settings.blur + 'px');
+      }
+
+      // 保存游戏数据
+      function saveGameData() {
+        const gameData = {
+          saplings: saplings,
+          trees: trees,
+          totalQuietTime: totalQuietTime,
+          todayCount: todayCount,
+          todayTrees: todayTrees,
+          longestQuietTime: longestQuietTime,
+          readingTrees: readingTrees,
+          quietTrees: quietTrees,
+          bothModesUsed: bothModesUsed,
+          lastModeUsed: lastModeUsed,
+          currentMode: currentMode,
+          sceneContent: sceneContainer.innerHTML,
+          lastUpdated: new Date().toISOString().split("T")[0],
+          currentScene: currentScene,
+          achievements: achievements,
         };
 
-        const ACHIEVEMENTS = [
-            { id: 'first_sapling', icon: '🌱', title: '第一棵植物', description: '种下第一棵小植物', condition: (g) => g.totalSaplings >= 1 },
-            { id: 'first_tree', icon: '🌳', title: '第一棵大树', description: '种下第一棵大植物', condition: (g) => g.trees >= 1 },
-            { id: 'quiet_5_min', icon: '⏱️', title: '安静5分钟', description: '累计安静时间达到5分钟', condition: (g) => g.totalQuietTime >= 300 },
-            { id: 'forest_keeper', icon: '🏆', title: '森林守护者', description: '种下10棵大植物', condition: (g) => g.trees >= 10 },
-            { id: 'perfect_silence', icon: '🔇', title: '完美安静', description: '连续保持安静1分钟', condition: (g) => g.longestQuietTime >= 60 },
-            { id: 'daily_goal', icon: '✅', title: '每日目标', description: '一天内种下5棵大植物', condition: (g) => g.todayTrees >= 5 },
-            { id: 'reading_master', icon: '📚', title: '声音还彳亍', description: '在早读模式下种下3棵大植物', condition: (g) => g.readingTrees >= 3 },
-            { id: 'mode_changer', icon: '🔄', title: '模式切换者', description: '在两种模式下都种下植物', condition: (g) => g.bothModesUsed }
-        ];
+        localStorage.setItem(`forestGameData_${currentScene}`, JSON.stringify(gameData));
+        updateHistoryData();
+      }
 
-        // ==================== 游戏状态 ====================
-        let state = {
-            isRunning: false,
-            currentScene: 'forest',
-            currentMode: 'quiet',
-            saplings: 0,
-            trees: 0,
-            totalSaplings: 0, // 累计种植总数
-            totalQuietTime: 0,
-            longestQuietTime: 0,
-            todayCount: 0,
-            todayTrees: 0,
-            readingTrees: 0,
-            quietTrees: 0,
-            bothModesUsed: false,
-            lastModeUsed: null,
-            achievements: {},
-            historyData: []
-        };
+      // 加载游戏数据
+      function loadGameData() {
+        const savedData = localStorage.getItem(`forestGameData_${currentScene}`);
+        if (savedData) {
+          const gameData = JSON.parse(savedData);
+          const today = new Date().toISOString().split("T")[0];
 
-        let settings = {
-            threshold: 30,
-            readingThreshold: 50,
-            saplingTime: 5,
-            saplingsPerTree: 10,
-            enableSounds: true,
-            blur: 10
-        };
-
-        // 计时相关
-        let quietStartTime = null;
-        let readingStartTime = null;
-        let audioContext = null;
-        let analyser = null;
-        let microphone = null;
-        let scriptProcessor = null;
-
-        // ==================== DOM 元素 ====================
-        const dom = {
-            body: document.body,
-            starBg: document.getElementById('starBg'),
-            bubbleBg: document.getElementById('bubbleBg'),
-            notification: document.getElementById('notification'),
-            sceneContainer: document.getElementById('sceneContainer'),
-            progressBar: document.getElementById('progressBar'),
-            progressText: document.getElementById('progressText'),
-            saplingCount: document.getElementById('saplingCount'),
-            treeCount: document.getElementById('treeCount'),
-            quietTime: document.getElementById('quietTime'),
-            todayCount: document.getElementById('todayCount'),
-            noiseLevel: document.getElementById('noiseLevel'),
-            noiseIndicator: document.getElementById('noiseIndicator'),
-            noiseThreshold: document.getElementById('noiseThreshold'),
-            modeText: document.getElementById('modeText'),
-            historyChart: document.getElementById('historyChart'),
-            achievementsList: document.getElementById('achievementsList'),
-            settingsPanel: document.getElementById('settingsPanel'),
-            achievementsPanel: document.getElementById('achievementsPanel'),
-            micBtn: document.getElementById('micBtn'),
-            startBtn: document.getElementById('startBtn'),
-            stopBtn: document.getElementById('stopBtn'),
-            resetBtn: document.getElementById('resetBtn'),
-            settingsToggle: document.getElementById('settingsToggle'),
-            achievementsToggle: document.getElementById('achievementsToggle'),
-            threshold: document.getElementById('threshold'),
-            thresholdValue: document.getElementById('thresholdValue'),
-            readingThreshold: document.getElementById('readingThreshold'),
-            readingThresholdValue: document.getElementById('readingThresholdValue'),
-            saplingTime: document.getElementById('saplingTime'),
-            saplingTimeValue: document.getElementById('saplingTimeValue'),
-            saplingsPerTree: document.getElementById('saplingsPerTree'),
-            saplingsPerTreeValue: document.getElementById('saplingsPerTreeValue'),
-            blurSlider: document.getElementById('blurSlider'),
-            blurValue: document.getElementById('blurValue'),
-            enableSounds: document.getElementById('enableSounds'),
-            sceneBtns: document.querySelectorAll('.scene-btn'),
-            modeBtns: document.querySelectorAll('.mode-btn')
-        };
-
-        // ==================== 初始化 ====================
-        function init() {
-            loadData();
-            setupEventListeners();
-            renderScene();
-            renderAchievements();
-            renderHistoryChart();
+          if (gameData.lastUpdated === today) {
+            saplings = gameData.saplings || 0;
+            trees = gameData.trees || 0;
+            totalQuietTime = gameData.totalQuietTime || 0;
+            todayCount = gameData.todayCount || 0;
+            todayTrees = gameData.todayTrees || 0;
+            longestQuietTime = gameData.longestQuietTime || 0;
+            readingTrees = gameData.readingTrees || 0;
+            quietTrees = gameData.quietTrees || 0;
+            bothModesUsed = gameData.bothModesUsed || false;
+            lastModeUsed = gameData.lastModeUsed || null;
+            currentMode = gameData.currentMode || "quiet";
             updateStats();
-            createBackgroundElements();
-            applyBlur();
-            updateModeUI();
-        }
 
-        function loadData() {
-            // 加载设置
-            const savedSettings = localStorage.getItem('forestGameSettings');
-            if (savedSettings) {
-                const loaded = JSON.parse(savedSettings);
-                Object.assign(settings, loaded);
+            if (gameData.sceneContent) {
+              sceneContainer.innerHTML = gameData.sceneContent;
             }
-
-            // 更新UI
-            dom.threshold.value = settings.threshold;
-            dom.thresholdValue.textContent = settings.threshold;
-            dom.readingThreshold.value = settings.readingThreshold;
-            dom.readingThresholdValue.textContent = settings.readingThreshold;
-            dom.saplingTime.value = settings.saplingTime;
-            dom.saplingTimeValue.textContent = settings.saplingTime;
-            dom.saplingsPerTree.value = settings.saplingsPerTree;
-            dom.saplingsPerTreeValue.textContent = settings.saplingsPerTree;
-            dom.enableSounds.checked = settings.enableSounds;
-            dom.blurSlider.value = settings.blur;
-            dom.blurValue.textContent = settings.blur.toFixed(1);
-
-            // 加载游戏数据
-            const savedData = localStorage.getItem(`forestGameData_${state.currentScene}`);
-            if (savedData) {
-                const gameData = JSON.parse(savedData);
-                const today = new Date().toISOString().split('T')[0];
-
-                if (gameData.lastUpdated === today) {
-                    state.saplings = gameData.saplings || 0;
-                    state.trees = gameData.trees || 0;
-                    state.totalSaplings = gameData.totalSaplings || 0;
-                    state.totalQuietTime = gameData.totalQuietTime || 0;
-                    state.todayCount = gameData.todayCount || 0;
-                    state.todayTrees = gameData.todayTrees || 0;
-                    state.longestQuietTime = gameData.longestQuietTime || 0;
-                    state.readingTrees = gameData.readingTrees || 0;
-                    state.quietTrees = gameData.quietTrees || 0;
-                    state.bothModesUsed = gameData.bothModesUsed || false;
-                    state.lastModeUsed = gameData.lastModeUsed || null;
-                    state.currentMode = gameData.currentMode || 'quiet';
-
-                    if (gameData.sceneContent) {
-                        dom.sceneContainer.innerHTML = gameData.sceneContent;
-                    }
-                }
-
-                if (gameData.achievements) {
-                    state.achievements = gameData.achievements;
-                }
-            }
-
-            // 初始化成就
-            ACHIEVEMENTS.forEach(ach => {
-                if (!state.achievements[ach.id]) {
-                    state.achievements[ach.id] = { unlocked: false, unlockedAt: null };
-                }
-            });
-
-            // 加载历史数据
-            const savedHistory = localStorage.getItem('forestGameHistory');
-            if (savedHistory) {
-                state.historyData = JSON.parse(savedHistory);
-            }
-
-            // 更新模式按钮状态
-            dom.modeBtns.forEach(btn => {
-                btn.classList.toggle('active', btn.dataset.mode === state.currentMode);
-            });
-        }
-
-        function saveData() {
-            const gameData = {
-                saplings: state.saplings,
-                trees: state.trees,
-                totalSaplings: state.totalSaplings,
-                totalQuietTime: state.totalQuietTime,
-                todayCount: state.todayCount,
-                todayTrees: state.todayTrees,
-                longestQuietTime: state.longestQuietTime,
-                readingTrees: state.readingTrees,
-                quietTrees: state.quietTrees,
-                bothModesUsed: state.bothModesUsed,
-                lastModeUsed: state.lastModeUsed,
-                sceneContent: dom.sceneContainer.innerHTML,
-                lastUpdated: new Date().toISOString().split('T')[0],
-                currentScene: state.currentScene,
-                currentMode: state.currentMode,
-                achievements: state.achievements
-            };
-            localStorage.setItem(`forestGameData_${state.currentScene}`, JSON.stringify(gameData));
-
-            // 更新历史数据
-            updateHistoryData();
-        }
-
-        function saveSettings() {
-            localStorage.setItem('forestGameSettings', JSON.stringify(settings));
-        }
-
-        // ==================== 事件监听 ====================
-        function setupEventListeners() {
-            dom.micBtn.addEventListener('click', requestMicrophone);
-            dom.startBtn.addEventListener('click', startGame);
-            dom.stopBtn.addEventListener('click', stopGame);
-            dom.resetBtn.addEventListener('click', resetGame);
-            dom.settingsToggle.addEventListener('click', () => togglePanel('settings'));
-            dom.achievementsToggle.addEventListener('click', () => togglePanel('achievements'));
-
-            // 场景切换
-            dom.sceneBtns.forEach(btn => {
-                btn.addEventListener('click', () => {
-                    state.currentScene = btn.dataset.scene;
-                    dom.sceneBtns.forEach(b => b.classList.toggle('active', b === btn));
-                    renderScene();
-                    saveData();
-                });
-            });
-
-            // 模式切换
-            dom.modeBtns.forEach(btn => {
-                btn.addEventListener('click', () => {
-                    state.currentMode = btn.dataset.mode;
-                    dom.modeBtns.forEach(b => b.classList.toggle('active', b === btn));
-                    resetProgress();
-                    updateModeUI();
-                    saveData();
-                });
-            });
-
-            // 设置项
-            dom.threshold.addEventListener('input', (e) => {
-                settings.threshold = parseInt(e.target.value);
-                dom.thresholdValue.textContent = settings.threshold;
-                updateThresholdIndicator();
-                saveSettings();
-            });
-
-            dom.readingThreshold.addEventListener('input', (e) => {
-                settings.readingThreshold = parseInt(e.target.value);
-                dom.readingThresholdValue.textContent = settings.readingThreshold;
-                updateThresholdIndicator();
-                saveSettings();
-            });
-
-            dom.saplingTime.addEventListener('input', (e) => {
-                settings.saplingTime = parseInt(e.target.value);
-                dom.saplingTimeValue.textContent = settings.saplingTime;
-                saveSettings();
-            });
-
-            dom.saplingsPerTree.addEventListener('input', (e) => {
-                settings.saplingsPerTree = parseInt(e.target.value);
-                dom.saplingsPerTreeValue.textContent = settings.saplingsPerTree;
-                saveSettings();
-            });
-
-            dom.blurSlider.addEventListener('input', (e) => {
-                settings.blur = parseFloat(e.target.value);
-                dom.blurValue.textContent = settings.blur.toFixed(1);
-                applyBlur();
-                saveSettings();
-            });
-
-            dom.enableSounds.addEventListener('change', (e) => {
-                settings.enableSounds = e.target.checked;
-                saveSettings();
-            });
-        }
-
-        // ==================== 麦克风权限 ====================
-        function requestMicrophone() {
-            navigator.mediaDevices.getUserMedia({ audio: true, video: false })
-                .then(() => {
-                    showNotification('谢了兄弟');
-                    dom.micBtn.textContent = '开始吧！→';
-                    dom.micBtn.disabled = true;
-                    dom.startBtn.disabled = false;
-                    dom.stopBtn.disabled = false;
-                })
-                .catch(err => {
-                    console.error('无法访问麦克风:', err);
-                    showNotification('❌ 无法访问麦克风，请确保已授予麦克风权限', true);
-                });
-        }
-
-        // ==================== 游戏控制 ====================
-        function startGame() {
-            if (state.isRunning) return;
-
-            state.isRunning = true;
-            dom.startBtn.disabled = true;
-            dom.stopBtn.disabled = false;
-
-            audioContext = new (window.AudioContext || window.webkitAudioContext)();
-            analyser = audioContext.createAnalyser();
-            analyser.fftSize = 256;
-
-            navigator.mediaDevices.getUserMedia({ audio: true, video: false })
-                .then(stream => {
-                    microphone = audioContext.createMediaStreamSource(stream);
-                    microphone.connect(analyser);
-
-                    scriptProcessor = audioContext.createScriptProcessor(2048, 1, 1);
-                    analyser.connect(scriptProcessor);
-                    scriptProcessor.connect(audioContext.destination);
-
-                    scriptProcessor.onaudioprocess = processAudio;
-                })
-                .catch(err => {
-                    console.error('无法访问麦克风:', err);
-                    showNotification('❌ 无法访问麦克风', true);
-                    stopGame();
-                });
-        }
-
-        function stopGame() {
-            state.isRunning = false;
-            dom.startBtn.disabled = false;
-            dom.stopBtn.disabled = true;
-
-            if (scriptProcessor) {
-                scriptProcessor.disconnect();
-                scriptProcessor = null;
-            }
-            if (analyser) {
-                analyser.disconnect();
-                analyser = null;
-            }
-            if (microphone) {
-                microphone.disconnect();
-                microphone = null;
-            }
-            if (audioContext) {
-                audioContext.close();
-                audioContext = null;
-            }
-
-            quietStartTime = null;
-            readingStartTime = null;
-            saveData();
-        }
-
-        function resetGame() {
-            if (confirm('确定要重置当前场景吗？所有植物将被清除！')) {
-                stopGame();
-
-                // 重置状态
-                state.saplings = 0;
-                state.trees = 0;
-                state.totalSaplings = 0;
-                state.totalQuietTime = 0;
-                state.todayCount = 0;
-                state.todayTrees = 0;
-                state.longestQuietTime = 0;
-                state.readingTrees = 0;
-                state.quietTrees = 0;
-                state.bothModesUsed = false;
-                state.lastModeUsed = null;
-
-                dom.sceneContainer.innerHTML = '';
-                updateProgressBar(0);
-                updateStats();
-
-                localStorage.removeItem(`forestGameData_${state.currentScene}`);
-                saveData();
-            }
-        }
-
-        // ==================== 音频处理 ====================
-        function processAudio() {
-            if (!state.isRunning) return;
-
-            const array = new Uint8Array(analyser.frequencyBinCount);
-            analyser.getByteFrequencyData(array);
-
-            const average = array.reduce((sum, val) => sum + val, 0) / array.length;
-            const rounded = Math.round(average);
-
-            dom.noiseLevel.textContent = rounded;
-            updateNoiseIndicator(rounded);
-
-            if (state.currentMode === 'quiet') {
-                handleQuietMode(rounded);
-            } else {
-                handleReadingMode(rounded);
-            }
-        }
-
-        function handleQuietMode(average) {
-            if (average < settings.threshold) {
-                if (quietStartTime === null) quietStartTime = Date.now();
-
-                const duration = (Date.now() - quietStartTime) / 1000;
-                state.totalQuietTime += 0.1;
-
-                if (duration > state.longestQuietTime) {
-                    state.longestQuietTime = duration;
-                }
-
-                dom.quietTime.textContent = state.longestQuietTime.toFixed(1) + '秒';
-
-                const progress = Math.min(duration / settings.saplingTime * 100, 100);
-                updateProgressBar(progress);
-
-                if (duration >= settings.saplingTime) {
-                    addSapling();
-                    quietStartTime = Date.now();
-                }
-            } else {
-                quietStartTime = null;
-                updateProgressBar(0);
-            }
-        }
-
-        function handleReadingMode(average) {
-            if (average >= settings.readingThreshold) {
-                if (readingStartTime === null) readingStartTime = Date.now();
-
-                const duration = (Date.now() - readingStartTime) / 1000;
-                const progress = Math.min(duration / settings.saplingTime * 100, 100);
-                updateProgressBar(progress);
-
-                if (duration >= settings.saplingTime) {
-                    addSapling();
-                    readingStartTime = Date.now();
-                }
-            } else {
-                readingStartTime = null;
-                updateProgressBar(0);
-            }
-        }
-
-        // ==================== 植物逻辑 ====================
-        function addSapling() {
-            state.saplings++;
-            state.totalSaplings++;
-            state.todayCount++;
-
-            if (state.currentMode === 'reading') {
-                state.readingTrees++;
-            } else {
-                state.quietTrees++;
-            }
-
-            if (state.lastModeUsed && state.lastModeUsed !== state.currentMode) {
-                state.bothModesUsed = true;
-            }
-            state.lastModeUsed = state.currentMode;
-
-            checkAchievements();
-
-            if (state.saplings % settings.saplingsPerTree === 0) {
-                state.saplings = 0;
-                state.trees++;
-                state.todayTrees++;
-                addTree();
-            } else {
-                updateStats();
-                const sapling = document.createElement('div');
-                sapling.className = 'tree sapling';
-                sapling.textContent = SCENES[state.currentScene].smallItem;
-                dom.sceneContainer.appendChild(sapling);
-
-                sapling.style.transform = 'scale(0)';
-                setTimeout(() => sapling.style.transform = 'scale(1)', 10);
-
-                SCENES[state.currentScene].effects.createParticles(sapling);
-                playSound('sapling');
-            }
-            saveData();
-        }
-
-        function addTree() {
+          } else {
+            todayCount = 0;
+            todayTrees = 0;
+            longestQuietTime = 0;
             updateStats();
+          }
 
-            // 移除小植物
-            const saplingElements = document.querySelectorAll('.sapling');
-            const count = saplingElements.length;
-            for (let i = Math.max(0, count - (settings.saplingsPerTree - 1)); i < count; i++) {
-                if (saplingElements[i]) {
-                    saplingElements[i].style.transform = 'scale(0)';
-                    setTimeout(() => {
-                        if (saplingElements[i]?.parentNode) {
-                            saplingElements[i].parentNode.removeChild(saplingElements[i]);
-                        }
-                    }, 500);
-                }
-            }
-
-            // 添加大植物
-            const tree = document.createElement('div');
-            tree.className = 'tree';
-            tree.textContent = SCENES[state.currentScene].bigItem;
-            dom.sceneContainer.appendChild(tree);
-
-            tree.style.transform = 'scale(0)';
-            setTimeout(() => {
-                tree.style.transform = 'scale(1.5)';
-                setTimeout(() => tree.style.transform = 'scale(1)', 300);
-            }, 10);
-
-            SCENES[state.currentScene].effects.createBigEffect(tree);
-            createConfetti();
-            playSound('tree');
-            checkAchievements();
-            saveData();
+          if (gameData.achievements) {
+            achievements = gameData.achievements;
+          }
         }
 
-        // ==================== UI更新 ====================
-        function updateStats() {
-            dom.saplingCount.textContent = state.saplings;
-            dom.treeCount.textContent = state.trees;
-            dom.quietTime.textContent = state.longestQuietTime.toFixed(1) + '秒';
-            dom.todayCount.textContent = state.todayCount;
+        const savedHistory = localStorage.getItem("forestGameHistory");
+        if (savedHistory) {
+          historyData = JSON.parse(savedHistory);
         }
 
-        function updateProgressBar(progress) {
-            dom.progressBar.style.width = progress + '%';
-            dom.progressText.textContent = Math.round(progress) + '%';
+        // 更新模式按钮状态
+        modeBtns.forEach(btn => {
+          btn.classList.toggle("active", btn.dataset.mode === currentMode);
+        });
+      }
+
+      // 更新历史数据
+      function updateHistoryData() {
+        const today = new Date().toISOString().split("T")[0];
+        let found = false;
+
+        for (let i = 0; i < historyData.length; i++) {
+          if (historyData[i].date === today) {
+            historyData[i].trees = trees;
+            historyData[i].total = todayCount;
+            historyData[i].scene = currentScene;
+            found = true;
+            break;
+          }
         }
 
-        function resetProgress() {
-            updateProgressBar(0);
-            quietStartTime = null;
-            readingStartTime = null;
+        if (!found) {
+          historyData.push({
+            date: today,
+            trees: trees,
+            total: todayCount,
+            scene: currentScene,
+          });
         }
 
-        function updateNoiseIndicator(level) {
-            dom.noiseIndicator.style.left = Math.min(level, 100) + '%';
+        if (historyData.length > 7) {
+          historyData = historyData.slice(historyData.length - 7);
         }
 
-        function updateThresholdIndicator() {
-            const threshold = state.currentMode === 'quiet' ? settings.threshold : settings.readingThreshold;
-            dom.noiseThreshold.style.left = threshold + '%';
+        localStorage.setItem("forestGameHistory", JSON.stringify(historyData));
+        renderHistoryChart();
+      }
+
+      // 渲染场景
+      function renderScene() {
+        document.body.className = scenes[currentScene].bgClass;
+        sceneContainer.className = `scene-container ${scenes[currentScene].sceneClass}`;
+        progressBar.style.backgroundColor = scenes[currentScene].progressColor;
+        
+        const buttons = document.querySelectorAll("button:not(.scene-btn)");
+        buttons.forEach((btn) => {
+          btn.style.backgroundColor = scenes[currentScene].buttonColor;
+        });
+
+        const savedData = localStorage.getItem(`forestGameData_${currentScene}`);
+        if (savedData) {
+          const gameData = JSON.parse(savedData);
+          if (gameData.sceneContent) {
+            sceneContainer.innerHTML = gameData.sceneContent;
+          }
         }
+      }
 
-        function updateModeUI() {
-            if (state.currentMode === 'quiet') {
-                dom.modeText.textContent = '(低于阈值加分)';
-                dom.modeText.style.color = 'var(--primary)';
-            } else {
-                dom.modeText.textContent = '(高于阈值加分)';
-                dom.modeText.style.color = '#FF9800';
-            }
-            updateThresholdIndicator();
-        }
+      // 切换面板
+      function togglePanel(panel) {
+        const content = panel.querySelector(".panel-content");
+        content.classList.toggle("open");
+        panel.style.display = content.classList.contains("open") ? "block" : "none";
+      }
 
-        function renderScene() {
-            dom.body.className = state.currentScene;
-            updateThresholdIndicator();
+      // 显示通知
+      function showNotification(message, isError = false) {
+        notification.textContent = message;
+        notification.style.backgroundColor = isError ? "#f44336" : "#4caf50";
+        notification.classList.add("show");
+        setTimeout(() => notification.classList.remove("show"), 3000);
+      }
 
-            // 显示/隐藏背景元素
-            dom.starBg.style.display = state.currentScene === 'space' ? 'block' : 'none';
-            dom.bubbleBg.style.display = state.currentScene === 'ocean' ? 'block' : 'none';
+      // 设置成就系统
+      function setupAchievements() {
+        achievementConfig.forEach((ach) => {
+          if (!achievements[ach.id]) {
+            achievements[ach.id] = { unlocked: false, unlockedAt: null };
+          }
+        });
+        renderAchievements();
+      }
 
-            // 加载保存的场景内容
-            const savedData = localStorage.getItem(`forestGameData_${state.currentScene}`);
-            if (savedData) {
-                const gameData = JSON.parse(savedData);
-                if (gameData.sceneContent) {
-                    dom.sceneContainer.innerHTML = gameData.sceneContent;
-                }
-            }
-        }
+      // 渲染成就列表
+      function renderAchievements() {
+        achievementsList.innerHTML = "";
 
-        function applyBlur() {
-            document.documentElement.style.setProperty('--blur-amount', settings.blur + 'px');
-        }
+        achievementConfig.forEach((ach) => {
+          const achievement = document.createElement("div");
+          achievement.className = `achievement ${achievements[ach.id].unlocked ? "unlocked" : "locked"}`;
 
-        // ==================== 面板切换 ====================
-        window.togglePanel = function(panel) {
-            if (panel === 'settings') {
-                const isOpen = dom.settingsPanel.style.display === 'block';
-                dom.settingsPanel.style.display = isOpen ? 'none' : 'block';
-                if (!isOpen) dom.achievementsPanel.style.display = 'none';
-            } else if (panel === 'achievements') {
-                const isOpen = dom.achievementsPanel.style.display === 'block';
-                dom.achievementsPanel.style.display = isOpen ? 'none' : 'block';
-                if (!isOpen) dom.settingsPanel.style.display = 'none';
-            }
+          const icon = document.createElement("div");
+          icon.className = "achievement-icon";
+          icon.textContent = ach.icon;
+
+          const info = document.createElement("div");
+          info.className = "achievement-info";
+
+          const title = document.createElement("div");
+          title.className = "achievement-title";
+          title.textContent = ach.title;
+
+          const desc = document.createElement("div");
+          desc.textContent = ach.description;
+
+          info.appendChild(title);
+          info.appendChild(desc);
+
+          if (achievements[ach.id].unlocked) {
+            const date = document.createElement("div");
+            date.style.fontSize = "0.8em";
+            date.style.color = "#666";
+            date.textContent = `解锁于: ${new Date(achievements[ach.id].unlockedAt).toLocaleString()}`;
+            info.appendChild(date);
+          }
+
+          achievement.appendChild(icon);
+          achievement.appendChild(info);
+          achievementsList.appendChild(achievement);
+        });
+      }
+
+      // 检查成就
+      function checkAchievements() {
+        const gameState = {
+          saplings: saplings,
+          trees: trees,
+          totalQuietTime: totalQuietTime,
+          longestQuietTime: longestQuietTime,
+          todayTrees: todayTrees,
+          readingTrees: readingTrees,
+          bothModesUsed: bothModesUsed,
         };
 
-        // ==================== 特效 ====================
-        function createStar(parent) {
-            const star = document.createElement('div');
-            star.className = 'star';
-            star.style.left = Math.random() * 30 - 15 + 'px';
-            star.style.top = Math.random() * 30 - 15 + 'px';
-            star.style.animationDelay = Math.random() * 2 + 's';
-            star.style.width = Math.random() * 4 + 2 + 'px';
-            star.style.height = star.style.width;
-            parent.appendChild(star);
-            setTimeout(() => star.remove(), 2000);
-        }
+        let newAchievements = 0;
 
-        function createBubble(parent) {
-            const bubble = document.createElement('div');
-            bubble.className = 'bubble';
-            bubble.style.left = Math.random() * 30 - 15 + 'px';
-            bubble.style.top = Math.random() * 30 - 15 + 'px';
-            bubble.style.width = Math.random() * 20 + 10 + 'px';
-            bubble.style.height = bubble.style.width;
-            bubble.style.animationDuration = Math.random() * 3 + 2 + 's';
-            parent.appendChild(bubble);
-            setTimeout(() => bubble.remove(), 5000);
-        }
-
-        function createRocket(parent) {
-            const rocket = document.createElement('div');
-            rocket.className = 'rocket';
-            rocket.textContent = '🚀';
-            rocket.style.position = 'absolute';
-            rocket.style.left = '0';
-            rocket.style.bottom = '0';
-            rocket.style.fontSize = '32px';
-            rocket.style.zIndex = '10';
-            parent.appendChild(rocket);
-            setTimeout(() => rocket.remove(), 3000);
-        }
-
-        function createLeaf(parent) {
-            const leaf = document.createElement('div');
-            leaf.className = 'leaf';
-            leaf.textContent = '🍃';
-            leaf.style.left = Math.random() * 30 - 15 + 'px';
-            leaf.style.animationDelay = Math.random() * 2 + 's';
-            parent.appendChild(leaf);
-            setTimeout(() => leaf.remove(), 3000);
-        }
-
-        function createSparkle(parent) {
-            const sparkle = document.createElement('div');
-            sparkle.className = 'sparkle';
-            sparkle.style.left = Math.random() * 30 - 15 + 'px';
-            sparkle.style.top = Math.random() * 30 - 15 + 'px';
-            parent.appendChild(sparkle);
-            setTimeout(() => sparkle.remove(), 1000);
-        }
-
-        function createConfetti() {
-            for (let i = 0; i < 30; i++) {
-                const confetti = document.createElement('div');
-                confetti.className = 'confetti';
-                confetti.style.left = Math.random() * 100 + 'vw';
-                confetti.style.backgroundColor = `hsl(${Math.random() * 360}, 100%, 60%)`;
-                confetti.style.width = Math.random() * 15 + 5 + 'px';
-                confetti.style.height = Math.random() * 15 + 5 + 'px';
-                confetti.style.borderRadius = Math.random() > 0.5 ? '50%' : '0';
-                document.body.appendChild(confetti);
-                setTimeout(() => confetti.remove(), 3000);
+        achievementConfig.forEach((ach) => {
+          if (!achievements[ach.id].unlocked && ach.condition(gameState)) {
+            achievements[ach.id].unlocked = true;
+            achievements[ach.id].unlockedAt = new Date().toISOString();
+            newAchievements++;
+            showNotification(`成就解锁: ${ach.title}`);
+            if (settings.enableSounds) {
+              playSound("achievement");
             }
+          }
+        });
+
+        if (newAchievements > 0) {
+          renderAchievements();
+          saveGameData();
+        }
+      }
+
+      // 加载设置
+      function loadSettings() {
+        const savedSettings = localStorage.getItem("forestGameSettings");
+        if (savedSettings) {
+          const loadedSettings = JSON.parse(savedSettings);
+          settings.threshold = loadedSettings.threshold || 30;
+          settings.readingThreshold = loadedSettings.readingThreshold || 50;
+          settings.saplingTime = loadedSettings.saplingTime || 5;
+          settings.saplingsPerTree = loadedSettings.saplingsPerTree || 10;
+          settings.enableSounds = loadedSettings.enableSounds !== false;
+          settings.blur = loadedSettings.blur || 10;
         }
 
-        function createBackgroundElements() {
-            // 星星背景
-            for (let i = 0; i < 150; i++) {
-                const star = document.createElement('div');
-                star.className = 'star';
-                star.style.left = Math.random() * 100 + 'vw';
-                star.style.top = Math.random() * 100 + 'vh';
-                star.style.width = Math.random() * 4 + 1 + 'px';
-                star.style.height = star.style.width;
-                star.style.animationDelay = Math.random() * 5 + 's';
-                star.style.animationDuration = Math.random() * 3 + 2 + 's';
-                dom.starBg.appendChild(star);
-            }
+        thresholdSlider.value = settings.threshold;
+        thresholdValue.textContent = settings.threshold;
+        readingThreshold.value = settings.readingThreshold;
+        readingThresholdValue.textContent = settings.readingThreshold;
+        saplingTimeInput.value = settings.saplingTime;
+        saplingTimeValue.textContent = settings.saplingTime;
+        saplingsPerTreeInput.value = settings.saplingsPerTree;
+        saplingsPerTreeValue.textContent = settings.saplingsPerTree;
+        enableSoundsInput.checked = settings.enableSounds;
+        blurSlider.value = settings.blur;
+        blurValue.textContent = settings.blur.toFixed(1);
+        
+        updateThresholdIndicator();
+      }
 
-            // 泡泡背景
-            for (let i = 0; i < 30; i++) {
-                const bubble = document.createElement('div');
-                bubble.className = 'bubble';
-                bubble.style.left = Math.random() * 100 + 'vw';
-                bubble.style.bottom = -Math.random() * 100 + 'px';
-                bubble.style.width = Math.random() * 30 + 15 + 'px';
-                bubble.style.height = bubble.style.width;
-                bubble.style.animationDuration = Math.random() * 15 + 10 + 's';
-                bubble.style.animationDelay = Math.random() * 5 + 's';
-                dom.bubbleBg.appendChild(bubble);
-            }
+      // 保存设置
+      function saveSettings() {
+        localStorage.setItem("forestGameSettings", JSON.stringify(settings));
+      }
+
+      // 渲染历史图表
+      function renderHistoryChart() {
+        historyChart.innerHTML = "<p>战绩</p>";
+
+        if (historyData.length === 0) return;
+
+        const maxTotal = Math.max(...historyData.map((item) => item.total), 10);
+        const chartHeight = 180;
+        const barWidth = 40;
+        const gap = 20;
+        const startX = 30;
+
+        historyData.forEach((item, index) => {
+          const barHeight = (item.total / maxTotal) * chartHeight;
+          const bar = document.createElement("div");
+          bar.className = "chart-bar";
+          bar.style.left = startX + index * (barWidth + gap) + "px";
+          bar.style.height = barHeight + "px";
+
+          const label = document.createElement("div");
+          label.textContent = item.date.split("-").slice(1).join("/") + "\n" + item.total;
+          label.style.position = "absolute";
+          label.style.bottom = "-40px";
+          label.style.left = "0";
+          label.style.width = "100%";
+          label.style.fontSize = "12px";
+          label.style.whiteSpace = "pre";
+
+          bar.appendChild(label);
+          historyChart.appendChild(bar);
+        });
+      }
+
+      // 播放音效
+      function playSound(type) {
+        if (!settings.enableSounds) return;
+
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        const oscillator = audioCtx.createOscillator();
+        const gainNode = audioCtx.createGain();
+
+        oscillator.connect(gainNode);
+        gainNode.connect(audioCtx.destination);
+
+        switch (type) {
+          case "sapling":
+            oscillator.frequency.value = 800;
+            gainNode.gain.value = 0.1;
+            oscillator.type = "sine";
+            break;
+          case "tree":
+            oscillator.frequency.value = 600;
+            gainNode.gain.value = 0.2;
+            oscillator.type = "triangle";
+            break;
+          case "achievement":
+            oscillator.frequency.value = 1000;
+            gainNode.gain.value = 0.3;
+            oscillator.type = "sawtooth";
+            break;
+          default:
+            oscillator.frequency.value = 440;
+            gainNode.gain.value = 0.1;
+            oscillator.type = "sine";
         }
 
-        // ==================== 音效 ====================
-        function playSound(type) {
-            if (!settings.enableSounds) return;
+        oscillator.start();
+        gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.5);
+        oscillator.stop(audioCtx.currentTime + 0.5);
 
-            try {
-                const ctx = new (window.AudioContext || window.webkitAudioContext)();
-                const oscillator = ctx.createOscillator();
-                const gainNode = ctx.createGain();
-
-                oscillator.connect(gainNode);
-                gainNode.connect(ctx.destination);
-
-                switch (type) {
-                    case 'sapling':
-                        oscillator.frequency.value = 800;
-                        gainNode.gain.value = 0.1;
-                        oscillator.type = 'sine';
-                        break;
-                    case 'tree':
-                        oscillator.frequency.value = 600;
-                        gainNode.gain.value = 0.2;
-                        oscillator.type = 'triangle';
-                        break;
-                    case 'achievement':
-                        oscillator.frequency.value = 1000;
-                        gainNode.gain.value = 0.3;
-                        oscillator.type = 'sawtooth';
-                        break;
-                }
-
-                oscillator.start();
-                gainNode.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.5);
-                oscillator.stop(ctx.currentTime + 0.5);
-            } catch (e) {
-                console.log('音效播放失败:', e);
-            }
-        }
-
-        // ==================== 成就系统 ====================
-        function checkAchievements() {
-            const gameState = {
-                totalSaplings: state.totalSaplings,
-                trees: state.trees,
-                totalQuietTime: state.totalQuietTime,
-                longestQuietTime: state.longestQuietTime,
-                todayTrees: state.todayTrees,
-                readingTrees: state.readingTrees,
-                bothModesUsed: state.bothModesUsed
-            };
-
-            ACHIEVEMENTS.forEach(ach => {
-                if (!state.achievements[ach.id].unlocked && ach.condition(gameState)) {
-                    state.achievements[ach.id].unlocked = true;
-                    state.achievements[ach.id].unlockedAt = new Date().toISOString();
-                    showNotification(`🏆 成就解锁: ${ach.title}`);
-                    playSound('achievement');
-                }
-            });
-
-            renderAchievements();
-        }
-
-        function renderAchievements() {
-            dom.achievementsList.innerHTML = '';
-
-            ACHIEVEMENTS.forEach(ach => {
-                const achievement = document.createElement('div');
-                achievement.className = `achievement ${state.achievements[ach.id].unlocked ? 'unlocked' : 'locked'}`;
-
-                const icon = document.createElement('div');
-                icon.className = 'achievement-icon';
-                icon.textContent = ach.icon;
-
-                const info = document.createElement('div');
-                info.className = 'achievement-info';
-
-                const title = document.createElement('div');
-                title.className = 'achievement-title';
-                title.textContent = ach.title;
-
-                const desc = document.createElement('div');
-                desc.className = 'achievement-description';
-                desc.textContent = ach.description;
-
-                info.appendChild(title);
-                info.appendChild(desc);
-
-                if (state.achievements[ach.id].unlocked) {
-                    const date = document.createElement('div');
-                    date.className = 'achievement-date';
-                    date.textContent = `解锁于: ${new Date(state.achievements[ach.id].unlockedAt).toLocaleDateString()}`;
-                    info.appendChild(date);
-                }
-
-                achievement.appendChild(icon);
-                achievement.appendChild(info);
-                dom.achievementsList.appendChild(achievement);
-            });
-        }
-
-        // ==================== 历史图表 ====================
-        function updateHistoryData() {
-            const today = new Date().toISOString().split('T')[0];
-            let found = false;
-
-            for (let i = 0; i < state.historyData.length; i++) {
-                if (state.historyData[i].date === today) {
-                    state.historyData[i].trees = state.trees;
-                    state.historyData[i].total = state.todayCount;
-                    state.historyData[i].scene = state.currentScene;
-                    found = true;
-                    break;
-                }
-            }
-
-            if (!found) {
-                state.historyData.push({
-                    date: today,
-                    trees: state.trees,
-                    total: state.todayCount,
-                    scene: state.currentScene
-                });
-            }
-
-            if (state.historyData.length > 7) {
-                state.historyData = state.historyData.slice(state.historyData.length - 7);
-            }
-
-            localStorage.setItem('forestGameHistory', JSON.stringify(state.historyData));
-            renderHistoryChart();
-        }
-
-        function renderHistoryChart() {
-            dom.historyChart.innerHTML = '<h3 style="margin-top: 0;">历史记录 (最近7天)</h3>';
-
-            if (state.historyData.length === 0) {
-                dom.historyChart.innerHTML += '<p style="text-align: center; color: var(--text-muted); padding: 50px 0;">暂无历史记录</p>';
-                return;
-            }
-
-            const maxTotal = Math.max(...state.historyData.map(item => item.total), 10);
-            const chartHeight = 120;
-            const barWidth = 40;
-            const gap = (dom.historyChart.clientWidth - 40 - (state.historyData.length * barWidth)) / (state.historyData.length - 1);
-            const startX = 20;
-
-            state.historyData.forEach((item, index) => {
-                const barHeight = (item.total / maxTotal) * chartHeight;
-                const bar = document.createElement('div');
-                bar.className = 'chart-bar';
-                bar.style.left = startX + index * (barWidth + gap) + 'px';
-                bar.style.height = barHeight + 'px';
-
-                const label = document.createElement('div');
-                label.className = 'chart-label';
-                const dateParts = item.date.split('-');
-                label.textContent = `${dateParts[1]}/${dateParts[2]}\n${item.total}`;
-
-                bar.appendChild(label);
-                dom.historyChart.appendChild(bar);
-            });
-        }
-
-        // ==================== 通知 ====================
-        function showNotification(message, isError = false) {
-            dom.notification.textContent = message;
-            dom.notification.style.background = isError
-                ? 'linear-gradient(145deg, #f44336, #d32f2f)'
-                : 'var(--primary-gradient)';
-            dom.notification.classList.add('show');
-            setTimeout(() => dom.notification.classList.remove('show'), 3000);
-        }
-
-        // ==================== 启动 ====================
-        init();
-    })();
-</script>
-</body>
+        oscillator.onended = () => audioCtx.close().catch(console.warn);
+      }
+    </script>
+  </body>
 </html>
