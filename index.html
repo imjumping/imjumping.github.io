@@ -2,193 +2,110 @@
 <html lang="zh-CN">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>安静种树，但早读也种树</title>
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, user-scalable=no"
+    />
+    <title>安静种树 · 早读种树</title>
     <meta
       name="description"
-      content="持续安静/早读一段时间种一棵植物 多棵植物会长成更大的植物"
+      content="持续安静或大声早读，即可种下植物，合并成大树。"
     />
-    <meta name="keywords" content="课堂安静种树游戏, 种树游戏, 课堂游戏" />
-    <meta name="author" content="imjumping" />
-
     <style>
+      @import url("https://cdn.bootcdn.net/ajax/libs/lxgw-wenkai-screen-webfont/1.7.0/style.min.css");
       * {
         -webkit-tap-highlight-color: transparent;
         box-sizing: border-box;
         user-select: none;
-      }
-
-      :root {
-        --transition: all 0.2s ease;
-        --shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-        --shadow-hover: 0 4px 12px rgba(0, 0, 0, 0.25);
-        --radius-sm: 12px;
-        --radius-md: 16px;
-        --radius-lg: 24px;
-        --blur-amount: 10px;
-      }
-
-      body {
         font-family:
-          system-ui,
+          "LXGW WenKai",
           -apple-system,
+          BlinkMacSystemFont,
           "Segoe UI",
           Roboto,
           sans-serif;
+      }
+      
+
+      :root {
+        --blur-amount: 10px;
+        --shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+        --radius-lg: 28px;
+        --radius-md: 20px;
+      }
+
+      body {
         text-align: center;
         padding: 16px;
         margin: 0;
         min-height: 100vh;
-        transition: background-color 0.3s;
+        background: url(https://t.alcy.cc/fj/) fixed center/cover no-repeat;
+        transition: filter 0.2s;
       }
-
-      /* 场景背景 - 保持URL背景 */
-      .forest-bg {
-        background: url(https://t.alcy.cc/fj/);
-        background-size: cover;
-        background-position: center;
-        background-repeat: no-repeat;
-        background-attachment: fixed;
+      ::-webkit-scrollbar {
+        display: none;
       }
-
-      /* 滑块 */
-      input[type="range"] {
-        appearance: none;
-        width: 180px;
-        height: 20px;
-        background: linear-gradient(90deg, #4caf50, #8bc34a);
-        border-radius: 20px;
-        outline: none;
-      }
-
-      input[type="range"]::-webkit-slider-thumb {
-        width: 24px;
-        height: 24px;
-        background: white;
-        border-radius: 50%;
-        cursor: pointer;
-        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
-        transition: all 0.2s ease;
-        margin-top: -2px;
-        border: 2px solid #4caf50;
-      }
-
-      input[type="range"]::-webkit-slider-thumb:active {
-        transform: scale(1.2);
-        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-      }
-
-      /* 输入框 */
-      input[type="number"] {
-        width: 80px;
-        padding: 8px 12px;
-        font-size: 14px;
-        border: 2px solid #e0e0e0;
-        border-radius: 30px;
-        outline: none;
-        transition: all 0.2s ease;
-        text-align: center;
-      }
-
-      input[type="number"]:focus {
-        border-color: #4caf50;
-        box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.15);
-      }
-
-      /* 主容器 */
+      /* 全局容器 */
       .container {
         max-width: 800px;
         margin: 0 auto;
         background-color: rgba(255, 255, 255, 0.2);
         padding: 20px;
         border-radius: var(--radius-lg);
-        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
         backdrop-filter: blur(var(--blur-amount));
         border: 1px solid rgba(255, 255, 255, 0.3);
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+        position: relative;
+        z-index: 5;
       }
 
       h1 {
         color: #2e8b57;
-        margin: 0 0 8px 0;
+        margin: 0 0 8px;
         font-size: 28px;
         text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
       }
 
-      /* 场景容器 */
-      .scene-container {
-        min-height: 300px;
-        border-radius: var(--radius-lg);
-        margin: 24px 0;
-        padding: 24px;
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: center;
-        align-items: flex-end;
-        gap: 12px;
-        position: relative;
-        overflow: hidden;
-        box-shadow:
-          inset 0 2px 8px rgba(0, 0, 0, 0.1),
-          0 4px 12px rgba(0, 0, 0, 0.15);
-        border: 2px solid rgba(255, 255, 255, 0.7);
+      .sub {
+        font-size: 14px;
+        opacity: 0.9;
       }
 
-      .forest-scene {
-        background-color: rgba(245, 245, 220, 0.9);
-      }
-
-      /* 植物 */
-      .tree {
-        font-size: 32px;
-        margin: 6px;
-        transition: all 0.2s ease;
-        position: relative;
-        z-index: 2;
-        filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.2));
-      }
-
-
-      .sapling {
-        font-size: 24px;
-      }
-
-      /* 模式选择器 */
+      /* 模式切换 */
       .mode-selector {
         margin: 16px 0;
         display: flex;
         justify-content: center;
-        gap: 10px;
+        gap: 12px;
       }
 
       .mode-btn {
-        padding: 8px 16px;
-        border: 2px solid transparent;
-        background: rgba(255, 255, 255, 0.2);
-        min-width: auto;
+        padding: 8px 20px;
+        border: 2px solid rgba(255, 255, 255, 0.5);
+        background: rgba(255, 255, 255, 0.25);
+        border-radius: 60px;
+        font-weight: 600;
         color: white;
-        font-weight: 500;
+        cursor: pointer;
+        transition: 0.1s linear;
       }
 
       .mode-btn.active {
         border-color: #4caf50;
-        background: rgba(76, 175, 80, 0.3);
-      }
-
-      .mode-btn[data-mode="quiet"].active {
-        border-color: #4caf50;
-        background: rgba(76, 175, 80, 0.3);
+        background: rgba(76, 175, 80, 0.5);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
       }
 
       .mode-btn[data-mode="reading"].active {
         border-color: #ff9800;
-        background: rgba(255, 152, 0, 0.3);
+        background: rgba(255, 152, 0, 0.5);
       }
 
       .mode-indicator {
         display: inline-block;
         padding: 2px 8px;
-        border-radius: 20px;
-        font-size: 12px;
+        border-radius: 30px;
+        font-size: 11px;
         font-weight: bold;
         margin-left: 8px;
       }
@@ -197,7 +114,6 @@
         background: #4caf50;
         color: white;
       }
-
       .mode-indicator.reading {
         background: #ff9800;
         color: white;
@@ -209,60 +125,80 @@
         display: flex;
         justify-content: center;
         flex-wrap: wrap;
-        gap: 8px;
+        gap: 10px;
       }
 
-      /* 按钮 - 统一使用绿色系，去掉渐变动画 */
       button {
         background: #4caf50;
         color: white;
         border: none;
-        padding: 10px 20px;
-        font-size: 15px;
-        font-weight: 500;
-        border-radius: 40px;
+        padding: 10px 18px;
+        font-weight: 600;
+        border-radius: 60px;
         cursor: pointer;
         box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
-        transition: all 0.15s ease;
+        transition: 0.05s linear;
         border: 1px solid rgba(255, 255, 255, 0.3);
         min-width: 100px;
       }
-
-
       button:active {
-        transform: translateY(1px) scale(0.98);
-        box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+        transform: scale(0.97);
       }
 
-      button:disabled {
-        background: #9e9e9e;
-        cursor: not-allowed;
-        transform: none;
-        box-shadow: none;
-        filter: none;
+      /* 进度+噪音区 */
+      .noise-level-container {
+        background: rgba(0, 0, 0, 0.2);
+        padding: 16px;
+        border-radius: 48px;
+        margin: 16px 0;
+      }
+      .noise-level {
+        font-size: 18px;
+        font-weight: bold;
+      }
+      .noise-visualizer {
+        width: 100%;
+        height: 32px;
+        background: rgba(0, 0, 0, 0.3);
+        border-radius: 30px;
+        margin: 12px 0;
+        position: relative;
+        overflow: hidden;
+      }
+      .noise-indicator {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        width: 4px;
+        background: white;
+        box-shadow: 0 0 8px white;
+        transform: translateX(-50%);
+        transition: left 0.08s linear;
+      }
+      .noise-threshold {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        width: 2px;
+        background: rgba(255, 215, 0, 0.9);
+        box-shadow: 0 0 5px gold;
       }
 
-      /* 进度条 */
       .progress-container {
         width: 100%;
-        background-color: rgba(0, 0, 0, 0.15);
-        border-radius: 30px;
-        margin: 20px 0;
-        height: 24px;
-        box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.1);
+        background: rgba(0, 0, 0, 0.3);
+        border-radius: 40px;
+        height: 28px;
         overflow: hidden;
         position: relative;
+        margin-top: 8px;
       }
-
       .progress-bar {
         height: 100%;
-        background-color: #4caf50;
-        border-radius: 30px;
+        background: #4caf50;
         width: 0%;
-        transition: width 0.2s linear;
-        box-shadow: 0 2px 8px rgba(76, 175, 80, 0.4);
+        transition: width 0.1s linear;
       }
-
       .progress-text {
         position: absolute;
         top: 50%;
@@ -270,56 +206,70 @@
         transform: translate(-50%, -50%);
         font-weight: bold;
         color: white;
-        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
-        font-size: 14px;
+        text-shadow: 0 1px 2px black;
+        font-size: 13px;
       }
 
       /* 统计卡片 */
       .stats {
         display: flex;
         justify-content: space-around;
-        margin: 20px 0;
         flex-wrap: wrap;
         gap: 12px;
+        margin: 20px 0;
       }
-
       .stat-box {
-        background: rgba(255, 255, 255, 0.9);
-        padding: 14px 18px;
-        border-radius: 30px;
-        min-width: 160px;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-        border: 1px solid rgba(255, 255, 255, 0.8);
-        transition: all 0.5s cubic-bezier(0.25, 1.5, 0.45, 1.1);
+        background: rgba(255, 255, 255, 0.85);
+        padding: 10px 16px;
+        border-radius: 48px;
+        min-width: 130px;
+        text-align: center;
+        font-weight: 600;
       }
-
-      .stat-box:active {
-        transform: scale(0.9);
-        box-shadow: 0 6px 16px rgba(0, 0, 0, 0.25);
-      }
-
       .stat-box div:first-child {
-        font-size: 14px;
-        font-weight: 500;
-        opacity: 0.9;
-        margin-bottom: 6px;
+        font-size: 13px;
+        opacity: 0.8;
       }
-
       .stat-box div:last-child {
-        font-size: 28px;
-        font-weight: 700;
-        line-height: 1.2;
+        font-size: 26px;
+        font-weight: 800;
       }
 
-      /* 特效元素 */
+      /* 植物场景区 */
+      .scene-container {
+        min-height: 280px;
+        background: rgba(235, 225, 190, 0.8);
+        border-radius: 40px;
+        margin: 20px 0;
+        padding: 24px;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        align-items: flex-end;
+        gap: 10px;
+        border: 2px solid rgba(255, 255, 240, 0.8);
+        box-shadow:
+          inset 0 2px 8px rgba(0, 0, 0, 0.05),
+          0 4px 12px rgba(0, 0, 0, 0.1);
+      }
+      .tree {
+        font-size: 32px;
+        margin: 4px;
+        filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.2));
+        transition: transform 0.1s ease;
+      }
+      .sapling {
+        font-size: 26px;
+      }
+
+      /* 叶子动画 */
       .leaf {
         position: absolute;
         font-size: 14px;
-        animation: floatLeaf 2.5s ease-out forwards;
+        animation: floatLeaf 2s ease-out forwards;
         pointer-events: none;
-        z-index: 1;
+        z-index: 2;
       }
-
       @keyframes floatLeaf {
         0% {
           transform: translateY(0) rotate(0deg);
@@ -334,194 +284,133 @@
       /* 历史图表 */
       .history-chart {
         width: 100%;
-        height: 460px;
-        margin: 20px 0;
+        height: 200px;
         background: rgba(0, 0, 0, 0.1);
-        border-radius: var(--radius-md);
+        border-radius: 28px;
+        margin: 20px 0;
         position: relative;
-        box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.1);
-        padding: 10px;
+        padding: 12px;
       }
-
       .chart-bar {
         position: absolute;
-        bottom: 25px;
-        width: 30px;
+        bottom: 20px;
+        width: 32px;
         background: #4caf50;
-        border-radius: 8px 8px 4px 4px;
-        transition: height 0.2s ease;
-        box-shadow: 0 -2px 8px rgba(76, 175, 80, 0.3);
+        border-radius: 12px 12px 6px 6px;
+        transition: height 0.2s;
       }
 
-      .chart-bar::after {
-        content: attr(data-value);
-        position: absolute;
-        top: -20px;
-        left: 50%;
-        transform: translateX(-50%);
-        font-size: 11px;
-        color: white;
-        background: rgba(0, 0, 0, 0.5);
-        padding: 2px 6px;
-        border-radius: 12px;
-        white-space: nowrap;
-      }
-
-      /* 噪音水平 */
-      .noise-level-container {
-        margin: 16px 0;
-        padding: 16px;
-        background: rgba(0, 0, 0, 0.1);
-        border-radius: 40px;
-      }
-
-      .noise-level {
-        font-size: 18px;
-        font-weight: 500;
-        display: inline-block;
-        padding: 8px 32px;
-        border-radius: 40px;
-      }
-
-      .mode-text {
-        font-weight: bold;
-        margin-left: 10px;
-      }
-
-      .mode-text.quiet {
-        color: #4caf50;
-      }
-
-      .mode-text.reading {
-        color: #ff9800;
-      }
-
-      /* 噪音可视化 */
-      .noise-visualizer {
+      /* 模态框全局 */
+      .modal-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
         width: 100%;
-        height: 40px;
-        background: rgba(0, 0, 0, 0.2);
-        border-radius: 20px;
-        margin: 15px 0;
-        overflow: hidden;
-        position: relative;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.6);
+        backdrop-filter: blur(8px);
+        z-index: 1000;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        visibility: hidden;
+        opacity: 0;
+        transition:
+          visibility 0.2s,
+          opacity 0.2s;
       }
-
-      .noise-indicator {
-        position: absolute;
-        top: 0;
-        bottom: 0;
-        width: 4px;
-        background: white;
-        box-shadow: 0 0 10px white;
-        transform: translateX(-50%);
-        transition: left 0.1s ease;
+      .modal-overlay.active {
+        visibility: visible;
+        opacity: 1;
       }
-
-      .noise-threshold {
-        position: absolute;
-        top: 0;
-        bottom: 0;
-        width: 2px;
-        background: rgba(255, 255, 255, 0.8);
-        box-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
+      .modal-card {
+        background: rgba(30, 40, 30, 0.9);
+        width: 90%;
+        max-width: 460px;
+        border-radius: 48px;
+        padding: 24px 20px 28px;
+        box-shadow: 0 25px 40px rgba(0, 0, 0, 0.4);
+        border: 1px solid rgba(255, 255, 200, 0.4);
+        color: white;
+        transform: scale(0.95);
+        transition: transform 0.2s cubic-bezier(0.2, 0.9, 0.4, 1.1);
       }
-
-      .settings-panel {
-        margin: 20px 0;
-        padding: 20px;
-        background: rgba(255, 255, 255, 0.80);
-        border: 1px solid rgba(255, 255, 255, 0.4);
-        border-radius: var(--radius-lg);
-        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
-        display: none;
+      .modal-overlay.active .modal-card {
+        transform: scale(1);
       }
-
-      .settings-panel h3 {
-        margin: 0 0 16px 0;
-        color: #2e8b57;
-        font-size: 20px;
-        border-bottom: 2px solid rgba(76, 175, 80, 0.3);
-        padding-bottom: 8px;
+      .modal-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: 1px solid rgba(255, 255, 200, 0.3);
+        padding-bottom: 12px;
+        margin-bottom: 18px;
       }
-
+      .modal-header h3 {
+        margin: 0;
+        font-size: 26px;
+      }
+      .close-modal {
+        background: rgba(255, 80, 80, 0.7);
+        border: none;
+        font-size: 24px;
+        width: 44px;
+        height: 44px;
+        border-radius: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        color: white;
+        padding: 0;
+        box-shadow: none;
+      }
+      .close-modal:active {
+        transform: scale(0.92);
+      }
       .settings-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-        gap: 15px;
+        display: flex;
+        flex-direction: column;
+        gap: 18px;
       }
-
       .setting-item {
-        background: rgba(255, 255, 255, 0.1);
-        padding: 15px;
-        border-radius: 20px;
+        background: rgba(0, 0, 0, 0.3);
+        padding: 12px 16px;
+        border-radius: 32px;
       }
-
       .setting-label {
         display: flex;
         justify-content: space-between;
-        align-items: center;
-        margin-bottom: 10px;
+        margin-bottom: 8px;
         font-weight: 500;
-        color: #2e8b57;
       }
-
-      .setting-value {
-        font-weight: 600;
-        color: #4caf50;
+      input[type="range"] {
+        width: 100%;
+        height: 6px;
+        border-radius: 10px;
+        background: #4caf50;
+      }
+      input[type="number"] {
+        width: 75px;
         background: rgba(255, 255, 255, 0.2);
-        padding: 4px 10px;
-        border-radius: 30px;
-      }
-
-      .settings-row {
-        margin: 12px 0;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 6px 10px;
+        border: none;
         border-radius: 40px;
-        background: rgba(255, 255, 255, 0.1);
+        padding: 6px 12px;
+        color: white;
+        font-weight: bold;
+        text-align: center;
       }
-
-      .settings-row label {
-        font-weight: 500;
-        color: #2e8b57;
-        font-size: 15px;
-      }
-
-      .settings-row span {
-        min-width: 40px;
-        text-align: right;
-        font-weight: 600;
-        color: #4caf50;
-        background: rgba(255, 255, 255, 0.2);
-        padding: 4px 10px;
-        border-radius: 30px;
-      }
-
-      /* 复选框美化 */
-      input[type="checkbox"] {
-        width: 18px;
-        height: 18px;
-        accent-color: #4caf50;
-        cursor: pointer;
-      }
-
-      /* 开关 */
       .switch {
         position: relative;
         display: inline-block;
-        width: 50px;
+        width: 48px;
         height: 24px;
       }
-
       .switch input {
         opacity: 0;
         width: 0;
         height: 0;
       }
-
       .slider {
         position: absolute;
         cursor: pointer;
@@ -530,10 +419,9 @@
         right: 0;
         bottom: 0;
         background-color: #ccc;
+        border-radius: 34px;
         transition: 0.2s;
-        border-radius: 24px;
       }
-
       .slider:before {
         position: absolute;
         content: "";
@@ -542,332 +430,266 @@
         left: 2px;
         bottom: 2px;
         background-color: white;
-        transition: 0.2s;
         border-radius: 50%;
+        transition: 0.2s;
       }
-
       input:checked + .slider {
         background-color: #4caf50;
       }
-
       input:checked + .slider:before {
-        transform: translateX(26px);
-      }
-
-      /* 成就面板 */
-      .achievements-panel {
-        margin: 20px 0;
-        padding: 20px;
-        background: rgba(255, 255, 255, 0.25);
-        border-radius: var(--radius-lg);
-        border: 1px solid rgba(255, 255, 255, 0.4);
-        display: none;
+        transform: translateX(24px);
       }
 
       .achievement {
         display: flex;
         align-items: center;
-        margin: 10px 0;
+        gap: 14px;
+        background: rgba(255, 255, 200, 0.15);
+        margin: 12px 0;
         padding: 12px;
-        background: rgba(255, 255, 255, 0.2);
-        border-radius: 40px;
-        border: 1px solid rgba(255, 255, 255, 0.3);
-        transition: all 0.15s ease;
+        border-radius: 60px;
       }
-
-      .achievement:hover {
-        background: rgba(255, 255, 255, 0.3);
-        transform: translateX(5px);
-      }
-
       .achievement.unlocked {
-        background: rgba(76, 175, 80, 0.2);
-        border-color: #4caf50;
+        background: rgba(76, 175, 80, 0.4);
+        border-left: 4px solid #8bc34a;
       }
-
-      .achievement.locked {
-        opacity: 0.6;
-      }
-
       .achievement-icon {
-        font-size: 28px;
-        margin-right: 15px;
-        min-width: 40px;
-        text-align: center;
+        font-size: 32px;
       }
-
       .achievement-info {
-        flex-grow: 1;
+        flex: 1;
         text-align: left;
       }
-
       .achievement-title {
-        font-weight: 600;
+        font-weight: bold;
         margin-bottom: 4px;
-        font-size: 16px;
       }
 
-      /* 场景选择器 - 隐藏，只保留一个按钮 */
-      .scene-selector {
-        margin: 16px 0;
-        display: flex;
-        justify-content: center;
-        gap: 10px;
-      }
-
-      .scene-btn {
-        padding: 8px 16px;
-        border: 2px solid transparent;
-        background: rgba(255, 255, 255, 0.2);
-        min-width: auto;
-      }
-
-      .scene-btn.active {
-        border-color: #4caf50;
-        background: rgba(76, 175, 80, 0.3);
-      }
-
-      /* 面板切换按钮 */
-      .panel-toggle {
-        margin: 5px;
-      }
-
-      /* 面板内容动画 - 简化版 */
-      .panel-content {
-        max-height: 0;
-        overflow: hidden;
-        transition: max-height 0.2s ease-out;
-      }
-
-      .panel-content.open {
-        max-height: 500px;
-      }
-
-      /* 通知 */
       .notification {
         position: fixed;
         top: 20px;
         left: 50%;
-        transform: translateX(-50%) scale(0.5);
-        background: #4caf50;
+        transform: translateX(-50%) scale(75%);
+        background: #2e7d32;
         color: white;
         padding: 12px 28px;
-        border-radius: 50px;
-        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
-        z-index: 1000;
-        transition: all 0.2s ease;
+        border-radius: 60px;
+        z-index: 1100;
         opacity: 0;
+        transition: 0.2s;
+        pointer-events: none;
         font-weight: 500;
-        border: 1px solid rgba(255, 255, 255, 0.3);
+        backdrop-filter: blur(8px);
+        box-shadow: 0 4px 12px black;
       }
-
       .notification.show {
-        transform: translateX(-50%) scale(1);
         opacity: 1;
+        transform: translateX(-50%) translateY(0) scale(100%);
       }
 
-      /* 背景元素容器 - 保留但隐藏 */
-      .star-bg,
-      .bubble-bg {
-        display: none;
-      }
-
-      /* 响应式 */
-      @media (max-width: 600px) {
+      @media (max-width: 550px) {
         .container {
-          padding: 15px;
-        }
-        .controls {
-          flex-direction: column;
-        }
-        .stats {
-          flex-direction: column;
-        }
-        .stat-box {
-          width: 100%;
-        }
-        .settings-grid {
-          grid-template-columns: 1fr;
+          padding: 16px;
         }
         button {
-          width: 100%;
+          width: auto;
+          min-width: 80px;
+        }
+        .stat-box {
+          min-width: 100px;
         }
       }
     </style>
   </head>
-  <body class="forest-bg">
-    <!-- 通知 -->
+  <body>
     <div class="notification" id="notification"></div>
-
     <div class="container">
-      
-      <h1 id="TitleCt">读书种树，但安静也同理</h1>
-      <p>
-        当教室安静/大声读书时，植物会自动生长喵！持续安静一段时间种一棵植物，多棵植物会长成更大的植物喵～
-      </p>
+      <h1 id="TitleCt">安静种树，别说话 🤫</h1>
+      <p class="sub">持续安静 / 大声朗读 → 积累进度 → 长出植物 → 合并大树</p>
 
-      <!-- 隐藏的场景选择器，只保留一个按钮 -->
-      <div class="scene-selector" style="display: none;">
-        <button class="scene-btn active" data-scene="forest">114514</button>
-      </div>
-
-      <!-- 模式选择器 - 新增 -->
       <div class="mode-selector">
         <button class="mode-btn active" data-mode="quiet">
-          安静模式 <span class="mode-indicator quiet">安静加分</span>
+          🌿 安静模式 <span class="mode-indicator quiet">低于阈值加分</span>
         </button>
         <button class="mode-btn" data-mode="reading">
-          早读模式 <span class="mode-indicator reading">大声朗读</span>
+          📖 早读模式 <span class="mode-indicator reading">高于阈值加分</span>
         </button>
       </div>
 
       <div class="controls">
-        <button id="micBtn">请求麦克风权限</button>
-        <button id="startBtn" disabled>开始游戏</button>
-        <button id="stopBtn" disabled>停止游戏</button>
-        <button id="resetBtn">重置场景</button>
-        <button class="panel-toggle" id="settingsToggle">设置 ⚙️</button>
-        <button class="panel-toggle" id="achievementsToggle">成就 🏆</button>
+        <button id="micBtn">🎤 授权麦克风</button>
+        <button id="startBtn" disabled>▶ 开始游戏</button>
+        <button id="stopBtn" disabled>⏸️ 停止游戏</button>
+        <button id="resetBtn">🗑️ 重置场景</button>
+        <button id="openSettingsBtn">⚙️ 设置</button>
+        <button id="openAchieveBtn">🏆 成就</button>
       </div>
 
-      <!-- 噪音水平和可视化 - 增强版 -->
       <div class="noise-level-container">
         <div class="noise-level">
-          当前噪音水平: <span id="noiseLevel">0</span>
-          <span class="mode-text quiet" id="modeText">(低于阈值加分)</span>
+          🔊 当前音量: <span id="noiseLevel">0</span>
+          <span id="modeText" class="mode-text">(低于阈值生长)</span>
         </div>
         <div class="noise-visualizer">
-          <div class="noise-indicator" id="noiseIndicator" style="left: 0;"></div>
-          <div class="noise-threshold" id="noiseThreshold" style="left: 30%;"></div>
+          <div
+            class="noise-indicator"
+            id="noiseIndicator"
+            style="left: 0%"
+          ></div>
+          <div
+            class="noise-threshold"
+            id="noiseThreshold"
+            style="left: 30%"
+          ></div>
         </div>
         <div class="progress-container">
-          <div class="progress-bar" id="progressBar" style="width: 0;"></div>
+          <div class="progress-bar" id="progressBar"></div>
           <div class="progress-text" id="progressText">0%</div>
         </div>
       </div>
 
       <div class="stats">
         <div class="stat-box">
-          <div>小植物数量</div>
+          <div>🌱 小植物</div>
           <div id="saplingCount">0</div>
         </div>
         <div class="stat-box">
-          <div>大植物数量</div>
+          <div>🌳 大植物</div>
           <div id="treeCount">0</div>
         </div>
         <div class="stat-box">
-          <div>最长安静时间</div>
+          <div>⏱️ 最长安静/朗读</div>
           <div id="quietTime">0.0秒</div>
         </div>
         <div class="stat-box">
-          <div>今日种植</div>
+          <div>📅 今日种植</div>
           <div id="todayCount">0</div>
         </div>
       </div>
 
-      <div class="scene-container forest-scene" id="sceneContainer"></div>
+      <div class="scene-container" id="sceneContainer"></div>
+      <div class="history-chart" id="historyChart"><p>📊 近7天战绩</p></div>
+    </div>
 
-      <!-- 设置面板 - 增强版 -->
-      <div class="settings-panel" id="settingsPanel">
-        <div class="panel-content">
-          <h3>游戏设置</h3>
-          <div class="settings-grid">
-            <div class="setting-item">
-              <div class="setting-label">
-                <span>安静阈值</span>
-                <span class="setting-value" id="thresholdValue">30</span>
-              </div>
-              <input type="range" id="threshold" min="0" max="100" value="30" />
-              <div style="font-size: 12px; color: #666; margin-top: 8px;">低于此值视为安静</div>
+    <!-- 设置模态框 -->
+    <div id="settingsModal" class="modal-overlay">
+      <div class="modal-card">
+        <div class="modal-header">
+          <h3>🌲 游戏设置</h3>
+          <button class="close-modal" id="closeSettingsBtn">✕</button>
+        </div>
+        <div class="settings-grid">
+          <div class="setting-item">
+            <div class="setting-label">
+              <span>🔇 安静阈值 (低于此值)</span
+              ><span id="thresholdValue">30</span>
             </div>
-
-            <div class="setting-item">
-              <div class="setting-label">
-                <span>早读阈值</span>
-                <span class="setting-value" id="readingThresholdValue">50</span>
-              </div>
-              <input type="range" id="readingThreshold" min="0" max="100" value="50" />
-              <div style="font-size: 12px; color: #666; margin-top: 8px;">高于此值开始加分</div>
+            <input type="range" id="threshold" min="0" max="100" value="30" />
+          </div>
+          <div class="setting-item">
+            <div class="setting-label">
+              <span>📢 早读阈值 (高于此值)</span
+              ><span id="readingThresholdValue">50</span>
             </div>
-
-            <div class="setting-item">
-              <div class="setting-label">
-                <span>植物生长时间</span>
-                <span class="setting-value" id="saplingTimeValue">5</span>
-              </div>
-              <input type="number" id="saplingTime" min="1" max="60" value="5" /> 秒
+            <input
+              type="range"
+              id="readingThreshold"
+              min="0"
+              max="100"
+              value="50"
+            />
+          </div>
+          <div class="setting-item">
+            <div class="setting-label">
+              <span>⏲️ 生长所需时间(秒)</span
+              ><input
+                type="number"
+                id="saplingTime"
+                min="1"
+                max="30"
+                value="5"
+                style="width: 80px"
+              />
             </div>
-
-            <div class="setting-item">
-              <div class="setting-label">
-                <span>小植物合并数量</span>
-                <span class="setting-value" id="saplingsPerTreeValue">10</span>
-              </div>
-              <input type="number" id="saplingsPerTree" min="2" max="20" value="10" />
+          </div>
+          <div class="setting-item">
+            <div class="setting-label">
+              <span>🌿 小植物→大树所需数量</span
+              ><input
+                type="number"
+                id="saplingsPerTree"
+                min="2"
+                max="20"
+                value="10"
+                style="width: 80px"
+              />
             </div>
-
-            <div class="setting-item">
-              <div class="setting-label">
-                <span>背景模糊度</span>
-                <span class="setting-value" id="blurValue">10</span>
-              </div>
-              <input type="range" id="blurSlider" min="0" max="20" value="10" step="0.5" />
-              <div style="font-size: 12px; color: #666; margin-top: 8px;">数值越大背景越模糊</div>
+          </div>
+          <div class="setting-item">
+            <div class="setting-label">
+              <span>🎵 音效开关</span
+              ><label class="switch"
+                ><input type="checkbox" id="enableSounds" checked /><span
+                  class="slider"
+                ></span
+              ></label>
             </div>
-
-            <div class="setting-item">
-              <div class="setting-label">
-                <span>启用音效</span>
-                <label class="switch">
-                  <input type="checkbox" id="enableSounds" checked />
-                  <span class="slider"></span>
-                </label>
-              </div>
+          </div>
+          <div class="setting-item">
+            <div class="setting-label">
+              <span>🌀 背景模糊度</span><span id="blurValue">10</span>
             </div>
+            <input
+              type="range"
+              id="blurSlider"
+              min="0"
+              max="20"
+              value="10"
+              step="0.5"
+            />
           </div>
         </div>
       </div>
+    </div>
 
-      <div class="achievements-panel" id="achievementsPanel">
-        <div class="panel-content">
-          <h3>成就系统</h3>
-          <div id="achievementsList">
-            <!-- 成就列表将由JavaScript动态生成 -->
-          </div>
+    <!-- 成就模态框 -->
+    <div id="achievementsModal" class="modal-overlay">
+      <div class="modal-card">
+        <div class="modal-header">
+          <h3>🏅 成就殿堂</h3>
+          <button class="close-modal" id="closeAchieveBtn">✕</button>
         </div>
-      </div>
-
-      <div class="history-chart" id="historyChart">
-        <p>战绩</p>
+        <div
+          id="achievementsList"
+          style="max-height: 55vh; overflow-y: auto"
+        ></div>
       </div>
     </div>
 
     <script>
-      // 游戏状态
+      // ---------- 游戏核心状态 ----------
       let isRunning = false;
-      let audioContext;
-      let analyser;
-      let microphone;
-      let mediaStream = null;
-      let rafId = null;
-      let quietStartTime = null;
-      let readingStartTime = null;
-      let saplings = 0;
-      let trees = 0;
-      let totalQuietTime = 0;
-      let todayCount = 0;
+      let audioContext,
+        analyser,
+        microphone,
+        mediaStream = null,
+        rafId = null;
+      let quietStartTime = null,
+        readingStartTime = null;
+      let saplings = 0,
+        trees = 0,
+        totalQuietTime = 0,
+        todayCount = 0,
+        todayTrees = 0;
+      let longestQuietTime = 0,
+        readingTrees = 0,
+        quietTrees = 0,
+        bothModesUsed = false,
+        lastModeUsed = null;
+      let currentMode = "quiet";
       let historyData = [];
-      let currentScene = "forest";
       let achievements = {};
-      let longestQuietTime = 0;
-      let todayTrees = 0;
-      let currentMode = "quiet"; // quiet 或 reading
-      let readingTrees = 0; // 早读模式下种的大树
-      let quietTrees = 0; // 安静模式下种的大树
-      let bothModesUsed = false; // 是否两种模式都用过
-      let lastModeUsed = null; // 上次使用的模式
 
-      // 游戏设置
       let settings = {
         threshold: 30,
         readingThreshold: 50,
@@ -877,368 +699,455 @@
         blur: 10,
       };
 
-      // 场景配置 - 只保留森林
       const scenes = {
         forest: {
-          name: "森林",
           smallItem: "🌱",
           bigItem: "🌳",
-          bgClass: "forest-bg",
-          sceneClass: "forest-scene",
-          progressColor: "#4CAF50",
-          buttonColor: "#4CAF50",
           effects: {
-            createBigEffect: (parent) => {
-              for (let i = 0; i < 10; i++) {
-                createLeaf(parent);
-              }
+            createBigEffect: (p) => {
+              for (let i = 0; i < 8; i++) createLeaf(p);
             },
           },
         },
       };
+      const currentScene = "forest";
 
-      // 成就配置 - 新增早读相关成就
       const achievementConfig = [
         {
           id: "first_sapling",
           icon: "🌱",
           title: "第一棵植物",
-          description: "种下第一棵小植物",
-          condition: (game) =>
-            game.saplings + game.trees * settings.saplingsPerTree >= 1,
+          desc: "种下第一棵小植物",
+          condition: (g) =>
+            g.saplings + g.trees * settings.saplingsPerTree >= 1,
         },
         {
           id: "first_tree",
           icon: "🌳",
           title: "第一棵大树",
-          description: "种下第一棵大植物",
-          condition: (game) => game.trees >= 1,
+          desc: "种下第一棵大树",
+          condition: (g) => g.trees >= 1,
         },
         {
           id: "quiet_5_min",
           icon: "⏱️",
           title: "安静5分钟",
-          description: "累计安静时间达到5分钟",
-          condition: (game) => game.totalQuietTime >= 300,
+          desc: "累计安静/朗读时间达5分钟",
+          condition: (g) => g.totalQuietTime >= 300,
         },
         {
           id: "forest_keeper",
           icon: "🏆",
           title: "森林守护者",
-          description: "种下10棵大植物",
-          condition: (game) => game.trees >= 10,
+          desc: "种下10棵大树",
+          condition: (g) => g.trees >= 10,
         },
         {
           id: "perfect_silence",
           icon: "🔇",
-          title: "完美安静",
-          description: "连续保持安静1分钟",
-          condition: (game) => game.longestQuietTime >= 60,
+          title: "完美持久",
+          desc: "单次持续达标超过60秒",
+          condition: (g) => g.longestQuietTime >= 60,
         },
         {
           id: "daily_goal",
           icon: "✅",
           title: "每日目标",
-          description: "一天内种下5棵大植物",
-          condition: (game) => game.todayTrees >= 5,
+          desc: "一天内种下5棵大树",
+          condition: (g) => g.todayTrees >= 5,
         },
         {
           id: "reading_master",
           icon: "📚",
           title: "声音还彳亍",
-          description: "在早读模式下种下3棵大植物",
-          condition: (game) => game.readingTrees >= 3,
+          desc: "早读模式下种下3棵大树",
+          condition: (g) => g.readingTrees >= 3,
         },
         {
           id: "mode_changer",
           icon: "🔄",
           title: "模式切换者",
-          description: "在两种模式下都种下植物",
-          condition: (game) => game.bothModesUsed,
+          desc: "两种模式都种下过植物",
+          condition: (g) => g.bothModesUsed,
         },
       ];
 
-      // DOM元素
-      const micBtn = document.getElementById("micBtn");
-      const startBtn = document.getElementById("startBtn");
-      const stopBtn = document.getElementById("stopBtn");
-      const resetBtn = document.getElementById("resetBtn");
+      // DOM 元素
+      const micBtn = document.getElementById("micBtn"),
+        startBtn = document.getElementById("startBtn"),
+        stopBtn = document.getElementById("stopBtn"),
+        resetBtn = document.getElementById("resetBtn");
       const sceneContainer = document.getElementById("sceneContainer");
-      const progressBar = document.getElementById("progressBar");
-      const progressText = document.getElementById("progressText");
-      const saplingCount = document.getElementById("saplingCount");
-      const treeCount = document.getElementById("treeCount");
-      const quietTimeEl = document.getElementById("quietTime");
-      const todayCountEl = document.getElementById("todayCount");
-      const noiseLevel = document.getElementById("noiseLevel");
-      const noiseIndicator = document.getElementById("noiseIndicator");
-      const noiseThreshold = document.getElementById("noiseThreshold");
-      const modeText = document.getElementById("modeText");
-      const thresholdSlider = document.getElementById("threshold");
-      const thresholdValue = document.getElementById("thresholdValue");
-      const readingThreshold = document.getElementById("readingThreshold");
-      const readingThresholdValue = document.getElementById("readingThresholdValue");
-      const historyChart = document.getElementById("historyChart");
-      const notification = document.getElementById("notification");
-      const settingsPanel = document.getElementById("settingsPanel");
-      const achievementsPanel = document.getElementById("achievementsPanel");
-      const achievementsList = document.getElementById("achievementsList");
-      const settingsToggle = document.getElementById("settingsToggle");
-      const achievementsToggle = document.getElementById("achievementsToggle");
-      const saplingTimeInput = document.getElementById("saplingTime");
-      const saplingTimeValue = document.getElementById("saplingTimeValue");
-      const saplingsPerTreeInput = document.getElementById("saplingsPerTree");
-      const saplingsPerTreeValue = document.getElementById("saplingsPerTreeValue");
-      const enableSoundsInput = document.getElementById("enableSounds");
-      const blurSlider = document.getElementById("blurSlider");
-      const blurValue = document.getElementById("blurValue");
-      const modeBtns = document.querySelectorAll(".mode-btn");
+      const progressBar = document.getElementById("progressBar"),
+        progressText = document.getElementById("progressText");
+      const saplingCountSpan = document.getElementById("saplingCount"),
+        treeCountSpan = document.getElementById("treeCount");
+      const quietTimeSpan = document.getElementById("quietTime"),
+        todayCountSpan = document.getElementById("todayCount");
+      const noiseLevelSpan = document.getElementById("noiseLevel"),
+        noiseIndicator = document.getElementById("noiseIndicator"),
+        noiseThresholdLine = document.getElementById("noiseThreshold");
+      const modeTextSpan = document.getElementById("modeText"),
+        titleH1 = document.getElementById("TitleCt");
+      const thresholdSlider = document.getElementById("threshold"),
+        thresholdVal = document.getElementById("thresholdValue");
+      const readingThresholdSlider =
+          document.getElementById("readingThreshold"),
+        readingThresholdVal = document.getElementById("readingThresholdValue");
+      const saplingTimeInput = document.getElementById("saplingTime"),
+        saplingsPerTreeInput = document.getElementById("saplingsPerTree");
+      const enableSoundsCheck = document.getElementById("enableSounds"),
+        blurSlider = document.getElementById("blurSlider"),
+        blurValueSpan = document.getElementById("blurValue");
+      const openSettingsBtn = document.getElementById("openSettingsBtn"),
+        openAchieveBtn = document.getElementById("openAchieveBtn");
+      const settingsModal = document.getElementById("settingsModal"),
+        achievementsModal = document.getElementById("achievementsModal");
+      const closeSettingsBtn = document.getElementById("closeSettingsBtn"),
+        closeAchieveBtn = document.getElementById("closeAchieveBtn");
 
-      // 初始化
-      loadGameData();
-      loadSettings();
-      renderScene();
-      renderHistoryChart();
-      setupAchievements();
-      applyBlur();
-      updateModeUI();
-
-      // 事件监听
-      micBtn.addEventListener("click", requestMicrophone);
-      startBtn.addEventListener("click", startGame);
-      stopBtn.addEventListener("click", stopGame);
-      resetBtn.addEventListener("click", resetGame);
-
-      // 模式切换
-      modeBtns.forEach((btn) => {
-        btn.addEventListener("click", function () {
-          currentMode = this.dataset.mode;
-          modeBtns.forEach(b => b.classList.remove("active"));
-          this.classList.add("active");
-          resetProgress();
-          updateModeUI();
-          updateThresholdIndicator();
-          saveGameData();
-        });
-      });
-
-      // 设置面板切换
-      settingsToggle.addEventListener("click", function () {
-        togglePanel(settingsPanel);
-        showNotification("设置面板在下面，往下滑", false);
-        if (achievementsPanel.querySelector(".panel-content").classList.contains("open")) {
-          togglePanel(achievementsPanel);
-        }
-      });
-
-      // 成就面板切换
-      achievementsToggle.addEventListener("click", function () {
-        togglePanel(achievementsPanel);
-        showNotification("成就面板在下面，往下滑", false);
-        if (settingsPanel.querySelector(".panel-content").classList.contains("open")) {
-          togglePanel(settingsPanel);
-        }
-      });
-
-      // 设置更改
-      thresholdSlider.addEventListener("input", function () {
-        settings.threshold = parseInt(this.value);
-        thresholdValue.textContent = settings.threshold;
-        updateThresholdIndicator();
-        saveSettings();
-      });
-
-      readingThreshold.addEventListener("input", function () {
-        settings.readingThreshold = parseInt(this.value);
-        readingThresholdValue.textContent = settings.readingThreshold;
-        updateThresholdIndicator();
-        saveSettings();
-      });
-
-      saplingTimeInput.addEventListener("change", function () {
-        settings.saplingTime = parseInt(this.value);
-        saplingTimeValue.textContent = settings.saplingTime;
-        saveSettings();
-      });
-
-      saplingsPerTreeInput.addEventListener("change", function () {
-        settings.saplingsPerTree = parseInt(this.value);
-        saplingsPerTreeValue.textContent = settings.saplingsPerTree;
-        saveSettings();
-      });
-
-      enableSoundsInput.addEventListener("change", function () {
-        settings.enableSounds = this.checked;
-        saveSettings();
-      });
-
-      blurSlider.addEventListener("input", function () {
-        settings.blur = parseFloat(this.value);
-        blurValue.textContent = settings.blur.toFixed(1);
-        applyBlur();
-        saveSettings();
-      });
-
-      // 请求麦克风权限
-      function requestMicrophone() {
-        navigator.mediaDevices
-          .getUserMedia({ audio: true, video: false })
-          .then(function (stream) {
-            if (mediaStream) {
-              mediaStream.getTracks().forEach((track) => track.stop());
-            }
-            mediaStream = stream;
-            showNotification("麦克风到了喵，点开始就行 .OvO`");
-            micBtn.textContent = "麦克风已授权";
-            micBtn.disabled = true;
-            startBtn.disabled = false;
-            stopBtn.disabled = false;
-          })
-          .catch(function (err) {
-            console.error("无法访问麦克风:", err);
-            showNotification("无法访问麦克风，请确保已授予麦克风权限", true);
-          });
+      // 辅助函数
+      function showNotification(msg, isErr = false) {
+        let n = document.getElementById("notification");
+        n.textContent = msg;
+        n.style.background = isErr ? "#d32f2f" : "#2e7d32";
+        n.classList.add("show");
+        setTimeout(() => n.classList.remove("show"), 2500);
       }
 
-      // 开始游戏
-      function startGame() {
-        if (isRunning) return;
-        if (!mediaStream) {
-          showNotification("请先授权麦克风", true);
-          return;
-        }
-
-        isRunning = true;
-        startBtn.disabled = true;
-        stopBtn.disabled = false;
-
-        audioContext = new (window.AudioContext || window.webkitAudioContext)();
-        analyser = audioContext.createAnalyser();
-        analyser.fftSize = 256;
-        const bufferLength = analyser.frequencyBinCount;
-
-        microphone = audioContext.createMediaStreamSource(mediaStream);
-        microphone.connect(analyser);
-
-        if (audioContext.state === "suspended") {
-          audioContext.resume();
-        }
-
-        const dataArray = new Uint8Array(bufferLength);
-
-        function updateLoop() {
-          if (!isRunning) return;
-
-          analyser.getByteFrequencyData(dataArray);
-          let sum = 0;
-          for (let i = 0; i < dataArray.length; i++) {
-            sum += dataArray[i];
-          }
-          const average = sum / dataArray.length;
-          const rounded = Math.round(average);
-          
-          noiseLevel.textContent = rounded;
-          updateNoiseIndicator(rounded);
-
-          // 根据模式处理
-          if (currentMode === "quiet") {
-            handleQuietMode(rounded);
+      function playSound(type) {
+        if (!settings.enableSounds) return;
+        try {
+          let ctx = new (AudioContext || webkitAudioContext)();
+          let osc = ctx.createOscillator();
+          let gain = ctx.createGain();
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          if (type === "sapling") {
+            osc.frequency.value = 560;
+            gain.gain.value = 0.08;
+            osc.type = "sine";
+          } else if (type === "tree") {
+            osc.frequency.value = 440;
+            gain.gain.value = 0.2;
+            osc.type = "sine";
+            // 大树音效延长一点
+            gain.gain.exponentialRampToValueAtTime(
+              0.001,
+              ctx.currentTime + 0.6,
+            );
+            osc.stop(ctx.currentTime + 0.6);
+            osc.onended = () => ctx.close();
+            return;
           } else {
-            handleReadingMode(rounded);
+            osc.frequency.value = 1000;
+            gain.gain.value = 0.2;
+            osc.type = "sawtooth";
           }
-
-          rafId = requestAnimationFrame(updateLoop);
-        }
-
-        rafId = requestAnimationFrame(updateLoop);
+          osc.start();
+          gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.4);
+          osc.stop(ctx.currentTime + 0.4);
+          osc.onended = () => ctx.close();
+        } catch (e) {}
       }
 
-      // 安静模式处理
-      function handleQuietMode(average) {
-        if (average < settings.threshold) {
-          if (quietStartTime === null) {
-            quietStartTime = Date.now();
+      function createLeaf(parent) {
+        let leaf = document.createElement("div");
+        leaf.className = "leaf";
+        leaf.textContent = "🍃";
+        leaf.style.left = Math.random() * 60 - 30 + "px";
+        leaf.style.top = "-10px";
+        parent.style.position = "relative";
+        parent.appendChild(leaf);
+        setTimeout(() => leaf.remove(), 2500);
+      }
+
+      function updateStats() {
+        saplingCountSpan.textContent = saplings;
+        treeCountSpan.textContent = trees;
+        quietTimeSpan.textContent = longestQuietTime.toFixed(1) + "秒";
+        todayCountSpan.textContent = todayCount;
+      }
+
+      function updateThresholdIndicator() {
+        let thr =
+          currentMode === "quiet"
+            ? settings.threshold
+            : settings.readingThreshold;
+        noiseThresholdLine.style.left = thr + "%";
+      }
+
+      function applyBlur() {
+        document.documentElement.style.setProperty(
+          "--blur-amount",
+          settings.blur + "px",
+        );
+      }
+
+      function resetProgressBars() {
+        progressBar.style.width = "0%";
+        progressText.textContent = "0%";
+        quietStartTime = null;
+        readingStartTime = null;
+      }
+
+      // 核心修复：合并成大树的逻辑
+      function addSapling() {
+        saplings++;
+        todayCount++;
+        if (lastModeUsed && lastModeUsed !== currentMode) bothModesUsed = true;
+        lastModeUsed = currentMode;
+
+        // 先添加小植物到场景
+        let saplingDiv = document.createElement("div");
+        saplingDiv.className = "tree sapling";
+        saplingDiv.textContent = scenes.forest.smallItem;
+        sceneContainer.appendChild(saplingDiv);
+        saplingDiv.style.transform = "scale(0)";
+        setTimeout(() => (saplingDiv.style.transform = "scale(1)"), 5);
+        if (settings.enableSounds) playSound("sapling");
+
+        // 检查是否需要合并成大树
+        if (saplings >= settings.saplingsPerTree) {
+          let take = Math.floor(saplings / settings.saplingsPerTree);
+          saplings -= take * settings.saplingsPerTree;
+          trees += take;
+          todayTrees += take;
+          if (currentMode === "reading") readingTrees += take;
+          else quietTrees += take;
+
+          // 移除对应数量的小植物（从最早的开始移除）
+          let allSaplings = document.querySelectorAll(
+            ".scene-container .tree.sapling",
+          );
+          let toRemove = take * settings.saplingsPerTree;
+          for (let i = 0; i < toRemove && i < allSaplings.length; i++) {
+            allSaplings[i].remove();
           }
 
-          const quietDuration = (Date.now() - quietStartTime) / 1000;
+          // 添加大树
+          for (let i = 0; i < take; i++) {
+            let treeDiv = document.createElement("div");
+            treeDiv.className = "tree";
+            treeDiv.textContent = scenes.forest.bigItem;
+            sceneContainer.appendChild(treeDiv);
+            treeDiv.style.transform = "scale(0)";
+            setTimeout(() => {
+              treeDiv.style.transform = "scale(1.2)";
+              setTimeout(() => (treeDiv.style.transform = "scale(1)"), 200);
+            }, 10);
+            scenes.forest.effects.createBigEffect(treeDiv);
+            if (settings.enableSounds) playSound("tree");
+          }
+        }
+
+        updateStats();
+        checkAchievements();
+        saveGameData();
+      }
+
+      // 移除原来的 addTreeEffect 函数，已合并到 addSapling 中
+
+      function handleQuietMode(vol) {
+        if (vol < settings.threshold) {
+          if (!quietStartTime) quietStartTime = Date.now();
+          let dur = (Date.now() - quietStartTime) / 1000;
           totalQuietTime += 1 / 60;
-
-          if (quietDuration > longestQuietTime) {
-            longestQuietTime = quietDuration;
-          }
-
-          quietTimeEl.textContent = longestQuietTime.toFixed(1) + "秒";
-
-          const progress = Math.min((quietDuration / settings.saplingTime) * 100, 100);
-          progressBar.style.width = progress + "%";
-          progressText.textContent = Math.round(progress) + "%";
-
-          if (quietDuration >= settings.saplingTime) {
+          if (dur > longestQuietTime) longestQuietTime = dur;
+          let prog = Math.min((dur / settings.saplingTime) * 100, 100);
+          progressBar.style.width = prog + "%";
+          progressText.textContent = Math.floor(prog) + "%";
+          if (dur >= settings.saplingTime) {
             addSapling();
             quietStartTime = Date.now();
           }
         } else {
           quietStartTime = null;
-          progressBar.style.width = "0%";
-          progressText.textContent = "0%";
+          resetProgressBars();
         }
       }
 
-      // 早读模式处理
-      function handleReadingMode(average) {
-        if (average >= settings.readingThreshold) {
-          if (readingStartTime === null) {
-            readingStartTime = Date.now();
-          }
-
-          const readingDuration = (Date.now() - readingStartTime) / 1000;
-            const progress = Math.min((readingDuration / settings.saplingTime) * 100, 100);
-          progressBar.style.width = progress + "%";
-          progressText.textContent = Math.round(progress) + "%";
-
-          if (readingDuration >= settings.saplingTime) {
+      function handleReadingMode(vol) {
+        if (vol >= settings.readingThreshold) {
+          if (!readingStartTime) readingStartTime = Date.now();
+          let dur = (Date.now() - readingStartTime) / 1000;
+          let prog = Math.min((dur / settings.saplingTime) * 100, 100);
+          progressBar.style.width = prog + "%";
+          progressText.textContent = Math.floor(prog) + "%";
+          if (dur >= settings.saplingTime) {
             addSapling();
             readingStartTime = Date.now();
           }
         } else {
           readingStartTime = null;
-          progressBar.style.width = "0%";
-          progressText.textContent = "0%";
+          resetProgressBars();
         }
       }
 
-      // 停止游戏
-      function stopGame() {
-        isRunning = false;
-        if (rafId) {
-          cancelAnimationFrame(rafId);
-          rafId = null;
+      function updateModeUI() {
+        if (currentMode === "quiet") {
+          modeTextSpan.innerHTML = "(低于阈值生长)";
+          titleH1.textContent = "安静种树，别说话～～～🤫";
+        } else {
+          modeTextSpan.innerHTML = "(高于阈值生长)";
+          titleH1.textContent = "大声朗读，加分！！！！📢";
         }
-
-        if (microphone) {
-          try { microphone.disconnect(); } catch (e) {}
-          microphone = null;
-        }
-        if (analyser) {
-          try { analyser.disconnect(); } catch (e) {}
-          analyser = null;
-        }
-        if (audioContext) {
-          audioContext.close().catch(console.warn);
-          audioContext = null;
-        }
-
-        startBtn.disabled = false;
-        stopBtn.disabled = true;
-        quietStartTime = null;
-        readingStartTime = null;
-
-        saveGameData();
+        updateThresholdIndicator();
+        resetProgressBars();
       }
 
-      // 重置游戏
+      // 成就系统
+      function renderAchievements() {
+        let container = document.getElementById("achievementsList");
+        container.innerHTML = "";
+        achievementConfig.forEach((ach) => {
+          let div = document.createElement("div");
+          div.className = `achievement ${achievements[ach.id]?.unlocked ? "unlocked" : "locked"}`;
+          div.innerHTML = `<div class="achievement-icon">${ach.icon}</div><div class="achievement-info"><div class="achievement-title">${ach.title}</div><div>${ach.desc}</div>${achievements[ach.id]?.unlocked ? `<div style="font-size:11px;">✨ 解锁于 ${new Date(achievements[ach.id].unlockedAt).toLocaleString()}</div>` : ""}</div>`;
+          container.appendChild(div);
+        });
+      }
+
+      function checkAchievements() {
+        let state = {
+          saplings,
+          trees,
+          totalQuietTime,
+          longestQuietTime,
+          todayTrees,
+          readingTrees,
+          bothModesUsed,
+        };
+        let unlockAny = false;
+        achievementConfig.forEach((ach) => {
+          if (!achievements[ach.id]?.unlocked && ach.condition(state)) {
+            achievements[ach.id] = {
+              unlocked: true,
+              unlockedAt: new Date().toISOString(),
+            };
+            unlockAny = true;
+            showNotification(`🏅 成就解锁: ${ach.title}`);
+            if (settings.enableSounds) playSound("achievement");
+          }
+        });
+        if (unlockAny) {
+          renderAchievements();
+          saveGameData();
+        }
+      }
+
+      function setupAchievements() {
+        achievementConfig.forEach((ach) => {
+          if (!achievements[ach.id]) achievements[ach.id] = { unlocked: false };
+        });
+        renderAchievements();
+      }
+
+      // 持久化
+      function saveGameData() {
+        let data = {
+          saplings,
+          trees,
+          totalQuietTime,
+          todayCount,
+          todayTrees,
+          longestQuietTime,
+          readingTrees,
+          quietTrees,
+          bothModesUsed,
+          lastModeUsed,
+          currentMode,
+          sceneContent: sceneContainer.innerHTML,
+          achievements,
+          lastUpdated: new Date().toISOString().split("T")[0],
+        };
+        localStorage.setItem("forestGameData_main", JSON.stringify(data));
+        updateHistory();
+      }
+
+      function loadGameData() {
+        let saved = localStorage.getItem("forestGameData_main");
+        if (saved) {
+          let d = JSON.parse(saved);
+          let today = new Date().toISOString().split("T")[0];
+          if (d.lastUpdated === today) {
+            saplings = d.saplings || 0;
+            trees = d.trees || 0;
+            totalQuietTime = d.totalQuietTime || 0;
+            todayCount = d.todayCount || 0;
+            todayTrees = d.todayTrees || 0;
+            longestQuietTime = d.longestQuietTime || 0;
+            readingTrees = d.readingTrees || 0;
+            quietTrees = d.quietTrees || 0;
+            bothModesUsed = d.bothModesUsed || false;
+            lastModeUsed = d.lastModeUsed || null;
+            currentMode = d.currentMode || "quiet";
+            if (d.sceneContent) sceneContainer.innerHTML = d.sceneContent;
+          } else {
+            todayCount = 0;
+            todayTrees = 0;
+            longestQuietTime = 0;
+          }
+          if (d.achievements) achievements = d.achievements;
+        }
+        let hist = localStorage.getItem("forestGameHistory");
+        if (hist) historyData = JSON.parse(hist);
+        else historyData = [];
+        updateStats();
+        document
+          .querySelector(`.mode-btn[data-mode="${currentMode}"]`)
+          ?.classList.add("active");
+        document
+          .querySelector(
+            `.mode-btn[data-mode="${currentMode === "quiet" ? "reading" : "quiet"}"]`,
+          )
+          ?.classList.remove("active");
+        updateModeUI();
+        renderHistoryChart();
+        setupAchievements();
+      }
+
+      function updateHistory() {
+        let today = new Date().toISOString().split("T")[0];
+        let idx = historyData.findIndex((h) => h.date === today);
+        if (idx >= 0)
+          historyData[idx] = { date: today, trees: trees, total: todayCount };
+        else historyData.push({ date: today, trees: trees, total: todayCount });
+        if (historyData.length > 7) historyData = historyData.slice(-7);
+        localStorage.setItem("forestGameHistory", JSON.stringify(historyData));
+        renderHistoryChart();
+      }
+
+      function renderHistoryChart() {
+        let chart = document.getElementById("historyChart");
+        chart.innerHTML = "<p>📊 近7天种植总数</p>";
+        if (historyData.length === 0) return;
+        let maxTotal = Math.max(...historyData.map((h) => h.total), 1);
+        historyData.forEach((item, i) => {
+          let bar = document.createElement("div");
+          bar.className = "chart-bar";
+          let height = (item.total / maxTotal) * 130;
+          bar.style.height = Math.max(20, height) + "px";
+          bar.style.left = 30 + i * 48 + "px";
+          bar.style.width = "32px";
+          let label = document.createElement("div");
+          label.textContent = item.total;
+          label.style.position = "absolute";
+          label.style.top = "-20px";
+          label.style.left = "50%";
+          label.style.transform = "translateX(-50%)";
+          label.style.fontSize = "12px";
+          label.style.background = "rgba(0,0,0,0.6)";
+          label.style.padding = "2px 6px";
+          label.style.borderRadius = "20px";
+          label.style.color = "white";
+          bar.appendChild(label);
+          chart.appendChild(bar);
+        });
+      }
+
       function resetGame() {
-        if (confirm("点击确认后，一切会都没有发生过")) {
+        if (confirm("重置后所有植物和进度将消失，确定吗？")) {
           stopGame();
           saplings = 0;
           trees = 0;
@@ -1250,485 +1159,197 @@
           quietTrees = 0;
           bothModesUsed = false;
           lastModeUsed = null;
-          updateStats();
           sceneContainer.innerHTML = "";
-          progressBar.style.width = "0%";
-          progressText.textContent = "0%";
-          showNotification("一切都没有发生过，如同幻觉……");
-          localStorage.removeItem(`forestGameData_${currentScene}`);
-          saveGameData();
-        }
-      }
-
-      // 添加小植物
-      function addSapling() {
-        saplings++;
-        todayCount++;
-
-        // 记录模式使用情况
-        if (currentMode === "reading") {
-          // 早读模式不增加安静时间统计
-        } else {
-          // 安静模式
-        }
-
-        if (lastModeUsed && lastModeUsed !== currentMode) {
-          bothModesUsed = true;
-        }
-        lastModeUsed = currentMode;
-
-        checkAchievements();
-
-        if (saplings >= settings.saplingsPerTree) {
-          saplings = saplings - settings.saplingsPerTree;
-          trees++;
-          todayTrees++;
-          
-          // 记录不同模式下的大树
-          if (currentMode === "reading") {
-            readingTrees++;
-          } else {
-            quietTrees++;
-          }
-          
-          addTree();
-        } else {
           updateStats();
-          const sapling = document.createElement("div");
-          sapling.className = "tree sapling";
-          sapling.textContent = scenes[currentScene].smallItem;
-          sceneContainer.appendChild(sapling);
-
-          sapling.style.transform = "scale(0)";
-          setTimeout(() => {
-            sapling.style.transform = "scale(1)";
-          }, 10);
-
-          if (settings.enableSounds) {
-            playSound("sapling");
-          }
-        }
-        saveGameData();
-      }
-
-      // 添加大植物
-      function addTree() {
-        updateStats();
-
-        const saplingElements = document.querySelectorAll(".sapling");
-        let removeCount = Math.min(saplingElements.length, settings.saplingsPerTree);
-        for (let i = 0; i < removeCount; i++) {
-          if (saplingElements[i]) {
-            saplingElements[i].style.transform = "scale(0)";
-            setTimeout((el) => {
-              if (el && el.parentNode) el.remove();
-            }, 300, saplingElements[i]);
-          }
-        }
-
-        const tree = document.createElement("div");
-        tree.className = "tree";
-        tree.textContent = scenes[currentScene].bigItem;
-        sceneContainer.appendChild(tree);
-
-        tree.style.transform = "scale(0)";
-        setTimeout(() => {
-          tree.style.transform = "scale(1.5)";
-          setTimeout(() => {
-            tree.style.transform = "scale(1)";
-          }, 300);
-        }, 10);
-
-        scenes[currentScene].effects.createBigEffect(tree);
-
-        if (settings.enableSounds) {
-          playSound("tree");
-        }
-
-        checkAchievements();
-        saveGameData();
-      }
-
-      // 创建树叶特效
-      function createLeaf(parent) {
-        const leaf = document.createElement("div");
-        leaf.className = "leaf";
-        leaf.textContent = "🍃";
-        leaf.style.left = Math.random() * 30 - 15 + "px";
-        leaf.style.animationDelay = Math.random() * 2 + "s";
-        parent.appendChild(leaf);
-        setTimeout(() => leaf.remove(), 3000);
-      }
-
-      // 更新统计信息
-      function updateStats() {
-        saplingCount.textContent = saplings;
-        treeCount.textContent = trees;
-        quietTimeEl.textContent = longestQuietTime.toFixed(1) + "秒";
-        todayCountEl.textContent = todayCount;
-      }
-
-      // 更新噪音指示器
-      function updateNoiseIndicator(level) {
-        noiseIndicator.style.left = Math.min(level, 100) + "%";
-      }
-
-      // 更新阈值指示器
-      function updateThresholdIndicator() {
-        const threshold = currentMode === "quiet" ? settings.threshold : settings.readingThreshold;
-        noiseThreshold.style.left = threshold + "%";
-      }
-
-      // 更新模式UI
-      function updateModeUI() {
-        const titleElement = document.getElementById('TitleCt');
-        if (currentMode === "quiet") {
-          modeText.textContent = "(低于阈值加分)";
-          modeText.className = "mode-text quiet";
-          titleElement.textContent = "安静种树，别说话～～～🤫";
-        } else {
-          modeText.textContent = "(高于阈值加分)";
-          modeText.className = "mode-text reading";
-          titleElement.textContent = "大声朗读，加分！！！！📢";
+          resetProgressBars();
+          saveGameData();
+          showNotification("世界重归寂静 🌱");
         }
       }
 
-      // 重置进度
-      function resetProgress() {
-        progressBar.style.width = "0%";
-        progressText.textContent = "0%";
+      // 麦克风 & 游戏循环
+      async function requestMicrophone() {
+        try {
+          let stream = await navigator.mediaDevices.getUserMedia({
+            audio: true,
+          });
+          if (mediaStream) mediaStream.getTracks().forEach((t) => t.stop());
+          mediaStream = stream;
+          micBtn.disabled = true;
+          startBtn.disabled = false;
+          stopBtn.disabled = false;
+          showNotification("麦克风已就绪，点击开始种树");
+        } catch (e) {
+          showNotification("无法获取麦克风权限", true);
+        }
+      }
+
+      function startGame() {
+        if (isRunning) return;
+        if (!mediaStream) {
+          showNotification("请先授权麦克风", true);
+          return;
+        }
+        isRunning = true;
+        startBtn.disabled = true;
+        stopBtn.disabled = false;
+        audioContext = new (AudioContext || webkitAudioContext)();
+        analyser = audioContext.createAnalyser();
+        analyser.fftSize = 256;
+        microphone = audioContext.createMediaStreamSource(mediaStream);
+        microphone.connect(analyser);
+        if (audioContext.state === "suspended") audioContext.resume();
+        let dataArray = new Uint8Array(analyser.frequencyBinCount);
+        function loop() {
+          if (!isRunning) return;
+          analyser.getByteFrequencyData(dataArray);
+          let sum = 0;
+          for (let v of dataArray) sum += v;
+          let avg = sum / dataArray.length;
+          let level = Math.min(100, Math.round(avg));
+          noiseLevelSpan.textContent = level;
+          noiseIndicator.style.left = level + "%";
+          if (currentMode === "quiet") handleQuietMode(level);
+          else handleReadingMode(level);
+          rafId = requestAnimationFrame(loop);
+        }
+        rafId = requestAnimationFrame(loop);
+      }
+
+      function stopGame() {
+        isRunning = false;
+        if (rafId) {
+          cancelAnimationFrame(rafId);
+          rafId = null;
+        }
+        if (microphone)
+          try {
+            microphone.disconnect();
+          } catch (e) {}
+        if (analyser)
+          try {
+            analyser.disconnect();
+          } catch (e) {}
+        if (audioContext) audioContext.close().catch(() => {});
+        startBtn.disabled = false;
+        stopBtn.disabled = true;
         quietStartTime = null;
         readingStartTime = null;
+        saveGameData();
       }
 
-      // 应用模糊度
-      function applyBlur() {
-        document.documentElement.style.setProperty('--blur-amount', settings.blur + 'px');
-      }
-
-      // 保存游戏数据
-      function saveGameData() {
-        const gameData = {
-          saplings: saplings,
-          trees: trees,
-          totalQuietTime: totalQuietTime,
-          todayCount: todayCount,
-          todayTrees: todayTrees,
-          longestQuietTime: longestQuietTime,
-          readingTrees: readingTrees,
-          quietTrees: quietTrees,
-          bothModesUsed: bothModesUsed,
-          lastModeUsed: lastModeUsed,
-          currentMode: currentMode,
-          sceneContent: sceneContainer.innerHTML,
-          lastUpdated: new Date().toISOString().split("T")[0],
-          currentScene: currentScene,
-          achievements: achievements,
-        };
-
-        localStorage.setItem(`forestGameData_${currentScene}`, JSON.stringify(gameData));
-        updateHistoryData();
-      }
-
-      // 加载游戏数据
-      function loadGameData() {
-        const savedData = localStorage.getItem(`forestGameData_${currentScene}`);
-        if (savedData) {
-          const gameData = JSON.parse(savedData);
-          const today = new Date().toISOString().split("T")[0];
-
-          if (gameData.lastUpdated === today) {
-            saplings = gameData.saplings || 0;
-            trees = gameData.trees || 0;
-            totalQuietTime = gameData.totalQuietTime || 0;
-            todayCount = gameData.todayCount || 0;
-            todayTrees = gameData.todayTrees || 0;
-            longestQuietTime = gameData.longestQuietTime || 0;
-            readingTrees = gameData.readingTrees || 0;
-            quietTrees = gameData.quietTrees || 0;
-            bothModesUsed = gameData.bothModesUsed || false;
-            lastModeUsed = gameData.lastModeUsed || null;
-            currentMode = gameData.currentMode || "quiet";
-            updateStats();
-
-            if (gameData.sceneContent) {
-              sceneContainer.innerHTML = gameData.sceneContent;
-            }
-          } else {
-            todayCount = 0;
-            todayTrees = 0;
-            longestQuietTime = 0;
-            updateStats();
-          }
-
-          if (gameData.achievements) {
-            achievements = gameData.achievements;
-          }
-        }
-
-        const savedHistory = localStorage.getItem("forestGameHistory");
-        if (savedHistory) {
-          historyData = JSON.parse(savedHistory);
-        }
-
-        // 更新模式按钮状态
-        modeBtns.forEach(btn => {
-          btn.classList.toggle("active", btn.dataset.mode === currentMode);
-        });
-      }
-
-      // 更新历史数据
-      function updateHistoryData() {
-        const today = new Date().toISOString().split("T")[0];
-        let found = false;
-
-        for (let i = 0; i < historyData.length; i++) {
-          if (historyData[i].date === today) {
-            historyData[i].trees = trees;
-            historyData[i].total = todayCount;
-            historyData[i].scene = currentScene;
-            found = true;
-            break;
-          }
-        }
-
-        if (!found) {
-          historyData.push({
-            date: today,
-            trees: trees,
-            total: todayCount,
-            scene: currentScene,
-          });
-        }
-
-        if (historyData.length > 7) {
-          historyData = historyData.slice(historyData.length - 7);
-        }
-
-        localStorage.setItem("forestGameHistory", JSON.stringify(historyData));
-        renderHistoryChart();
-      }
-
-      // 渲染场景
-      function renderScene() {
-        document.body.className = scenes[currentScene].bgClass;
-        sceneContainer.className = `scene-container ${scenes[currentScene].sceneClass}`;
-        progressBar.style.backgroundColor = scenes[currentScene].progressColor;
-        
-        const buttons = document.querySelectorAll("button:not(.scene-btn)");
-        buttons.forEach((btn) => {
-          btn.style.backgroundColor = scenes[currentScene].buttonColor;
-        });
-
-        const savedData = localStorage.getItem(`forestGameData_${currentScene}`);
-        if (savedData) {
-          const gameData = JSON.parse(savedData);
-          if (gameData.sceneContent) {
-            sceneContainer.innerHTML = gameData.sceneContent;
-          }
-        }
-      }
-
-      // 切换面板
-      function togglePanel(panel) {
-        const content = panel.querySelector(".panel-content");
-        content.classList.toggle("open");
-        panel.style.display = content.classList.contains("open") ? "block" : "none";
-      }
-
-      // 显示通知
-      function showNotification(message, isError = false) {
-        notification.textContent = message;
-        notification.style.backgroundColor = isError ? "#f44336" : "#4caf50";
-        notification.classList.add("show");
-        setTimeout(() => notification.classList.remove("show"), 3000);
-      }
-
-      // 设置成就系统
-      function setupAchievements() {
-        achievementConfig.forEach((ach) => {
-          if (!achievements[ach.id]) {
-            achievements[ach.id] = { unlocked: false, unlockedAt: null };
-          }
-        });
-        renderAchievements();
-      }
-
-      // 渲染成就列表
-      function renderAchievements() {
-        achievementsList.innerHTML = "";
-
-        achievementConfig.forEach((ach) => {
-          const achievement = document.createElement("div");
-          achievement.className = `achievement ${achievements[ach.id].unlocked ? "unlocked" : "locked"}`;
-
-          const icon = document.createElement("div");
-          icon.className = "achievement-icon";
-          icon.textContent = ach.icon;
-
-          const info = document.createElement("div");
-          info.className = "achievement-info";
-
-          const title = document.createElement("div");
-          title.className = "achievement-title";
-          title.textContent = ach.title;
-
-          const desc = document.createElement("div");
-          desc.textContent = ach.description;
-
-          info.appendChild(title);
-          info.appendChild(desc);
-
-          if (achievements[ach.id].unlocked) {
-            const date = document.createElement("div");
-            date.style.fontSize = "0.8em";
-            date.style.color = "#666";
-            date.textContent = `解锁于: ${new Date(achievements[ach.id].unlockedAt).toLocaleString()}`;
-            info.appendChild(date);
-          }
-
-          achievement.appendChild(icon);
-          achievement.appendChild(info);
-          achievementsList.appendChild(achievement);
-        });
-      }
-
-      // 检查成就
-      function checkAchievements() {
-        const gameState = {
-          saplings: saplings,
-          trees: trees,
-          totalQuietTime: totalQuietTime,
-          longestQuietTime: longestQuietTime,
-          todayTrees: todayTrees,
-          readingTrees: readingTrees,
-          bothModesUsed: bothModesUsed,
-        };
-
-        let newAchievements = 0;
-
-        achievementConfig.forEach((ach) => {
-          if (!achievements[ach.id].unlocked && ach.condition(gameState)) {
-            achievements[ach.id].unlocked = true;
-            achievements[ach.id].unlockedAt = new Date().toISOString();
-            newAchievements++;
-            showNotification(`成就解锁: ${ach.title}`);
-            if (settings.enableSounds) {
-              playSound("achievement");
-            }
-          }
-        });
-
-        if (newAchievements > 0) {
-          renderAchievements();
-          saveGameData();
-        }
-      }
-
-      // 加载设置
       function loadSettings() {
-        const savedSettings = localStorage.getItem("forestGameSettings");
-        if (savedSettings) {
-          const loadedSettings = JSON.parse(savedSettings);
-          settings.threshold = loadedSettings.threshold || 30;
-          settings.readingThreshold = loadedSettings.readingThreshold || 50;
-          settings.saplingTime = loadedSettings.saplingTime || 5;
-          settings.saplingsPerTree = loadedSettings.saplingsPerTree || 10;
-          settings.enableSounds = loadedSettings.enableSounds !== false;
-          settings.blur = loadedSettings.blur || 10;
+        let s = localStorage.getItem("forestGameSettings");
+        if (s) {
+          let p = JSON.parse(s);
+          settings.threshold = p.threshold ?? 30;
+          settings.readingThreshold = p.readingThreshold ?? 50;
+          settings.saplingTime = p.saplingTime ?? 5;
+          settings.saplingsPerTree = p.saplingsPerTree ?? 10;
+          settings.enableSounds = p.enableSounds !== false;
+          settings.blur = p.blur ?? 10;
         }
-
         thresholdSlider.value = settings.threshold;
-        thresholdValue.textContent = settings.threshold;
-        readingThreshold.value = settings.readingThreshold;
-        readingThresholdValue.textContent = settings.readingThreshold;
+        thresholdVal.textContent = settings.threshold;
+        readingThresholdSlider.value = settings.readingThreshold;
+        readingThresholdVal.textContent = settings.readingThreshold;
         saplingTimeInput.value = settings.saplingTime;
-        saplingTimeValue.textContent = settings.saplingTime;
         saplingsPerTreeInput.value = settings.saplingsPerTree;
-        saplingsPerTreeValue.textContent = settings.saplingsPerTree;
-        enableSoundsInput.checked = settings.enableSounds;
+        enableSoundsCheck.checked = settings.enableSounds;
         blurSlider.value = settings.blur;
-        blurValue.textContent = settings.blur.toFixed(1);
-        
+        blurValueSpan.textContent = settings.blur.toFixed(1);
+        applyBlur();
         updateThresholdIndicator();
       }
 
-      // 保存设置
       function saveSettings() {
         localStorage.setItem("forestGameSettings", JSON.stringify(settings));
+        applyBlur();
+        updateThresholdIndicator();
       }
 
-      // 渲染历史图表
-      function renderHistoryChart() {
-        historyChart.innerHTML = "<p>战绩</p>";
+      thresholdSlider.addEventListener("input", () => {
+        settings.threshold = parseInt(thresholdSlider.value);
+        thresholdVal.textContent = settings.threshold;
+        saveSettings();
+      });
+      readingThresholdSlider.addEventListener("input", () => {
+        settings.readingThreshold = parseInt(readingThresholdSlider.value);
+        readingThresholdVal.textContent = settings.readingThreshold;
+        saveSettings();
+      });
+      saplingTimeInput.addEventListener("change", () => {
+        settings.saplingTime = parseInt(saplingTimeInput.value) || 5;
+        saveSettings();
+      });
+      saplingsPerTreeInput.addEventListener("change", () => {
+        settings.saplingsPerTree = parseInt(saplingsPerTreeInput.value) || 10;
+        saveSettings();
+      });
+      enableSoundsCheck.addEventListener("change", () => {
+        settings.enableSounds = enableSoundsCheck.checked;
+        saveSettings();
+      });
+      blurSlider.addEventListener("input", () => {
+        settings.blur = parseFloat(blurSlider.value);
+        blurValueSpan.textContent = settings.blur.toFixed(1);
+        applyBlur();
+        saveSettings();
+      });
 
-        if (historyData.length === 0) return;
+      // 模态框逻辑
+      function openModal(modal) {
+        modal.classList.add("active");
+        document.body.style.overflow = "hidden";
+      }
+      function closeModal(modal) {
+        modal.classList.remove("active");
+        document.body.style.overflow = "";
+      }
+      openSettingsBtn.onclick = () => openModal(settingsModal);
+      openAchieveBtn.onclick = () => {
+        renderAchievements();
+        openModal(achievementsModal);
+      };
+      closeSettingsBtn.onclick = () => closeModal(settingsModal);
+      closeAchieveBtn.onclick = () => closeModal(achievementsModal);
+      settingsModal.onclick = (e) => {
+        if (e.target === settingsModal) closeModal(settingsModal);
+      };
+      achievementsModal.onclick = (e) => {
+        if (e.target === achievementsModal) closeModal(achievementsModal);
+      };
 
-        const maxTotal = Math.max(...historyData.map((item) => item.total), 10);
-        const chartHeight = 180;
-        const barWidth = 40;
-        const gap = 20;
-        const startX = 30;
-
-        historyData.forEach((item, index) => {
-          const barHeight = (item.total / maxTotal) * chartHeight;
-          const bar = document.createElement("div");
-          bar.className = "chart-bar";
-          bar.style.left = startX + index * (barWidth + gap) + "px";
-          bar.style.height = barHeight + "px";
-
-          const label = document.createElement("div");
-          label.textContent = item.date.split("-").slice(1).join("/") + "\n" + item.total;
-          label.style.position = "absolute";
-          label.style.bottom = "-40px";
-          label.style.left = "0";
-          label.style.width = "100%";
-          label.style.fontSize = "12px";
-          label.style.whiteSpace = "pre";
-
-          bar.appendChild(label);
-          historyChart.appendChild(bar);
+      // 模式切换
+      document.querySelectorAll(".mode-btn").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          let mode = btn.dataset.mode;
+          if (mode === currentMode) return;
+          currentMode = mode;
+          document
+            .querySelectorAll(".mode-btn")
+            .forEach((b) => b.classList.remove("active"));
+          btn.classList.add("active");
+          resetProgressBars();
+          updateModeUI();
+          saveGameData();
         });
-      }
+      });
 
-      // 播放音效
-      function playSound(type) {
-        if (!settings.enableSounds) return;
+      micBtn.onclick = requestMicrophone;
+      startBtn.onclick = startGame;
+      stopBtn.onclick = stopGame;
+      resetBtn.onclick = resetGame;
 
-        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        const oscillator = audioCtx.createOscillator();
-        const gainNode = audioCtx.createGain();
-
-        oscillator.connect(gainNode);
-        gainNode.connect(audioCtx.destination);
-
-        switch (type) {
-          case "sapling":
-            oscillator.frequency.value = 800;
-            gainNode.gain.value = 0.1;
-            oscillator.type = "sine";
-            break;
-          case "tree":
-            oscillator.frequency.value = 600;
-            gainNode.gain.value = 0.2;
-            oscillator.type = "triangle";
-            break;
-          case "achievement":
-            oscillator.frequency.value = 1000;
-            gainNode.gain.value = 0.3;
-            oscillator.type = "sawtooth";
-            break;
-          default:
-            oscillator.frequency.value = 440;
-            gainNode.gain.value = 0.1;
-            oscillator.type = "sine";
-        }
-
-        oscillator.start();
-        gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.5);
-        oscillator.stop(audioCtx.currentTime + 0.5);
-
-        oscillator.onended = () => audioCtx.close().catch(console.warn);
+      loadGameData();
+      loadSettings();
+      updateThresholdIndicator();
+      updateModeUI();
+      if (
+        localStorage.getItem("forestGameData_main") &&
+        sceneContainer.children.length === 0
+      ) {
+        renderHistoryChart();
       }
     </script>
   </body>
