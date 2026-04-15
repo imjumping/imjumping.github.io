@@ -6,7 +6,7 @@
       name="viewport"
       content="width=device-width, initial-scale=1, user-scalable=no"
     />
-    <title>安静种树 · 早读种树</title>
+    <title>安静种树，但喊叫也可</title>
     <meta
       name="description"
       content="持续安静或大声早读，即可种下植物，合并成大树。"
@@ -17,13 +17,18 @@
         box-sizing: border-box;
         user-select: none;
         font-family:
-          -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+          "OPPO Sans 4.0",
+          -apple-system,
+          BlinkMacSystemFont,
+          "Segoe UI",
+          Roboto,
+          sans-serif;
       }
 
       :root {
         --blur-amount: 10px;
         --shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
-        --radius-lg: 28px;
+        --radius-lg: 45px;
         --radius-md: 20px;
       }
 
@@ -498,7 +503,7 @@
     <div class="notification" id="notification"></div>
     <div class="container">
       <h1 id="TitleCt">安静种树，别说话 🤫</h1>
-      <p class="sub">持续安静 / 大声朗读 → 积累进度 → 长出植物 → 合并大树</p>
+      <p class="sub">点击屏幕任意位置出现特效哦</p>
 
       <div class="mode-selector">
         <button class="mode-btn active" data-mode="quiet">
@@ -939,8 +944,6 @@
         saveGameData();
       }
 
-      // 移除原来的 addTreeEffect 函数，已合并到 addSapling 中
-
       function handleQuietMode(vol) {
         if (vol < settings.threshold) {
           if (!quietStartTime) quietStartTime = Date.now();
@@ -960,21 +963,34 @@
         }
       }
 
+      let readingProgress = 0;
+      let lastReadingTimestamp = null;
+
       function handleReadingMode(vol) {
+        const now = Date.now();
+        const dt = lastReadingTimestamp
+          ? Math.min(0.5, (now - lastReadingTimestamp) / 1000)
+          : 0;
+        lastReadingTimestamp = now;
+
         if (vol >= settings.readingThreshold) {
-          if (!readingStartTime) readingStartTime = Date.now();
-          let dur = (Date.now() - readingStartTime) / 1000;
-          let prog = Math.min((dur / settings.saplingTime) * 100, 100);
-          progressBar.style.width = prog + "%";
-          progressText.textContent = Math.floor(prog) + "%";
-          if (dur >= settings.saplingTime) {
+          // 达标：进度增加
+          let increment = (dt / settings.saplingTime) * 100;
+          readingProgress = Math.min(100, readingProgress + increment);
+
+          if (readingProgress >= 100) {
             addSapling();
-            readingStartTime = Date.now();
+            readingProgress = 0;
+            lastReadingTimestamp = now;
           }
         } else {
-          readingStartTime = null;
-          resetProgressBars();
+          // 不达标：缓降（每秒降 25%，约 4 秒清空）
+          let decrement = dt * 25;
+          readingProgress = Math.max(0, readingProgress - decrement);
         }
+
+        progressBar.style.width = readingProgress + "%";
+        progressText.textContent = Math.floor(readingProgress) + "%";
       }
 
       function updateModeUI() {
@@ -1344,6 +1360,157 @@
       ) {
         renderHistoryChart();
       }
+      // ========== 点击任意处出现随机 emoji 特效 ==========
+      const clickEmojis = [
+        "😀",
+        "😃",
+        "😄",
+        "😁",
+        "😆",
+        "😅",
+        "😂",
+        "🤣",
+        "😊",
+        "😇",
+        "🙂",
+        "🙃",
+        "😉",
+        "😌",
+        "😍",
+        "🥰",
+        "😘",
+        "😗",
+        "😙",
+        "😚",
+        "😋",
+        "😛",
+        "😝",
+        "😜",
+        "🤪",
+        "🤨",
+        "🧐",
+        "🤓",
+        "😎",
+        "🤩",
+        "🥳",
+        "😏",
+        "😒",
+        "😞",
+        "😔",
+        "😟",
+        "😕",
+        "🙁",
+        "☹️",
+        "😣",
+        "😖",
+        "😫",
+        "😩",
+        "🥺",
+        "😢",
+        "😭",
+        "😤",
+        "😠",
+        "😡",
+        "🤬",
+        "🤯",
+        "😳",
+        "🥵",
+        "🥶",
+        "😱",
+        "😨",
+        "😰",
+        "😥",
+        "😓",
+        "🤗",
+        "🤔",
+        "🤭",
+        "🤫",
+        "🤥",
+        "😶",
+        "😐",
+        "😑",
+        "😬",
+        "🙄",
+        "😯",
+        "😦",
+        "😧",
+        "😮",
+        "😲",
+        "🥱",
+        "😴",
+        "🤤",
+        "😪",
+        "😵",
+        "🤐",
+        "🥴",
+        "🤢",
+        "🤮",
+        "🤧",
+        "😷",
+        "🤒",
+        "🤕",
+        "🤑",
+        "🤠",
+        "😈",
+        "👿",
+        "👹",
+        "👺",
+        "🤡",
+        "💩",
+        "👻",
+        "💀",
+        "☠️",
+        "👽",
+        "🤖",
+      ];
+
+      function burstClickEmoji(x, y) {
+        // 随机 6～14 个 emoji
+        const count = Math.floor(Math.random() * 9) + 6;
+
+        for (let i = 0; i < count; i++) {
+          const emoji =
+            clickEmojis[Math.floor(Math.random() * clickEmojis.length)];
+          const div = document.createElement("div");
+          div.textContent = emoji;
+
+          // 随机参数
+          const offsetX = (Math.random() - 0.5) * 140; // -70 到 70
+          const offsetY = -Math.random() * 80 - 20; // -100 到 -20
+          const randomSize = Math.random() * 24 + 18; // 18 到 42
+          const randomRotate = (Math.random() - 0.5) * 100; // -50 到 50
+          const duration = Math.random() * 0.5 + 0.4; // 0.4 到 0.9
+
+          div.style.position = "fixed";
+          div.style.left = x + "px";
+          div.style.top = y + "px";
+          div.style.fontSize = randomSize + "px";
+          div.style.zIndex = "99999";
+          div.style.pointerEvents = "none";
+          div.style.userSelect = "none";
+          div.style.opacity = "1";
+          div.style.transition = `all ${duration}s ease-out`;
+          div.style.transform = `translate(0px, 0px) rotate(0deg) scale(1)`;
+          div.style.whiteSpace = "nowrap";
+
+          document.body.appendChild(div);
+
+          // 使用 setTimeout 确保样式已应用，然后触发动画
+          setTimeout(() => {
+            div.style.transform = `translate(${offsetX}px, ${offsetY}px) rotate(${randomRotate}deg) scale(1.3)`;
+            div.style.opacity = "0";
+          }, 5);
+
+          setTimeout(() => {
+            if (div && div.parentNode) div.remove();
+          }, duration * 1000);
+        }
+      }
+
+      // 监听全局点击
+      window.addEventListener("click", function (event) {
+        burstClickEmoji(event.clientX, event.clientY);
+      });
     </script>
   </body>
 </html>
