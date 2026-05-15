@@ -135,12 +135,28 @@
         border-radius: 60px;
         cursor: pointer;
         box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
-        transition: 0.05s linear;
-        border: 1px solid rgba(255, 255, 255, 0.3);
+        transition: transform 200ms cubic-bezier(.2,.9,.2,1), box-shadow 120ms;
+        border: 1px solid rgba(255, 255, 255, 0.3); 
         min-width: 100px;
+        will-change: transform;
       }
-      button:active {
-        transform: scale(0.97);
+
+      /* 可点击按钮按下显示带回弹的缩放效果 */
+      button:not(:disabled):active {
+        transform: scale(0.94);
+        transition-timing-function: cubic-bezier(.34,1.56,.64,1);
+      }
+
+      /* 禁用态按钮灰色、无缩放效果 */
+      button:disabled,
+      button[disabled] {
+        background: rgba(158,158,158,0.95);
+        color: rgba(255,255,255,0.9);
+        cursor: default;
+        box-shadow: none;
+        transform: none !important;
+        filter: grayscale(20%);
+        border: 1px solid rgba(255,255,255,0.06);
       }
 
       /* 进度+噪音区 */
@@ -588,10 +604,10 @@
 
         <div class="mode-selector">
           <button class="mode-btn active" data-mode="quiet">
-            🌿 安静模式 <span class="mode-indicator quiet">低于阈值加分</span>
+            😎 安静模式 <span class="mode-indicator quiet">低于阈值加分</span>
           </button>
           <button class="mode-btn" data-mode="reading">
-            📖 早读模式 <span class="mode-indicator reading">高于阈值加分</span>
+            😆 早读模式 <span class="mode-indicator reading">高于阈值加分</span>
           </button>
         </div>
 
