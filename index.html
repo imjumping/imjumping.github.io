@@ -37,7 +37,7 @@
         padding: 16px;
         margin: 0;
         min-height: 100vh;
-        background: url(https://t.alcy.cc/fj/) fixed center/cover no-repeat;
+        background: url(https://uapis.cn/api/v1/random/image?category=landscape) fixed center/cover no-repeat;
         transition: filter 0.2s;
       }
       ::-webkit-scrollbar {
@@ -147,39 +147,107 @@
       .noise-level-container {
         background: rgba(0, 0, 0, 0.2);
         padding: 16px;
-        border-radius: 48px;
+        border-radius: 60px;
         margin: 16px 0;
       }
       .noise-level {
         font-size: 18px;
         font-weight: bold;
       }
+      /* 垂直音量条（放置在左侧） */
       .noise-visualizer {
-        width: 100%;
-        height: 32px;
-        background: rgba(0, 0, 0, 0.3);
-        border-radius: 30px;
-        margin: 12px 0;
+        width: 44px;
+        height: 260px;
+        background: linear-gradient(to top, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.15) 100%);
+        border-radius: 40px;
+        margin: 6px 8px;
         position: relative;
         overflow: hidden;
+        display: flex;
+        align-items: stretch;
       }
       .noise-indicator {
         position: absolute;
-        top: 0;
-        bottom: 0;
-        width: 4px;
+        left: 0;
+        right: 0;
+        height: 4px;
         background: white;
-        box-shadow: 0 0 8px white;
-        transform: translateX(-50%);
-        transition: left 0.08s linear;
+        box-shadow: 0 0 8px rgba(255,255,255,0.9);
+        transform: translateY(-50%);
+        transition: top 0.08s linear;
       }
       .noise-threshold {
         position: absolute;
-        top: 0;
-        bottom: 0;
-        width: 2px;
-        background: rgba(255, 215, 0, 0.9);
-        box-shadow: 0 0 5px gold;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: rgba(255, 215, 0, 0.95);
+        box-shadow: 0 0 6px gold;
+      }
+
+      /* 左中右整体布局 */
+      .main-layout {
+        display: flex;
+        align-items: flex-start;
+        justify-content: center;
+        gap: 12px;
+        max-width: 980px;
+        margin: 0 auto;
+      }
+      
+
+      /* 右侧统计栏，竖向排列并用虚线分隔 */
+      .right-stats {
+        display: flex;
+        flex-direction: column;
+        gap: 0;
+        align-items: stretch;
+        width: 160px;
+        background: rgba(255,255,255,0.06);
+        backdrop-filter: blur(var(--blur-amount));
+        -webkit-backdrop-filter: blur(var(--blur-amount));
+        border-radius: 18px;
+        padding: 6px;
+        box-shadow: var(--shadow);
+      }
+      .right-stats .stat-box {
+        background: transparent;
+        margin: 0;
+        border-radius: 8px;
+        padding: 10px 12px;
+        text-align: left;
+        font-weight: 600;
+      }
+      .right-stats .stat-box:not(:last-child) {
+        border-bottom: 1px dashed rgba(255,255,255,0.12);
+      }
+
+      /* 左侧面板模糊与圆角 */
+      .left-noise {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 64px;
+        background: rgba(255,255,255,0.04);
+        backdrop-filter: blur(var(--blur-amount));
+        -webkit-backdrop-filter: blur(var(--blur-amount));
+        border-radius: 16px;
+        padding: 8px;
+        box-shadow: var(--shadow);
+      }
+      .left-noise .noise-level {
+        writing-mode: vertical-rl;
+        transform: rotate(180deg);
+        font-size: 12px;
+        margin-bottom: 8px;
+      }
+      .left-noise .noise-visualizer {
+        width: 44px;
+        height: 200px;
+        border-radius: 12px;
+        background: linear-gradient(to top, rgba(0,0,0,0.12), rgba(0,0,0,0.06));
+        position: relative;
+        overflow: hidden;
       }
 
       .progress-container {
@@ -322,7 +390,8 @@
         opacity: 1;
       }
       .modal-card {
-        background: rgba(30, 40, 30, 0.9);
+        background: rgba(30, 40, 30, 0.1);
+        backdrop-filter: blur(12px);
         width: 90%;
         max-width: 460px;
         border-radius: 48px;
@@ -332,9 +401,10 @@
         color: white;
         transform: scale(0.95);
         transition: transform 0.2s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+        filter: blur(20px);
       }
       .modal-overlay.active .modal-card {
-        transform: scale(1);
+        transform: scale(1);filter:none;
       }
       .modal-header {
         display: flex;
@@ -501,52 +571,49 @@
   </head>
   <body>
     <div class="notification" id="notification"></div>
-    <div class="container">
-      <h1 id="TitleCt">安静种树，别说话 🤫</h1>
-      <p class="sub">点击屏幕任意位置出现特效哦</p>
-
-      <div class="mode-selector">
-        <button class="mode-btn active" data-mode="quiet">
-          🌿 安静模式 <span class="mode-indicator quiet">低于阈值加分</span>
-        </button>
-        <button class="mode-btn" data-mode="reading">
-          📖 早读模式 <span class="mode-indicator reading">高于阈值加分</span>
-        </button>
+    <div class="main-layout">
+      <div class="left-noise">
+        <div class="noise-level">🔊 <span id="noiseLevel">0</span></div>
+        <div class="noise-visualizer" id="noiseVisualizer">
+          <div class="noise-fill" id="noiseFill" style="height:0%;position:absolute;left:0;right:0;bottom:0;background:linear-gradient(to top,#4caf50, #ffeb3b, #f44336);"></div>
+          <div class="noise-indicator" id="noiseIndicator" style="top:100%;"></div>
+          <div class="noise-threshold" id="noiseThreshold" style="top:70%;"></div>
+        </div>
+        <div style="margin-top:8px; font-size:12px;">模式：<span id="modeText" class="mode-text">(低于阈值生长)</span></div>
       </div>
 
-      <div class="controls">
-        <button id="micBtn">🎤 授权麦克风</button>
-        <button id="startBtn" disabled>▶ 开始游戏</button>
-        <button id="stopBtn" disabled>⏸️ 停止游戏</button>
-        <button id="resetBtn">🗑️ 重置场景</button>
-        <button id="openSettingsBtn">⚙️ 设置</button>
-        <button id="openAchieveBtn">🏆 成就</button>
-      </div>
+      <div class="container">
+        <h1 id="TitleCt">安静种树，别说话 🤫</h1>
+        <p class="sub">喵喵！</p>
 
-      <div class="noise-level-container">
-        <div class="noise-level">
-          🔊 当前音量: <span id="noiseLevel">0</span>
-          <span id="modeText" class="mode-text">(低于阈值生长)</span>
+        <div class="mode-selector">
+          <button class="mode-btn active" data-mode="quiet">
+            🌿 安静模式 <span class="mode-indicator quiet">低于阈值加分</span>
+          </button>
+          <button class="mode-btn" data-mode="reading">
+            📖 早读模式 <span class="mode-indicator reading">高于阈值加分</span>
+          </button>
         </div>
-        <div class="noise-visualizer">
-          <div
-            class="noise-indicator"
-            id="noiseIndicator"
-            style="left: 0%"
-          ></div>
-          <div
-            class="noise-threshold"
-            id="noiseThreshold"
-            style="left: 30%"
-          ></div>
+
+        <div class="controls">
+          <button id="micBtn">🎤 授权麦克风</button>
+          <button id="startBtn" disabled>▶ 开始游戏</button>
+          <button id="stopBtn" disabled>⏸️ 停止游戏</button>
+          <button id="resetBtn">🗑️ 重置场景</button>
+          <button id="openSettingsBtn">⚙️ 设置</button>
+          <button id="openAchieveBtn">🏆 成就</button>
         </div>
+
         <div class="progress-container">
           <div class="progress-bar" id="progressBar"></div>
           <div class="progress-text" id="progressText">0%</div>
         </div>
+
+        <div class="scene-container" id="sceneContainer"></div>
+        <div class="history-chart" id="historyChart"><p>📊 近7天战绩</p></div>
       </div>
 
-      <div class="stats">
+      <div class="right-stats" id="rightStats">
         <div class="stat-box">
           <div>🌱 小植物</div>
           <div id="saplingCount">0</div>
@@ -564,9 +631,6 @@
           <div id="todayCount">0</div>
         </div>
       </div>
-
-      <div class="scene-container" id="sceneContainer"></div>
-      <div class="history-chart" id="historyChart"><p>📊 近7天战绩</p></div>
     </div>
 
     <!-- 设置模态框 -->
@@ -784,7 +848,9 @@
         todayCountSpan = document.getElementById("todayCount");
       const noiseLevelSpan = document.getElementById("noiseLevel"),
         noiseIndicator = document.getElementById("noiseIndicator"),
-        noiseThresholdLine = document.getElementById("noiseThreshold");
+        noiseThresholdLine = document.getElementById("noiseThreshold"),
+        noiseFill = document.getElementById("noiseFill"),
+        noiseVisualizer = document.getElementById("noiseVisualizer");
       const modeTextSpan = document.getElementById("modeText"),
         titleH1 = document.getElementById("TitleCt");
       const thresholdSlider = document.getElementById("threshold"),
@@ -816,37 +882,67 @@
       function playSound(type) {
         if (!settings.enableSounds) return;
         try {
-          let ctx = new (AudioContext || webkitAudioContext)();
-          let osc = ctx.createOscillator();
-          let gain = ctx.createGain();
-          osc.connect(gain);
-          gain.connect(ctx.destination);
-          if (type === "sapling") {
-            osc.frequency.value = 560;
-            gain.gain.value = 0.08;
-            osc.type = "sine";
-          } else if (type === "tree") {
-            osc.frequency.value = 440;
-            gain.gain.value = 0.2;
-            osc.type = "sine";
-            // 大树音效延长一点
-            gain.gain.exponentialRampToValueAtTime(
-              0.001,
-              ctx.currentTime + 0.6,
-            );
-            osc.stop(ctx.currentTime + 0.6);
-            osc.onended = () => ctx.close();
-            return;
-          } else {
-            osc.frequency.value = 1000;
-            gain.gain.value = 0.2;
-            osc.type = "sawtooth";
+          const ctx = new (window.AudioContext || window.webkitAudioContext)();
+          const master = ctx.createGain();
+          master.gain.value = 0.25;
+          master.connect(ctx.destination);
+
+          const now = ctx.currentTime;
+
+          // 1) 产生短脉冲噪声（制造清脆的“叮”开头）
+          const noiseLen = Math.floor(ctx.sampleRate * 0.03); // 30ms 短噪声
+          const noiseBuf = ctx.createBuffer(1, noiseLen, ctx.sampleRate);
+          const ch = noiseBuf.getChannelData(0);
+          for (let i = 0; i < noiseLen; i++) {
+            // 线性衰减白噪声
+            ch[i] = (Math.random() * 2 - 1) * (1 - i / noiseLen);
           }
-          osc.start();
-          gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.4);
-          osc.stop(ctx.currentTime + 0.4);
+          const noiseSrc = ctx.createBufferSource();
+          noiseSrc.buffer = noiseBuf;
+          const hp = ctx.createBiquadFilter();
+          hp.type = "highpass";
+          hp.frequency.value = 2000; // 去掉低频，使点击更清脆
+          noiseSrc.connect(hp);
+          hp.connect(master);
+
+          // 2) 主“叮”声：短包络的正弦（或两路叠加）
+          const baseFreq = type === "sapling" ? 880 : type === "achievement" ? 1100 : 660;
+          const osc = ctx.createOscillator();
+          osc.type = "sine";
+          osc.frequency.value = baseFreq;
+
+          const oscGain = ctx.createGain();
+          // 迅速涨到峰值，再快速衰减（形成清脆的 bell）
+          oscGain.gain.setValueAtTime(0.0001, now);
+          oscGain.gain.exponentialRampToValueAtTime(0.6, now + 0.002);
+          oscGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.18);
+
+          // 可选的次谐/富色调，降低音量以避免浑浊
+          const osc2 = ctx.createOscillator();
+          osc2.type = "triangle";
+          osc2.frequency.value = baseFreq * 1.5;
+          const g2 = ctx.createGain();
+          g2.gain.setValueAtTime(0.08, now);
+
+          osc.connect(oscGain);
+          oscGain.connect(master);
+          osc2.connect(g2);
+          g2.connect(master);
+
+          // 启动与停止
+          noiseSrc.start(now);
+          noiseSrc.stop(now + 0.03);
+
+          osc.start(now);
+          osc2.start(now);
+          osc.stop(now + 0.22);
+          osc2.stop(now + 0.22);
+
+          // 关闭 AudioContext
           osc.onended = () => ctx.close();
-        } catch (e) {}
+        } catch (e) {
+          // 静默失败
+        }
       }
 
       function createLeaf(parent) {
@@ -872,7 +968,8 @@
           currentMode === "quiet"
             ? settings.threshold
             : settings.readingThreshold;
-        noiseThresholdLine.style.left = thr + "%";
+        // 竖向条：使用 top（从上到下），阈值为 bottom 百分比 -> top = 100 - thr
+        noiseThresholdLine.style.top = 100 - thr + "%";
       }
 
       function applyBlur() {
@@ -996,10 +1093,10 @@
       function updateModeUI() {
         if (currentMode === "quiet") {
           modeTextSpan.innerHTML = "(低于阈值生长)";
-          titleH1.textContent = "安静种树，别说话～～～🤫";
+          titleH1.textContent = "安静种树，说话了没树～～～🤫";
         } else {
           modeTextSpan.innerHTML = "(高于阈值生长)";
-          titleH1.textContent = "大声朗读，加分！！！！📢";
+          titleH1.textContent = "大声朗读，加分！！！！！！📢";
         }
         updateThresholdIndicator();
         resetProgressBars();
@@ -1217,7 +1314,10 @@
           let avg = sum / dataArray.length;
           let level = Math.min(100, Math.round(avg));
           noiseLevelSpan.textContent = level;
-          noiseIndicator.style.left = level + "%";
+          // 竖向：设置指示器位置（top），并设置填充高度
+          noiseIndicator.style.top = 100 - level + "%";
+          if (noiseFill) noiseFill.style.height = level + "%";
+          // 视觉渐变：当声音较大时顶部表现为红色（noiseFill 使用从绿到红的渐变）
           if (currentMode === "quiet") handleQuietMode(level);
           else handleReadingMode(level);
           rafId = requestAnimationFrame(loop);
@@ -1377,91 +1477,6 @@
         "😉",
         "😌",
         "😍",
-        "🥰",
-        "😘",
-        "😗",
-        "😙",
-        "😚",
-        "😋",
-        "😛",
-        "😝",
-        "😜",
-        "🤪",
-        "🤨",
-        "🧐",
-        "🤓",
-        "😎",
-        "🤩",
-        "🥳",
-        "😏",
-        "😒",
-        "😞",
-        "😔",
-        "😟",
-        "😕",
-        "🙁",
-        "☹️",
-        "😣",
-        "😖",
-        "😫",
-        "😩",
-        "🥺",
-        "😢",
-        "😭",
-        "😤",
-        "😠",
-        "😡",
-        "🤬",
-        "🤯",
-        "😳",
-        "🥵",
-        "🥶",
-        "😱",
-        "😨",
-        "😰",
-        "😥",
-        "😓",
-        "🤗",
-        "🤔",
-        "🤭",
-        "🤫",
-        "🤥",
-        "😶",
-        "😐",
-        "😑",
-        "😬",
-        "🙄",
-        "😯",
-        "😦",
-        "😧",
-        "😮",
-        "😲",
-        "🥱",
-        "😴",
-        "🤤",
-        "😪",
-        "😵",
-        "🤐",
-        "🥴",
-        "🤢",
-        "🤮",
-        "🤧",
-        "😷",
-        "🤒",
-        "🤕",
-        "🤑",
-        "🤠",
-        "😈",
-        "👿",
-        "👹",
-        "👺",
-        "🤡",
-        "💩",
-        "👻",
-        "💀",
-        "☠️",
-        "👽",
-        "🤖",
       ];
 
       function burstClickEmoji(x, y) {
