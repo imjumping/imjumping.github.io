@@ -75,6 +75,7 @@
         display: flex;
         justify-content: center;
         gap: 12px;
+        align-items: center;
       }
 
       .mode-btn {
@@ -145,6 +146,29 @@
       button:not(:disabled):active {
         transform: scale(0.94);
         transition-timing-function: cubic-bezier(.34,1.56,.64,1);
+      }
+
+      /* 成就圆形按钮 */
+      .achieve-btn {
+        box-sizing: border-box;
+        flex: 0 0 auto;
+        max-width: 48px;
+        height: 48px;
+        border-radius: 40px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0;
+        margin: 0;
+        font-size: 20px;
+        line-height: 1;
+        background: rgba(255,255,255,0.08);
+        border: 1px solid rgba(255,255,255,0.12);
+        box-shadow: 0 6px 18px rgba(0,0,0,0.18);
+        cursor: pointer;
+      }
+      .achieve-btn:active {
+        transform: scale(0.92);
       }
 
       /* 禁用态按钮灰色、无缩放效果 */
@@ -244,6 +268,7 @@
         flex-direction: column;
         align-items: center;
         width: 64px;
+        flex-shrink: 0;
         background: rgba(255,255,255,0.04);
         backdrop-filter: blur(var(--blur-amount));
         -webkit-backdrop-filter: blur(var(--blur-amount));
@@ -251,11 +276,24 @@
         padding: 8px;
         box-shadow: var(--shadow);
       }
+      /* 固定音量文字区域，使用等宽数字并固定高度，避免频繁更新时造成布局抖动 */
       .left-noise .noise-level {
-        writing-mode: vertical-rl;
-        transform: rotate(180deg);
+        height: 42px;
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
         font-size: 12px;
         margin-bottom: 8px;
+        writing-mode: horizontal-tb;
+      }
+      #noiseLevel {
+        display: block;
+        width: 100%;
+        text-align: center;
+        font-family: "Noto Sans SC", SFMono-Regular, Menlo, Monaco, 'Roboto Mono', monospace;
+        font-variant-numeric: tabular-nums;
+        line-height: 1;
       }
       .left-noise .noise-visualizer {
         width: 44px;
@@ -531,7 +569,7 @@
         background: rgba(255, 255, 200, 0.15);
         margin: 12px 0;
         padding: 12px;
-        border-radius: 60px;
+        border-radius: 40px;
       }
       .achievement.unlocked {
         background: rgba(76, 175, 80, 0.4);
@@ -606,6 +644,7 @@
           <button class="mode-btn active" data-mode="quiet">
             😎 安静模式 <span class="mode-indicator quiet">低于阈值加分</span>
           </button>
+          <button id="openAchieveBtn" class="achieve-btn" title="成就">🏆</button>
           <button class="mode-btn" data-mode="reading">
             😆 早读模式 <span class="mode-indicator reading">高于阈值加分</span>
           </button>
@@ -617,7 +656,6 @@
           <button id="stopBtn" disabled>⏸️ 停止游戏</button>
           <button id="resetBtn">🗑️ 重置场景</button>
           <button id="openSettingsBtn">⚙️ 设置</button>
-          <button id="openAchieveBtn">🏆 成就</button>
         </div>
 
         <div class="progress-container">
