@@ -677,7 +677,7 @@
           <div id="treeCount">0</div>
         </div>
         <div class="stat-box">
-          <div>⏱️ 最长安静/朗读</div>
+          <div>⏱️ 当前安静/朗读</div>
           <div id="quietTime">0.0秒</div>
         </div>
         <div class="stat-box">
@@ -792,6 +792,8 @@
         rafId = null;
       let quietStartTime = null,
         readingStartTime = null;
+      let currentQuietDuration = 0,
+        currentReadingDuration = 0;
       let saplings = 0,
         trees = 0,
         totalQuietTime = 0,
@@ -1013,7 +1015,8 @@
       function updateStats() {
         saplingCountSpan.textContent = saplings;
         treeCountSpan.textContent = trees;
-        quietTimeSpan.textContent = longestQuietTime.toFixed(1) + "秒";
+        const displayDur = currentMode === "quiet" ? currentQuietDuration : currentReadingDuration;
+        quietTimeSpan.textContent = displayDur.toFixed(1) + "秒";
         todayCountSpan.textContent = todayCount;
       }
 
@@ -1038,6 +1041,9 @@
         progressText.textContent = "0%";
         quietStartTime = null;
         readingStartTime = null;
+        currentQuietDuration = 0;
+        currentReadingDuration = 0;
+        updateStats();
       }
 
       // 核心修复：合并成大树的逻辑
@@ -1099,6 +1105,7 @@
         if (vol < settings.threshold) {
           if (!quietStartTime) quietStartTime = Date.now();
           let dur = (Date.now() - quietStartTime) / 1000;
+          currentQuietDuration = dur;
           totalQuietTime += 1 / 60;
           if (dur > longestQuietTime) longestQuietTime = dur;
           let prog = Math.min((dur / settings.saplingTime) * 100, 100);
@@ -1107,9 +1114,11 @@
           if (dur >= settings.saplingTime) {
             addSapling();
             quietStartTime = Date.now();
+            currentQuietDuration = 0;
           }
         } else {
           quietStartTime = null;
+          currentQuietDuration = 0;
           resetProgressBars();
         }
       }
@@ -1123,8 +1132,9 @@
           ? Math.min(0.5, (now - lastReadingTimestamp) / 1000)
           : 0;
         lastReadingTimestamp = now;
-
         if (vol >= settings.readingThreshold) {
+          if (!readingStartTime) readingStartTime = Date.now();
+          currentReadingDuration = (Date.now() - readingStartTime) / 1000;
           // 达标：进度增加
           let increment = (dt / settings.saplingTime) * 100;
           readingProgress = Math.min(100, readingProgress + increment);
@@ -1133,11 +1143,16 @@
             addSapling();
             readingProgress = 0;
             lastReadingTimestamp = now;
+            // 重置当前计时，重新计时下一轮
+            readingStartTime = Date.now();
+            currentReadingDuration = 0;
           }
         } else {
-          // 不达标：缓降（每秒降 25%，约 4 秒清空）
+          // 不达标：缓降（每秒降 25%，约 4 秒清空）并重置持续时长
           let decrement = dt * 25;
           readingProgress = Math.max(0, readingProgress - decrement);
+          readingStartTime = null;
+          currentReadingDuration = 0;
         }
 
         progressBar.style.width = readingProgress + "%";
@@ -1398,6 +1413,9 @@
         stopBtn.disabled = true;
         quietStartTime = null;
         readingStartTime = null;
+        currentQuietDuration = 0;
+        currentReadingDuration = 0;
+        updateStats();
         saveGameData();
       }
 
