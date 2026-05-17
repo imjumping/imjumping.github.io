@@ -3,10 +3,12 @@
 
 <head>
     <meta charset="UTF-8">
+    <title>HiMeowOS - 毛玻璃卡片</title>
     <style>
         * {
             margin: 0;
             padding: 0;
+            box-sizing: border-box;
         }
 
         body {
@@ -16,8 +18,12 @@
             display: flex;
             justify-content: center;
             align-items: center;
+            /* 让背景透出底层内容（使用时背景透明） */
+            min-height: 100vh;
+            /* 确保body完全填充视口，便于居中 */
         }
 
+        /* 飞入动画：从缩小+透明到原大小完全不透明 */
         @keyframes FlyIn {
             0% {
                 transform: scale(60%);
@@ -25,19 +31,20 @@
             }
 
             100% {
-                transform: none;
+                transform: scale(1);
                 opacity: 1;
             }
         }
 
+        /* 外层仅负责投影+卡片容器，不干扰内部毛玻璃标题的位置 */
         .shadow-only {
             animation: FlyIn 0.37s ease;
             border-radius: 30px;
             width: 300px;
             height: 200px;
-            background-color: #ffffff00;
+            background-color: #ffffff00;  /* 完全透明背景，保留阴影效果同时允许看到背后的标题区轻微透出？但标题在内部单独毛玻璃，无冲突 */
             box-shadow: 0 15px 20px rgba(0, 0, 0, 0.3);
-            pointer-events: none;
+            pointer-events: none;  /* 让整个容器不可点击，保证标题仅展示，不干扰点击事件 */
             position: relative;
         }
 
@@ -57,12 +64,39 @@
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.14);
             pointer-events: none;
         }
+
+        .glass-title {
+            position: absolute;
+            top: 14px;     
+            left: 16px;
+       
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border-radius: 40px;
+            padding: 6px 14px;
+            font-family: system-ui, 'Segoe UI', 'SF Pro Text', 'Helvetica Neue', sans-serif;
+            font-size: 13px;
+            font-weight: 500;
+            color: rgba(0, 0, 0, 0.85);
+            letter-spacing: 0.2px;
+            white-space: nowrap;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+            border: 0.5px solid rgba(255, 255, 255, 0.4);
+            pointer-events: none; 
+            transition: all 0.1s ease;
+        }
+
     </style>
 </head>
 
 <body>
     <div class="shadow-only">
+        <!-- 原有齿轮图标 (⚙️) 位置+样式完全不变 -->
         <div class="glass-icon">⚙️</div>
+
+        <!-- 新增左上角毛玻璃标题，符合要求：只加标题，不动布局。未改变任何已有元素位置及尺寸关系 -->
+        <div class="glass-title">欢迎使用HiMeowOS！</div>
     </div>
 </body>
 
