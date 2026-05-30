@@ -1,102 +1,239 @@
 <!DOCTYPE html>
-<html>
-
+<html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>HiMeowOS - 毛玻璃卡片</title>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            user-select: none;
         }
 
         body {
             background: transparent;
             width: 100%;
-            height: 100%;
+            min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            /* 让背景透出底层内容（使用时背景透明） */
-            min-height: 100vh;
-            /* 确保body完全填充视口，便于居中 */
+            margin: 0;
+            padding: 0;
         }
 
         /* 飞入动画：从缩小+透明到原大小完全不透明 */
         @keyframes FlyIn {
             0% {
-                transform: scale(60%);
+                transform: scale(0.6);
                 opacity: 0;
             }
-
             100% {
                 transform: scale(1);
                 opacity: 1;
             }
         }
 
-        /* 外层仅负责投影+卡片容器，不干扰内部毛玻璃标题的位置 */
-        .shadow-only {
-            animation: FlyIn 0.37s ease;
+        /* 基础卡片容器 (默认样式: 紧凑卡片 300x200) */
+        .card-container {
+            animation: FlyIn 0.37s cubic-bezier(0.2, 0.9, 0.4, 1.1);
             border-radius: 30px;
             width: 300px;
             height: 200px;
-            background-color: #ffffff00;  /* 完全透明背景，保留阴影效果同时允许看到背后的标题区轻微透出？但标题在内部单独毛玻璃，无冲突 */
+            background-color: rgba(255, 255, 255, 0);
             box-shadow: 0 15px 20px rgba(0, 0, 0, 0.3);
-            pointer-events: none;  /* 让整个容器不可点击，保证标题仅展示，不干扰点击事件 */
+            pointer-events: none;
             position: relative;
+            transition: all 0.4s cubic-bezier(0.2, 0.9, 0.4, 1.2);
+            will-change: width, height, border-radius, box-shadow;
         }
 
+        /* 全屏拓展样式 - 当收到 'fs' 事件时应用 */
+        .card-container.fullscreen-mode {
+            width: 95vw;
+            height: 95vh;
+            border-radius: 28px;
+            box-shadow: 0 25px 35px rgba(0, 0, 0, 0.25);
+        }
+
+        /* 毛玻璃图标 (喵) */
         .glass-icon {
             position: absolute;
             top: 12px;
             right: 12px;
             width: 36px;
-            height: 36px;   
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(3px);
+            height: 36px;
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 20px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.14);
+            font-family: system-ui, 'Segoe UI Emoji', sans-serif;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
             pointer-events: none;
+            border: 0.5px solid rgba(255, 255, 255, 0.5);
+            transition: all 0.2s ease;
         }
-    
+
+        /* 毛玻璃标题 */
         .glass-title {
             position: absolute;
-            top: 14px;     
+            top: 14px;
             left: 16px;
-       
-            background: rgba(255, 255, 255, 0.2);
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
+            background: rgba(255, 255, 255, 0.25);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
             border-radius: 40px;
             padding: 6px 14px;
             font-family: system-ui, 'Segoe UI', 'SF Pro Text', 'Helvetica Neue', sans-serif;
             font-size: 13px;
-            font-weight: 500;
+            font-weight: 520;
             color: rgba(0, 0, 0, 0.85);
-            letter-spacing: 0.2px;
+            letter-spacing: 0.3px;
             white-space: nowrap;
-            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
-            border: 0.5px solid rgba(255, 255, 255, 0.4);
-            pointer-events: none; 
-            transition: all 0.1s ease;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            border: 0.6px solid rgba(255, 255, 255, 0.5);
+            pointer-events: none;
+            transition: all 0.2s ease;
         }
 
+        /* 全屏模式下的微调 */
+        .card-container.fullscreen-mode .glass-icon {
+            width: 42px;
+            height: 42px;
+            font-size: 24px;
+            top: 18px;
+            right: 18px;
+            background: rgba(255, 255, 255, 0.25);
+            backdrop-filter: blur(6px);
+        }
+
+        .card-container.fullscreen-mode .glass-title {
+            font-size: 14px;
+            padding: 7px 18px;
+            top: 18px;
+            left: 22px;
+            background: rgba(255, 255, 255, 0.3);
+            backdrop-filter: blur(12px);
+            letter-spacing: 0.4px;
+        }
+
+        /* 容器不拦截鼠标事件，让点击穿透到底层 */
+        .card-container {
+            pointer-events: none;
+        }
     </style>
 </head>
-
 <body>
-    <div class="shadow-only">
-        <!-- 原有齿轮图标 (⚙️) 位置+样式完全不变 -->
-        <div class="glass-icon">喵</div>
-
+    <div class="card-container" id="dynamicCard">
+        <div class="glass-icon">🐱</div>
         <div class="glass-title">欢迎使用HiMeowOS！</div>
     </div>
-</body>
 
+    <script>
+        (function() {
+            const cardElement = document.getElementById('dynamicCard');
+            let isFullscreenMode = false;
+
+            // 应用全屏样式 (对应 'fs' 事件)
+            function applyFullscreen() {
+                if (!cardElement) return;
+                if (!isFullscreenMode) {
+                    cardElement.classList.add('fullscreen-mode');
+                    isFullscreenMode = true;
+                    console.log('[HiMeowOS] 已进入全屏模式 (fs)');
+                    // 可选：向父容器发送确认消息
+                    try {
+                        if (window.parent && window.parent !== window) {
+                            window.parent.postMessage({ type: 'HiMeowOS', status: 'fullscreen-entered' }, '*');
+                        }
+                    } catch(e) {}
+                }
+            }
+
+            // 移除全屏样式，恢复紧凑卡片 (对应 're' 事件)
+            function removeFullscreen() {
+                if (!cardElement) return;
+                if (isFullscreenMode) {
+                    cardElement.classList.remove('fullscreen-mode');
+                    isFullscreenMode = false;
+                    console.log('[HiMeowOS] 已退出全屏模式 (re)');
+                    try {
+                        if (window.parent && window.parent !== window) {
+                            window.parent.postMessage({ type: 'HiMeowOS', status: 'fullscreen-exited' }, '*');
+                        }
+                    } catch(e) {}
+                }
+            }
+
+            /**
+             * 接收来自父容器的消息
+             * 参考示例的最佳实践：
+             * 1. 使用 window.addEventListener('message')
+             * 2. 校验消息来源 e.source === window.parent
+             * 3. 支持字符串指令 'fs' / 're'
+             */
+            function handleMessageFromParent(event) {
+                // 关键校验：确保消息来自父容器，而不是其他 iframe 或窗口
+                if (event.source !== window.parent) return;
+                
+                const data = event.data;
+                if (data == null) return;
+                
+                // 处理字符串指令
+                if (typeof data === 'string') {
+                    const trimmed = data.trim().toLowerCase();
+                    if (trimmed === 'fs') {
+                        applyFullscreen();
+                    } else if (trimmed === 're') {
+                        removeFullscreen();
+                    }
+                    return;
+                }
+                
+                // 处理对象格式的指令
+                if (typeof data === 'object') {
+                    let cmd = null;
+                    if (typeof data.command === 'string') cmd = data.command.toLowerCase();
+                    else if (typeof data.type === 'string') cmd = data.type.toLowerCase();
+                    else if (typeof data.action === 'string') cmd = data.action.toLowerCase();
+                    else if (typeof data.event === 'string') cmd = data.event.toLowerCase();
+                    
+                    if (cmd === 'fs') {
+                        applyFullscreen();
+                    } else if (cmd === 're') {
+                        removeFullscreen();
+                    }
+                }
+            }
+            
+            // 监听来自父容器的消息
+            window.addEventListener('message', handleMessageFromParent);
+            
+            // 暴露全局 API，方便父容器直接调用（如果父容器可以访问 iframe.contentWindow）
+            window.HiMeowOS = {
+                enterFullscreen: applyFullscreen,
+                exitFullscreen: removeFullscreen,
+                isFullscreen: function() { return isFullscreenMode; },
+                command: function(cmd) {
+                    if (cmd === 'fs') applyFullscreen();
+                    else if (cmd === 're') removeFullscreen();
+                }
+            };
+            
+            // 通知父容器 iframe 已就绪
+            try {
+                if (window.parent && window.parent !== window) {
+                    window.parent.postMessage({ type: 'HiMeowOS', ready: true }, '*');
+                }
+            } catch(e) {}
+            
+            console.log('[HiMeowOS] 卡片已就绪，等待 fs/re 指令 (postMessage 或调用 window.HiMeowOS)');
+        })();
+    </script>
+</body>
 </html>
