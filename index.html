@@ -140,6 +140,7 @@
         border: 1px solid rgba(255, 255, 255, 0.3); 
         min-width: 100px;
         will-change: transform;
+        position: relative;
       }
 
       /* 可点击按钮按下显示带回弹的缩放效果 */
@@ -621,6 +622,96 @@
           min-width: 100px;
         }
       }
+
+      /* ---------------------------------
+         🔥 全新：过场动画与开始特效样式 
+         --------------------------------- */
+      
+      /* 开始按钮点击放射粒子特效容器 */
+      .burst-particle {
+        position: fixed;
+        pointer-events: none;
+        z-index: 99999;
+        font-size: 24px;
+        transition: transform 0.8s cubic-bezier(0.1, 0.8, 0.3, 1), opacity 0.8s ease-out;
+      }
+
+      /* 电影级黑金转场层 */
+      .cinema-transition-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background: radial-gradient(circle at center, #141f16 0%, #080d09 100%);
+        z-index: 100000; /* 置顶 */
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        opacity: 1;
+        transition: opacity 1.2s cubic-bezier(0.25, 1, 0.5, 1);
+        pointer-events: all;
+      }
+
+      .cinema-transition-overlay.fade-out {
+        opacity: 0;
+        pointer-events: none;
+      }
+
+      /* 逐字显现文字容器 */
+      .transition-text-container {
+        text-align: center;
+        color: #ffffff;
+        font-size: 38px;
+        font-weight: 800;
+        letter-spacing: 6px;
+        text-shadow: 0 0 15px rgba(76, 175, 80, 0.6), 0 0 30px rgba(76, 175, 80, 0.3);
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        padding: 0 20px;
+        max-width: 800px;
+      }
+
+      /* 单个字符动效 */
+      .char-span {
+        display: inline-block;
+        opacity: 0;
+        transform: translateY(20px) scale(0.8);
+        animation: charReveal 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+      }
+
+      @keyframes charReveal {
+        to {
+          opacity: 1;
+          transform: translateY(0) scale(1);
+        }
+      }
+
+      /* 转场点缀粒子 */
+      .bg-sparkle {
+        position: absolute;
+        background: radial-gradient(circle, rgba(255,255,255,0.8) 0%, rgba(255,255,255,0) 70%);
+        border-radius: 50%;
+        pointer-events: none;
+        animation: sparkleFloat 1.5s ease-out forwards;
+      }
+
+      @keyframes sparkleFloat {
+        0% {
+          transform: scale(0.2) translate(0, 0);
+          opacity: 0;
+        }
+        20% {
+          opacity: 0.8;
+        }
+        100% {
+          transform: scale(1.5) translate(var(--mx), var(--my));
+          opacity: 0;
+        }
+      }
+
     </style>
   </head>
   <body>
@@ -638,7 +729,7 @@
 
       <div class="container">
         <h1 id="TitleCt">安静种树，别说话 🤫</h1>
-        <p class="sub">喵喵！</p>
+        <p class="sub">瞄喵！</p>
 
         <div class="mode-selector">
           <button class="mode-btn active" data-mode="quiet">
@@ -1359,12 +1450,129 @@
         }
       }
 
+      // -------------- 全屏处理逻辑 --------------
+      function enterFullscreen() {
+        let docEl = document.documentElement;
+        if (docEl.requestFullscreen) {
+          docEl.requestFullscreen().catch(() => {});
+        } else if (docEl.mozRequestFullScreen) { // Firefox
+          docEl.mozRequestFullScreen().catch(() => {});
+        } else if (docEl.webkitRequestFullscreen) { // Chrome, Safari and Opera
+          docEl.webkitRequestFullscreen().catch(() => {});
+        } else if (docEl.msRequestFullscreen) { // IE/Edge
+          docEl.msRequestFullscreen().catch(() => {});
+        }
+      }
+
+      function exitFullscreen() {
+        if (document.fullscreenElement || document.webkitFullscreenElement || document.mozFullScreenElement || document.msFullscreenElement) {
+          if (document.exitFullscreen) {
+            document.exitFullscreen().catch(() => {});
+          } else if (document.mozCancelFullScreen) {
+            document.mozCancelFullScreen().catch(() => {});
+          } else if (document.webkitExitFullscreen) {
+            document.webkitExitFullscreen().catch(() => {});
+          } else if (document.msExitFullscreen) {
+            document.msExitFullscreen().catch(() => {});
+          }
+        }
+      }
+
+      // -------------- 华丽的过场特效逻辑 --------------
+      function triggerStartEffects(buttonElement) {
+        // 1. 按钮爆开发射粒子
+        const rect = buttonElement.getBoundingClientRect();
+        const originX = rect.left + rect.width / 2;
+        const originY = rect.top + rect.height / 2;
+
+        const emojis = ["🌱", "🍀", "✨", "🍃", "🔥", "⚡", "🌟"];
+        for (let i = 0; i < 30; i++) {
+          const part = document.createElement("div");
+          part.className = "burst-particle";
+          part.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+          part.style.left = originX + "px";
+          part.style.top = originY + "px";
+          
+          // 随机发散角度和距离
+          const angle = Math.random() * Math.PI * 2;
+          const distance = Math.random() * 250 + 100;
+          const targetX = Math.cos(angle) * distance;
+          const targetY = Math.sin(angle) * distance;
+          const duration = Math.random() * 0.4 + 0.6;
+          const randomRotate = (Math.random() - 0.5) * 360;
+
+          document.body.appendChild(part);
+
+          // 触发回弹爆发动画
+          requestAnimationFrame(() => {
+            part.style.transition = `transform ${duration}s cubic-bezier(0.1, 0.8, 0.3, 1), opacity ${duration}s ease-out`;
+            part.style.transform = `translate(${targetX}px, ${targetY}px) rotate(${randomRotate}deg) scale(0)`;
+            part.style.opacity = "0";
+          });
+
+          setTimeout(() => part.remove(), duration * 1000);
+        }
+
+        // 2. 电影级黑金粒子过渡转场
+        const transitionOverlay = document.createElement("div");
+        transitionOverlay.className = "cinema-transition-overlay";
+        
+        // 飘动背景粒子
+        for (let i = 0; i < 25; i++) {
+          const spark = document.createElement("div");
+          spark.className = "bg-sparkle";
+          spark.style.left = Math.random() * 100 + "vw";
+          spark.style.top = Math.random() * 100 + "vh";
+          spark.style.width = Math.random() * 8 + 4 + "px";
+          spark.style.height = spark.style.width;
+          spark.style.setProperty("--mx", (Math.random() - 0.5) * 300 + "px");
+          spark.style.setProperty("--my", (Math.random() - 0.5) * 300 + "px");
+          spark.style.animationDelay = Math.random() * 0.4 + "s";
+          transitionOverlay.appendChild(spark);
+        }
+
+        // 逐字出现的引导词
+        const titleText = currentMode === "quiet" ? "嘘… 静谧的森林，正在悄悄呼吸   停止游戏以退出全屏" : "大声！喊出你的态度与力量！   停止游戏以退出全屏";
+        const textContainer = document.createElement("div");
+        textContainer.className = "transition-text-container";
+
+        // 将每个字符包裹进 span
+        [...titleText].forEach((char, index) => {
+          const span = document.createElement("span");
+          span.className = "char-span";
+          span.textContent = char;
+          span.style.animationDelay = `${index * 0.05}s`;
+          // 空格特殊处理
+          if (char === " ") {
+            span.innerHTML = "&nbsp;";
+          }
+          textContainer.appendChild(span);
+        });
+
+        transitionOverlay.appendChild(textContainer);
+        document.body.appendChild(transitionOverlay);
+
+        // 1秒后开启渐淡隐藏，1.2秒彻底销毁
+        setTimeout(() => {
+          transitionOverlay.classList.add("fade-out");
+        }, 3000);
+
+        setTimeout(() => {
+          transitionOverlay.remove();
+        }, 5000);
+      }
+
       function startGame() {
         if (isRunning) return;
         if (!mediaStream) {
           showNotification("请先授权麦克风", true);
           return;
         }
+
+        // 进入全屏模式并播放高大上的转场动效
+        enterFullscreen();
+        triggerStartEffects(startBtn);
+
         isRunning = true;
         startBtn.disabled = true;
         stopBtn.disabled = false;
@@ -1395,6 +1603,9 @@
       }
 
       function stopGame() {
+        // 退出全屏模式
+        exitFullscreen();
+
         isRunning = false;
         if (rafId) {
           cancelAnimationFrame(rafId);
@@ -1596,6 +1807,8 @@
 
       // 监听全局点击
       window.addEventListener("click", function (event) {
+        // 如果正在播放遮罩层过场，则不触发全局点击爆破（防止穿透）
+        if (document.querySelector('.cinema-transition-overlay')) return;
         burstClickEmoji(event.clientX, event.clientY);
       });
     </script>
