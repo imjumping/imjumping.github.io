@@ -1027,70 +1027,51 @@
       }
 
       function playSound(type) {
-        if (!settings.enableSounds) return;
-        try {
-          const ctx = new (window.AudioContext || window.webkitAudioContext)();
-          const master = ctx.createGain();
-          master.gain.value = 0.25;
-          master.connect(ctx.destination);
+    if (!settings.enableSounds) return;
+    try {
+        const ctx = new (window.AudioContext || window.webkitAudioContext)();
+        const master = ctx.createGain();
+        master.gain.value = 0.25;
+        master.connect(ctx.destination);
+        const now = ctx.currentTime;
 
-          const now = ctx.currentTime;
-
-          // 1) 产生短脉冲噪声（制造清脆的“叮”开头）
-          const noiseLen = Math.floor(ctx.sampleRate * 0.03); // 30ms 短噪声
-          const noiseBuf = ctx.createBuffer(1, noiseLen, ctx.sampleRate);
-          const ch = noiseBuf.getChannelData(0);
-          for (let i = 0; i < noiseLen; i++) {
-            // 线性衰减白噪声
-            ch[i] = (Math.random() * 2 - 1) * (1 - i / noiseLen);
-          }
-          const noiseSrc = ctx.createBufferSource();
-          noiseSrc.buffer = noiseBuf;
-          const hp = ctx.createBiquadFilter();
-          hp.type = "highpass";
-          hp.frequency.value = 2000; // 去掉低频，使点击更清脆
-          noiseSrc.connect(hp);
-          hp.connect(master);
-
-          // 2) 主“叮”声：短包络的正弦（或两路叠加）
-          const baseFreq = type === "sapling" ? 880 : type === "achievement" ? 1100 : 660;
-          const osc = ctx.createOscillator();
-          osc.type = "sine";
-          osc.frequency.value = baseFreq;
-
-          const oscGain = ctx.createGain();
-          // 迅速涨到峰值，再快速衰减（形成清脆的 bell）
-          oscGain.gain.setValueAtTime(0.0001, now);
-          oscGain.gain.exponentialRampToValueAtTime(0.6, now + 0.002);
-          oscGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.18);
-
-          // 可选的次谐/富色调，降低音量以避免浑浊
-          const osc2 = ctx.createOscillator();
-          osc2.type = "triangle";
-          osc2.frequency.value = baseFreq * 1.5;
-          const g2 = ctx.createGain();
-          g2.gain.setValueAtTime(0.08, now);
-
-          osc.connect(oscGain);
-          oscGain.connect(master);
-          osc2.connect(g2);
-          g2.connect(master);
-
-          // 启动与停止
-          noiseSrc.start(now);
-          noiseSrc.stop(now + 0.03);
-
-          osc.start(now);
-          osc2.start(now);
-          osc.stop(now + 0.22);
-          osc2.stop(now + 0.22);
-
-          // 关闭 AudioContext
-          osc.onended = () => ctx.close();
-        } catch (e) {
-          // 静默失败
-        }
-      }
+        // 1. 移除原来的高频噪声（那部分最刺耳）
+        // 2. 改为纯正弦波 + 温和的颤音，产生舒缓的“噔噔”声
+        
+        let baseFreq = type === "sapling" ? 392 : type === "achievement" ? 523 : 330;
+        // 392Hz ≈ G4（温和），330Hz ≈ E4，523Hz ≈ C5（成就稍微明亮但不刺耳）
+        
+        const osc = ctx.createOscillator();
+        osc.type = "sine";          // 正弦波最柔和
+        osc.frequency.value = baseFreq;
+        
+        const oscGain = ctx.createGain();
+        // 柔和起音，缓慢衰减 —— 产生“噔～”的尾音
+        oscGain.gain.setValueAtTime(0.0001, now);
+        oscGain.gain.exponentialRampToValueAtTime(0.35, now + 0.02);
+        oscGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.6);  // 0.6秒衰减，更长更舒缓
+        
+        // 可选：加一个低八度的轻微泛音，增加厚实感
+        const osc2 = ctx.createOscillator();
+        osc2.type = "sine";
+        osc2.frequency.value = baseFreq * 0.5;
+        const g2 = ctx.createGain();
+        g2.gain.setValueAtTime(0.08, now);
+        g2.gain.exponentialRampToValueAtTime(0.0001, now + 0.5);
+        
+        osc.connect(oscGain);
+        oscGain.connect(master);
+        osc2.connect(g2);
+        g2.connect(master);
+        
+        osc.start(now);
+        osc2.start(now);
+        osc.stop(now + 0.65);
+        osc2.stop(now + 0.55);
+        
+        osc.onended = () => ctx.close();
+    } catch(e) { /* 静默 */ }
+}
 
       function createLeaf(parent) {
         let leaf = document.createElement("div");
@@ -1386,7 +1367,7 @@
 
       function renderHistoryChart() {
         let chart = document.getElementById("historyChart");
-        chart.innerHTML = "<p>📊 近7天种植总数</p>";
+        chart.innerHTML = "<p>最近排彳亍榜</p>";
         if (historyData.length === 0) return;
         let maxTotal = Math.max(...historyData.map((h) => h.total), 1);
         historyData.forEach((item, i) => {
@@ -1413,7 +1394,7 @@
       }
 
       function resetGame() {
-        if (confirm("重置后所有植物和进度将消失，确定吗？")) {
+        if (confirm("重置后所有植物和进度将是虚惊一场>Δ< 你所做的一切……尽归虚无😱😱😱（）")) {
           stopGame();
           saplings = 0;
           trees = 0;
@@ -1429,7 +1410,7 @@
           updateStats();
           resetProgressBars();
           saveGameData();
-          showNotification("世界重归寂静 🌱");
+          showNotification("反正是什么都没发生过 （雾");
         }
       }
 
