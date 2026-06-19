@@ -1,9 +1,11 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
+
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>HiMeowOS - 纯净毛玻璃 | 轻盈渐变模糊</title>
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>HiMeowOS · 纯净透明</title>
     <style>
         * {
             margin: 0;
@@ -13,7 +15,7 @@
         }
 
         body {
-            /* 完全透明背景：去掉了暗淡径向渐变，只保留绝对透明，让底层内容完全可见且无任何脏色 */
+            /* 完全透明背景：不包含任何径向渐变或色彩叠加 */
             background: transparent;
             width: 100%;
             min-height: 100vh;
@@ -24,251 +26,225 @@
             padding: 0;
         }
 
-        /* 飞入动画：保持干净轻盈 */
+        /* 轻盈飞入动画，保持干净优雅 */
         @keyframes FlyIn {
             0% {
-                transform: scale(0.92);
+                transform: scale(0.94);
                 opacity: 0;
             }
+
             100% {
                 transform: scale(1);
                 opacity: 1;
             }
         }
 
-        /* 基础卡片容器 (默认紧凑卡片 300x200) - 去除任何脏色阴影，使用透亮微光 */
+        /* 
+      卡片容器 —— 完全透明基底，无任何背景色、无渐变模糊层。
+      仅保留极细的白色边框和柔和投影，体现“玻璃”轮廓。
+    */
         .card-container {
             animation: FlyIn 0.4s cubic-bezier(0.2, 0.9, 0.4, 1.1);
             border-radius: 32px;
             width: 300px;
             height: 200px;
-            /* 背景完全透明让底层毛玻璃效果更干净，但为了提升玻璃质感，使用极浅透明白底增强层次而不显脏 */
-            background-color: rgba(255, 255, 255, 0);
-            box-shadow: 0 20px 35px -12px rgba(0, 0, 0, 0.15), 0 0 0 0.5px rgba(255, 255, 255, 0.2) inset;
+
+            /* 背景完全透明，零颜色覆盖 */
+            background-color: transparent;
+
+            /* 去除了之前所有径向渐变伪元素，仅靠边框与投影定义玻璃质感 */
+            box-shadow:
+                0 20px 35px -12px rgba(0, 0, 0, 0.08),
+                0 0 0 0.5px rgba(255, 255, 255, 0.2) inset;
+
             pointer-events: none;
             position: relative;
             transition: all 0.45s cubic-bezier(0.2, 0.9, 0.3, 1.2);
             will-change: width, height, border-radius, box-shadow;
             overflow: hidden;
-            /* 优雅细边框，强化精致感，无任何“暗淡”感 */
-            border: 0.6px solid rgba(255, 255, 255, 0.3);
+
+            /* 精致透明的白色边框，不包含任何脏色背景 */
+            border: 0.8px solid rgba(255, 255, 255, 0.35);
+
+            /* 确保内部没有任何渐变模糊层 */
         }
 
-        /* 全屏拓展样式 - 轻盈且高级 */
+        /* 全屏拓展样式：维持完全透明背景，仅调整边框粗细及阴影，不加入任何背景色 */
         .card-container.fullscreen-mode {
             width: 95vw;
             height: 95vh;
             border-radius: 36px;
-            box-shadow: 0 28px 45px -18px rgba(0, 0, 0, 0.2), 0 0 0 1px rgba(255, 255, 255, 0.3) inset;
-            background-color: rgba(255, 255, 255, 0.1);
+            box-shadow:
+                0 28px 45px -18px rgba(0, 0, 0, 0.12),
+                0 0 0 1px rgba(255, 255, 255, 0.25) inset;
+            background-color: transparent;
+            /* 明确透明 */
+            border: 0.9px solid rgba(255, 255, 255, 0.4);
         }
 
-        /* 清爽渐变模糊层: 顶部清晰强模糊 → 向下方优雅消失，无任何灰色脏污感 */
-        .glass-blur-gradient {
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            /* 高度覆盖至标题区域下方完全消失 */
-            height: 72px;  
-            z-index: 1;
-            pointer-events: none;
-            /* 核心毛玻璃：清晰的blur效果，无杂色叠加 */
-            backdrop-filter: blur(14px);
-            -webkit-backdrop-filter: blur(14px);
-            /* 半透白渐变背景，清澈明亮，避免暖灰等脏感 */
-            background: linear-gradient(to bottom, rgba(255, 255, 255, 0.45), rgba(255, 255, 255, 0.05));
-            /* mask渐变：最顶部20px完全保留模糊，随后柔和平滑过渡至完全透明（无模糊），实现干净消失。
-               从顶部到title下方逐渐卸除blur特效，没有任何“脏”的灰色过渡区域 */
-            mask: linear-gradient(to bottom, 
-                rgba(0,0,0,1) 0%,
-                rgba(0,0,0,1) 22px,    /* 前22px保持完整毛玻璃强度 */
-                rgba(0,0,0,0.7) 36px,   /* 优雅开始减弱 */
-                rgba(0,0,0,0.2) 52px,   /* 接近透明处减弱得非常柔和 */
-                rgba(0,0,0,0) 68px);    /* 68px之后完全无模糊痕迹，与底层彻底融合 */
-            -webkit-mask: linear-gradient(to bottom, 
-                rgba(0,0,0,1) 0%,
-                rgba(0,0,0,1) 22px,
-                rgba(0,0,0,0.7) 36px,
-                rgba(0,0,0,0.2) 52px,
-                rgba(0,0,0,0) 68px);
-            transition: all 0.2s ease;
-            border-radius: inherit;
-        }
+        /* 
+      ★ 移除整个 .glass-blur-gradient 层 —— 
+      不再有任何 backdrop-filter 渐变模糊，完全去掉了原来的模糊元素。
+      因此下方不需要相关样式。
+    */
+        /* 完全删除 .glass-blur-gradient 定义以及全屏下的对应样式 */
 
-        /* 全屏模式下，让渐变模糊层高度稍高并且过渡区域更从容，但保持顶部清晰模糊，末尾完全透明不压内容 */
-        .card-container.fullscreen-mode .glass-blur-gradient {
-            height: 98px;
-            backdrop-filter: blur(16px);
-            background: linear-gradient(to bottom, rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.02));
-            mask: linear-gradient(to bottom, 
-                rgba(0,0,0,1) 0%,
-                rgba(0,0,0,1) 28px,
-                rgba(0,0,0,0.7) 48px,
-                rgba(0,0,0,0.2) 70px,
-                rgba(0,0,0,0) 92px);
-            -webkit-mask: linear-gradient(to bottom, 
-                rgba(0,0,0,1) 0%,
-                rgba(0,0,0,1) 28px,
-                rgba(0,0,0,0.7) 48px,
-                rgba(0,0,0,0.2) 70px,
-                rgba(0,0,0,0) 92px);
-        }
-
-        /* 玻璃图标: 更清透，无杂色阴影 */
+        /* 玻璃图标：放置在右上角，使用极浅透明背景与模糊，仅作为点缀。
+       但卡片本身并未要求去除所有元素透明感，这里保留清透图标以保持可辨识性；
+       去除了多余的背景色叠层，仅用半透白和轻微模糊。 */
         .glass-icon {
             position: absolute;
-            top: 12px;
-            right: 14px;
+            top: 14px;
+            right: 16px;
             width: 38px;
             height: 38px;
-            background: rgba(255, 255, 255, 0.25);
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
+            /* 极微弱的白色半透明，无任何色彩倾向 */
+            background: rgba(255, 255, 255, 0.18);
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 21px;
+            font-size: 20px;
             font-family: system-ui, 'Segoe UI Emoji', sans-serif;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
             pointer-events: none;
-            border: 0.8px solid rgba(255, 255, 255, 0.65);
+            border: 0.7px solid rgba(255, 255, 255, 0.6);
             transition: all 0.2s ease;
             z-index: 3;
-            color: rgba(0, 0, 0, 0.75);
+            color: rgba(0, 0, 0, 0.8);
         }
 
-        /* 玻璃标题: 干净清晰，不被模糊层影响 */
+        /* 玻璃标题：左上角药丸形状，极其透明的背景，无渐变模糊依赖 */
         .glass-title {
             position: absolute;
-            top: 14px;
+            top: 16px;
             left: 18px;
-            background: rgba(255, 255, 255, 0.35);
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
+            background: rgba(255, 255, 255, 0.22);
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
             border-radius: 40px;
-            padding: 6px 16px;
+            padding: 5px 18px;
             font-family: system-ui, 'Segoe UI', 'SF Pro Text', 'Helvetica Neue', sans-serif;
             font-size: 13px;
-            font-weight: 520;
+            font-weight: 500;
             color: rgba(0, 0, 0, 0.85);
-            letter-spacing: 0.3px;
+            letter-spacing: 0.2px;
             white-space: nowrap;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
-            border: 0.6px solid rgba(255, 255, 255, 0.7);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+            border: 0.6px solid rgba(255, 255, 255, 0.65);
             pointer-events: none;
             transition: all 0.2s ease;
             z-index: 3;
         }
 
-        /* 全屏模式下的微调 */
+        /* 全屏模式微调图标与标题，仍然保持透明纯净 */
         .card-container.fullscreen-mode .glass-icon {
-            width: 45px;
-            height: 45px;
-            font-size: 26px;
-            top: 20px;
-            right: 22px;
-            background: rgba(255, 255, 255, 0.3);
-            backdrop-filter: blur(9px);
-            border: 1px solid rgba(255, 255, 255, 0.7);
+            width: 44px;
+            height: 44px;
+            font-size: 24px;
+            top: 22px;
+            right: 24px;
+            background: rgba(255, 255, 255, 0.22);
+            backdrop-filter: blur(8px);
+            border: 0.8px solid rgba(255, 255, 255, 0.7);
         }
 
         .card-container.fullscreen-mode .glass-title {
             font-size: 15px;
-            padding: 8px 20px;
-            top: 20px;
+            padding: 7px 22px;
+            top: 22px;
             left: 24px;
-            background: rgba(255, 255, 255, 0.4);
-            backdrop-filter: blur(12px);
-            letter-spacing: 0.4px;
-            font-weight: 540;
-            border: 0.8px solid rgba(255, 255, 255, 0.75);
+            background: rgba(255, 255, 255, 0.28);
+            backdrop-filter: blur(8px);
+            letter-spacing: 0.3px;
+            font-weight: 520;
+            border: 0.7px solid rgba(255, 255, 255, 0.7);
         }
 
-        /* 精致的背景底纹: 极简光影，去除任何暗色径向渐变，改为细腻的微光扩散，保证背景干净通透 */
-        .card-container::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: radial-gradient(circle at 20% 30%, rgba(255, 248, 225, 0.18), rgba(210, 230, 255, 0.08));
-            border-radius: inherit;
-            pointer-events: none;
-            z-index: 0;
+        /* 
+      移除所有伪元素背景：之前.card-container::before 和 ::after 
+      都包含了径向渐变等色彩，现在完全删除，保证卡片背景无任何颜色叠加。
+    */
+        .card-container::before,
+        .card-container::after {
+            display: none;
+            /* 彻底禁用任何背景装饰 */
         }
 
-        /* 确保所有内部内容不拦截事件 */
+        /* 保证卡片内部不响应指针事件，维持装饰性 */
         .card-container,
         .card-container * {
             pointer-events: none;
         }
-        
-        /* 额外增加轻盈的发光质感(非必须但提升纯净玻璃感) */
-        .card-container::after {
-            content: '';
-            position: absolute;
-            inset: 0;
-            border-radius: inherit;
-            background: radial-gradient(ellipse at 70% 10%, rgba(255,255,245,0.2), transparent 70%);
-            pointer-events: none;
-            z-index: 0;
+
+        /* 细微调整：如果之前有其他残留，也一并重置 */
+        .card-container {
+            /* 再次明确无背景 */
+            background: transparent;
         }
     </style>
 </head>
+
 <body>
     <div class="card-container" id="dynamicCard">
-        <!-- 顶部渐变模糊层: 清晰模糊到完全消失无脏痕 -->
-        <div class="glass-blur-gradient"></div>
+        <!-- 注意：不再包含任何 .glass-blur-gradient 元素，已完全删除渐变模糊层 -->
         <div class="glass-icon">🐱</div>
         <div class="glass-title">欢迎使用 HiMeowOS</div>
     </div>
 
     <script>
-        (function() {
+        (function () {
             const cardElement = document.getElementById('dynamicCard');
             let isFullscreenMode = false;
 
-            // 进入全屏模式
+            // 进入全屏模式：只添加class，不涉及背景或模糊渐变
             function applyFullscreen() {
                 if (!cardElement) return;
                 if (!isFullscreenMode) {
                     cardElement.classList.add('fullscreen-mode');
                     isFullscreenMode = true;
-                    console.log('[HiMeowOS] 已进入全屏模式 (fs) - 毛玻璃过渡优雅干净');
+                    console.log('[HiMeowOS·纯净] 进入全屏 (无渐变模糊/无背景色)');
                     try {
                         if (window.parent && window.parent !== window) {
-                            window.parent.postMessage({ type: 'HiMeowOS', status: 'fullscreen-entered', message: '全屏已启用' }, '*');
+                            window.parent.postMessage({
+                                type: 'HiMeowOS',
+                                status: 'fullscreen-entered',
+                                message: '全屏透明卡片已启用'
+                            }, '*');
                         }
-                    } catch(e) {}
+                    } catch (e) { }
                 }
             }
 
-            // 退出全屏，恢复紧凑卡片模式
+            // 退出全屏，恢复紧凑透明卡片
             function removeFullscreen() {
                 if (!cardElement) return;
                 if (isFullscreenMode) {
                     cardElement.classList.remove('fullscreen-mode');
                     isFullscreenMode = false;
-                    console.log('[HiMeowOS] 已退出全屏模式 (re)');
+                    console.log('[HiMeowOS·纯净] 退出全屏');
                     try {
                         if (window.parent && window.parent !== window) {
-                            window.parent.postMessage({ type: 'HiMeowOS', status: 'fullscreen-exited', message: '已恢复紧凑卡片' }, '*');
+                            window.parent.postMessage({
+                                type: 'HiMeowOS',
+                                status: 'fullscreen-exited',
+                                message: '恢复紧凑透明卡片'
+                            }, '*');
                         }
-                    } catch(e) {}
+                    } catch (e) { }
                 }
             }
 
-            // 接收来自父容器的指令 (fs / re)
+            // 接收父页面指令：支持 "fs" / "re" 字符串或对象消息
             function handleMessageFromParent(event) {
                 if (event.source !== window.parent) return;
-                
+
                 const data = event.data;
                 if (data == null) return;
-                
-                // 处理纯字符串指令
+
+                // 字符串指令
                 if (typeof data === 'string') {
                     const trimmed = data.trim().toLowerCase();
                     if (trimmed === 'fs') {
@@ -278,15 +254,15 @@
                     }
                     return;
                 }
-                
-                // 处理对象形式指令 (兼容多种字段)
+
+                // 对象指令，兼容 command/type/action/event 字段
                 if (typeof data === 'object') {
                     let cmd = null;
                     if (typeof data.command === 'string') cmd = data.command.toLowerCase();
                     else if (typeof data.type === 'string') cmd = data.type.toLowerCase();
                     else if (typeof data.action === 'string') cmd = data.action.toLowerCase();
                     else if (typeof data.event === 'string') cmd = data.event.toLowerCase();
-                    
+
                     if (cmd === 'fs') {
                         applyFullscreen();
                     } else if (cmd === 're') {
@@ -294,32 +270,34 @@
                     }
                 }
             }
-            
-            // 监听 postMessage 事件
+
             window.addEventListener('message', handleMessageFromParent);
-            
-            // 暴露全局API，供外部手动调用
+
+            // 暴露全局API，与之前保持一致
             window.HiMeowOS = {
                 enterFullscreen: applyFullscreen,
                 exitFullscreen: removeFullscreen,
-                isFullscreen: function() { return isFullscreenMode; },
-                command: function(cmd) {
+                isFullscreen: function () { return isFullscreenMode; },
+                command: function (cmd) {
                     if (cmd === 'fs') applyFullscreen();
                     else if (cmd === 're') removeFullscreen();
                 }
             };
-            
-            // 通知父容器iframe已完全就绪
+
+            // 通知父容器已就绪（完全透明卡片，无渐变模糊）
             setTimeout(() => {
                 try {
                     if (window.parent && window.parent !== window) {
-                        window.parent.postMessage({ type: 'HiMeowOS', ready: true, description: '毛玻璃卡片已准备，模糊过渡清澈纯净' }, '*');
+                        window.parent.postMessage({
+                            type: 'HiMeowOS',
+                            ready: true,
+                            description: '纯净透明卡片已准备，无背景色、无渐变模糊层'
+                        }, '*');
                     }
-                } catch(e) {}
+                } catch (e) { }
             }, 20);
-            
-            console.log('[HiMeowOS] 卡片装载完毕 | 去除了任何暗淡背景，渐变模糊优雅清晰，顶部玻璃模糊逐渐减弱至透明无脏色');
         })();
     </script>
 </body>
+
 </html>
